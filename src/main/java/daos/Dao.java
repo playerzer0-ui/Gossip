@@ -3,10 +3,10 @@ package daos;
 import java.sql.*;
 
 public class Dao {
-    private String databaseName;
-    private Connection con;
     protected PreparedStatement ps = null;
     protected ResultSet rs = null;
+    private String databaseName;
+    private Connection con;
 
     public Dao(String databaseName) {
         this.databaseName = databaseName;
@@ -15,6 +15,7 @@ public class Dao {
     public Dao(Connection con) {
         this.con = con;
     }
+
     public Connection getConnection() {
         // If there is a connection already present in the object, use that
         if (con != null) {
@@ -43,10 +44,10 @@ public class Dao {
      */
     public void freeConnection(String error) {
         try {
-            if (rs != null){
+            if (rs != null) {
                 rs.close();
             }
-            if (ps != null){
+            if (ps != null) {
                 ps.close();
             }
             if (con != null) {
@@ -64,7 +65,7 @@ public class Dao {
      */
     public void freeConnectionUpdate(String error) {
         try {
-            if (ps != null){
+            if (ps != null) {
                 ps.close();
             }
             if (con != null) {
@@ -76,6 +77,7 @@ public class Dao {
             System.exit(1);
         }
     }
+
     public void freeConnection(Connection con) {
         try {
             if (con != null) {
@@ -90,8 +92,9 @@ public class Dao {
 
     /**
      * updates the increment in the table
+     *
      * @param tableName the table name
-     * @param num the number increment to set to
+     * @param num       the number increment to set to
      */
     public void updateIncrement(String tableName, int num) {
         try {
