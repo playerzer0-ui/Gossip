@@ -1,12 +1,117 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
+
 <html>
 <head>
-  <title>JSP - Hello World</title>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Gossip | home</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
 <body>
-<h1><%= "Hello World!" %></h1>
-<br/>
-<a href="hello-servlet">Hello Servlet</a>
+<!--navigation-->
+<nav class="navbar bg-body-tertiary navbar-expand-lg fixed-top">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img src="img/logo2.png" alt="Logo" width="34" height="24" class="d-inline-block align-text-top">
+            Gossip
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasNavbar"
+                aria-controls="offcanvasNavbar" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel">
+            <div class="offcanvas-header">
+                <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Menu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="#">login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">register</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="wallpaper">
+    <div class="row align-items-start">
+        <div class="col-lg-6 d-flex align-content-end flex-wrap">
+            <div class="title">
+                <h1><b>Gossip</b></h1>
+                <p>chat with the people you know, no one will know what you chatted</p>
+            </div>
+        </div>
+        <div class="col-lg-6">
+            <img src="img/phones.png" class="phones" alt="">
+        </div>
+    </div>
+</div>
+
+<header>
+    <h2>Why use gossip?</h2>
+</header>
+
+<main class="container">
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-6 column-box">
+                <img src="img/picture1.jpg" class="img-thumbnail">
+                <p>End-to-end-encryption, just like real gossip, it would take lots of effort to understand them</p>
+            </div>
+            <div class="col-md-6 column-box">
+                <img src="img/picture2.jpg" class="img-thumbnail">
+                <p>No ads, trackers or anything, just gossip</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="buffer">
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>I love gossiping</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                Someone famous
+            </figcaption>
+        </figure>
+        <figure class="text-center">
+            <blockquote class="blockquote">
+                <p>Can approve gossip is awesome</p>
+            </blockquote>
+            <figcaption class="blockquote-footer">
+                Someone famous in <cite title="Source Title">somewhere</cite>
+            </figcaption>
+        </figure>
+    </div>
+</main>
+
+<footer>
+    <figure class="text-center">
+        <blockquote class="blockquote">
+            <h2><b>What are you waiting for? get <u>gossiping!</u></b></h2>
+        </blockquote>
+        <a href="">
+            <button class="btn btn-primary">Sign in</button>
+        </a>
+    </figure>
+</footer>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
 </body>
 </html>
