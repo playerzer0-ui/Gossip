@@ -2,14 +2,14 @@ package business;
 
 import java.util.Objects;
 
-public class Inboxparticipants {
+public class InboxParticipants {
     private int userId;
     private int inboxId;
     private int deletedState;
     private int unseenMessages;
     private int isOpen;
 
-    public Inboxparticipants(int userId, int inboxId, int deletedState, int unseenMessages, int isOpen) {
+    public InboxParticipants(int userId, int inboxId, int deletedState, int unseenMessages, int isOpen) {
         this.userId = userId;
         this.inboxId = inboxId;
         this.deletedState = deletedState;
@@ -61,7 +61,7 @@ public class Inboxparticipants {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Inboxparticipants that = (Inboxparticipants) o;
+        InboxParticipants that = (InboxParticipants) o;
         return userId == that.userId && inboxId == that.inboxId;
     }
 
