@@ -29,6 +29,18 @@ body {
     flex: 30%;
     background: #720455;
     border-right: 1px solid;
+    z-index: 2;
+}
+
+.container .leftSide {
+    position: absolute;
+    width: 30%;
+    min-width: 306px;
+    height: auto;
+    flex: 30%;
+    background: #720455;
+    border-right: 1px solid;
+    z-index: 1;
 }
 
 .container .right {
@@ -58,6 +70,77 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 0 15px;
+}
+
+.header-menu:hover {
+    background-color: #3C0753;
+    border-radius: 50%;
+}
+
+.drop-menu {
+    position: absolute;
+    background-color: #ff9ae4;
+    right: 0;
+    top: 60px;
+    z-index: 3;
+    visibility: hidden;
+}
+
+.drop-menu ul {
+    color: #FFEEAA;
+    list-style: none;
+    font-size: 15px;
+}
+
+.drop-menu li {
+    padding: 20px;
+}
+
+.drop-menu li:hover {
+    background-color: #fd4acd;
+    cursor: pointer;
+}
+
+
+.profile-header {
+    position: relative;
+    width: 100%;
+    height: 60px;
+    background: #910A67;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0 15px;
+    color: #FFEEAA;
+}
+
+.profile-header ion-icon {
+    cursor: pointer;
+    color: #FFEEAA;
+    font-size: 1.5em;
+    margin-right: 5px;
+}
+
+.profile-details {
+    position: relative;
+    height: calc(100vh - 100px);
+    overflow-y: auto;
+    background-color: #720455;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-img {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    overflow: hidden;
+    border-radius: 50%;
+    cursor: pointer;
+    margin: 40px;
 }
 
 .userimg {
