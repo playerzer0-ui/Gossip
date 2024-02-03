@@ -24,7 +24,26 @@ public class Controller extends HttpServlet {
         String dest = "index.jsp";
 
         if (action == null) {
-            action = "dashboard";
+            action = "index";
+        }
+        else{
+            switch (action){
+                case "index":
+                    dest = "index.jsp";
+                    break;
+
+                case "show_login":
+                    dest = "login.jsp";
+                    break;
+
+                case "show_register":
+                    dest = "register.jsp";
+                    break;
+
+                case "chatbox":
+                    dest = "chatbox.jsp";
+                    break;
+            }
         }
 
         response.sendRedirect(dest);
