@@ -2,21 +2,19 @@ package business;
 
 import java.util.Objects;
 
-public class Inboxparticipants {
+public class InboxParticipants {
     private int userId;
     private int inboxId;
     private int deletedState;
-    private int newMessages;
+    private int unseenMessages;
+    private int isOpen;
 
-    public Inboxparticipants(){
-
-    }
-
-    public Inboxparticipants(int userId, int inboxId, int deletedState, int newMessages) {
+    public InboxParticipants(int userId, int inboxId, int deletedState, int unseenMessages, int isOpen) {
         this.userId = userId;
         this.inboxId = inboxId;
         this.deletedState = deletedState;
-        this.newMessages = newMessages;
+        this.unseenMessages = unseenMessages;
+        this.isOpen = isOpen;
     }
 
     public int getUserId() {
@@ -43,19 +41,27 @@ public class Inboxparticipants {
         this.deletedState = deletedState;
     }
 
-    public int getNewMessages() {
-        return newMessages;
+    public int getUnseenMessages() {
+        return unseenMessages;
     }
 
-    public void setNewMessages(int newMessages) {
-        this.newMessages = newMessages;
+    public void setUnseenMessages(int unseenMessages) {
+        this.unseenMessages = unseenMessages;
+    }
+
+    public int getIsOpen() {
+        return isOpen;
+    }
+
+    public void setIsOpen(int isOpen) {
+        this.isOpen = isOpen;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Inboxparticipants that = (Inboxparticipants) o;
+        InboxParticipants that = (InboxParticipants) o;
         return userId == that.userId && inboxId == that.inboxId;
     }
 
@@ -70,7 +76,8 @@ public class Inboxparticipants {
                 "userId=" + userId +
                 ", inboxId=" + inboxId +
                 ", deletedState=" + deletedState +
-                ", newMessages=" + newMessages +
+                ", unseenMessages=" + unseenMessages +
+                ", isOpen=" + isOpen +
                 '}';
     }
 }
