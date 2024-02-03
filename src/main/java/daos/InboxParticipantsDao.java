@@ -17,7 +17,7 @@ public class InboxParticipantsDao extends Dao {
         super(con);
     }
 
-    public ArrayList<InboxParticipants> getAllInbox(int userId){
+    public ArrayList<InboxParticipants> getAllInbox(int userId) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -31,8 +31,8 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-               InboxParticipants ibp= new InboxParticipants(rs.getInt("userId"),rs.getInt("inboxId"),rs.getInt("deleteState"),rs.getInt("unseenMessages"),rs.getInt("isOpen"));
-               inboxParticipants.add(ibp);
+                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+                inboxParticipants.add(ibp);
             }
 
         } catch (SQLException e) {
@@ -54,7 +54,46 @@ public class InboxParticipantsDao extends Dao {
         }
         return inboxParticipants;
     }
-    public boolean openInbox(int inboxId, int userId, int openState){
+
+    public InboxParticipants getOtherInboxParticipant(int inboxId, int userId) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        InboxParticipants ibp = null;
+        try {
+            con = getConnection();
+
+            String query = "Select * from inboxparticipants where inboxId=? and userId!=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, userId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deleteState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the getOtherInboxParticipant() method: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    freeConnection(con);
+                }
+            } catch (SQLException e) {
+                System.out.println("Exception occurred in the final section of the getOtherInboxParticipant() method: " + e.getMessage());
+            }
+        }
+        return ibp;
+    }
+
+    public boolean openInbox(int inboxId, int userId, int openState) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -67,7 +106,7 @@ public class InboxParticipantsDao extends Dao {
             ps = con.prepareStatement(command);
             ps.setInt(1, openState);
             ps.setInt(2, inboxId);
-            ps.setInt(3,userId);
+            ps.setInt(3, userId);
             rowsAffected = ps.executeUpdate();
             if (rowsAffected == 1) {
                 state = true;
@@ -94,7 +133,7 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
-    public boolean updateUnSeenMessages(int inboxId, int userId){
+    public boolean updateUnSeenMessages(int inboxId, int userId) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -106,7 +145,7 @@ public class InboxParticipantsDao extends Dao {
             String command = " update inboxparticipants set unseenMessages=unseenMessages+1 where inboxId=? and userId=? and isOpen=0";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
-            ps.setInt(2,userId);
+            ps.setInt(2, userId);
             rowsAffected = ps.executeUpdate();
             if (rowsAffected == 1) {
                 state = true;
@@ -133,7 +172,7 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
-    public boolean resetUnSeenMessages(int inboxId, int userId){
+    public boolean resetUnSeenMessages(int inboxId, int userId) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -145,7 +184,7 @@ public class InboxParticipantsDao extends Dao {
             String command = " update inboxparticipants set unseenMessages=0 where inboxId=? and userId=?";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
-            ps.setInt(2,userId);
+            ps.setInt(2, userId);
             rowsAffected = ps.executeUpdate();
             if (rowsAffected == 1) {
                 state = true;

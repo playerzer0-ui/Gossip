@@ -30,26 +30,34 @@ public class Controller extends HttpServlet {
             switch (action){
                 case "index":
                     dest = "index.jsp";
+                    response.sendRedirect(dest);
                     break;
 
                 case "show_login":
                     dest = "login.jsp";
+                    response.sendRedirect(dest);
                     break;
                 case "do_login":
                     dest = Login(request,response);
+                    response.sendRedirect(dest);
                     break;
 
                 case "show_register":
                     dest = "register.jsp";
+                    response.sendRedirect(dest);
                     break;
 
                 case "chatbox":
                     dest = "chatbox.jsp";
+                    response.sendRedirect(dest);
+                    break;
+                case "getMessages":
+                    getMessages(request,response);
                     break;
             }
         }
 
-        response.sendRedirect(dest);
+
     }
 
     public void destroy() {
@@ -73,5 +81,11 @@ public class Controller extends HttpServlet {
             session.setAttribute("msg", msg);
             return "login.jsp";
         }
+    }
+    public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
+        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+        response.getWriter().write("hello inbox is");
+        System.out.println(inboxId  + "inbox");
+       // out.print("welcome");
     }
 }
