@@ -1,3 +1,7 @@
+<%@ page import="business.Users" %>
+<%@ page import="daos.InboxParticipantsDao" %>
+<%@ page import="business.InboxParticipants" %>
+<%@ page import="java.util.ArrayList" %>
 <!DOCTYPE html>
 
 <html>
@@ -44,6 +48,17 @@
         </div>
         <!-- chat-list -->
         <div class="chatlist">
+            <%
+
+           Users user=(Users) session.getAttribute("user");
+                InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+                ArrayList<InboxParticipants> Ibps= ibpDao.getAllInbox(user.getUserId());
+                for(InboxParticipants ibps:Ibps){
+
+                }
+
+            %>
+
             <div class="block active">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">

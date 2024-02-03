@@ -1,6 +1,9 @@
 package controller;
 
 import java.io.*;
+
+import business.Users;
+import daos.UsersDao;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 
@@ -23,10 +26,7 @@ public class Controller extends HttpServlet {
         String action = request.getParameter("action");
         String dest = "index.jsp";
 
-        if (action == null) {
-            action = "index";
-        }
-        else{
+        if (action != null) {
             switch (action){
                 case "index":
                     dest = "index.jsp";
@@ -34,6 +34,9 @@ public class Controller extends HttpServlet {
 
                 case "show_login":
                     dest = "login.jsp";
+                    break;
+                case "do_login":
+                    dest = Login(request,response);
                     break;
 
                 case "show_register":
@@ -50,5 +53,25 @@ public class Controller extends HttpServlet {
     }
 
     public void destroy() {
+    }
+
+    public String Login (HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession(true);
+        String email = request.getParameter("email");
+        String password = request.getParameter("password");
+
+        UsersDao usersDao = new UsersDao("gossip");
+        Users user = usersDao.Login(email,password);
+
+        if(user != null){
+            user.setPassword(password);
+            session.setAttribute("user", user);
+            return "chatbox.jsp";
+        }
+        else{
+            String msg = "Wrong password or email";
+            session.setAttribute("msg", msg);
+            return "login.jsp";
+        }
     }
 }
