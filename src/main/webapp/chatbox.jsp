@@ -6,6 +6,8 @@
 <%@ page import="daos.MessageDao" %>
 <%@ page import="business.Inbox" %>
 <%@ page import="business.Message" %>
+
+<%Users user = (Users) session.getAttribute("user");%>
 <!DOCTYPE html>
 
 <html>
@@ -29,7 +31,7 @@
         <!-- header -->
         <div class="header">
             <div class="userimg" onclick="seeProfile()">
-                <img src="img/profile.jpg" alt="profile" class="cover">
+                <img src="img/<%=user.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
                 <li>
@@ -44,8 +46,8 @@
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <li>update profile</li>
-                    <li>logout</li>
+                    <a href="controller?action=show_update"><li>update profile</li></a>
+                    <a href="controller?action=logout"><li>logout</li></a>
                 </ul>
             </div>
         </div>
@@ -59,20 +61,28 @@
         <!-- chat-list -->
         <div class="chatlist">
             <%
-
-                Users user = (Users) session.getAttribute("user");
                 session.setAttribute("openedInbox", -1);
                 InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
                 InboxDao inboxDao = new InboxDao("gossip");
                 MessageDao messageDao = new MessageDao("gossip");
-                ArrayList <InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+                //gets all the inboxParticipants for that particular user
+                ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+                //loop through inboxparticipants
                 for (InboxParticipants ibps : Ibps) {
                     Inbox myInbox = inboxDao.getInbox(ibps.getInboxId());
+                    //if it's a normal chat
                     if (myInbox.getInboxType() == 1) {
+                        //get the other person's inboxPartcipant
                         InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(myInbox.getInboxId(), user.getUserId());
+                        //get all the messages
                         ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
-                        Message m = messages.get(messages.size() - 1);
-                        if (ibps.getUnseenMessages() > 0) {
+                        Message m = null;
+                        //if there are messages
+                        if (messages.size() > 0) {
+                            //get the last message
+                            m = messages.get(messages.size() - 1);
+                            //if there are unseenMessages
+                            if (ibps.getUnseenMessages() > 0) {
             %>
             <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
                 <div class="imgbox">
@@ -92,7 +102,8 @@
                 </div>
             </div>
             <%
-            } else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
+            } //if the inboxParticipant is active or open
+            else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
             <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
                 <div class="imgbox">
@@ -111,7 +122,8 @@
                 </div>
             </div>
             <%
-            } else {
+            } //else just display the inboxParticipant
+            else {
 
             %>
             <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
@@ -131,12 +143,20 @@
                 </div>
             </div>
             <%
+                    }
                 }
-            } else if (myInbox.getInboxType() == 2) {
+            } //if it's a groupChat
+            else if (myInbox.getInboxType() == 2) {
+                //get the group inbox
                 Inbox groupInbox = inboxDao.getInbox(ibps.getInboxId());
                 ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
-                Message m = messages.get(messages.size() - 1);
-                if (ibps.getUnseenMessages() > 0) {
+                Message m = null;
+                //if there are messages
+                if (messages.size() > 0) {
+                    //get the last message
+                    m = messages.get(messages.size() - 1);
+                    //if there are unseen messages
+                    if (ibps.getUnseenMessages() > 0) {
             %>
             <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
                 <div class="imgbox">
@@ -157,7 +177,8 @@
                 </div>
             </div>
             <%
-            } else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
+            }//if the inboxParticipant is active or open
+            else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
             <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
                 <div class="imgbox">
@@ -177,7 +198,8 @@
                 </div>
             </div>
             <%
-            } else {
+            } //else just display the inboxParticipant
+            else {
 
             %>
             <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
@@ -198,14 +220,13 @@
                 </div>
             </div>
             <%
-                        }
+                            }
 
+                        }
                     }
                 }
 
             %>
-
-
 
 
         </div>
@@ -218,11 +239,11 @@
         </div>
         <div class="profile-details">
             <div class="profile-img">
-                <img src="img/profile.jpg" class="cover" alt="">
+                <img src="img/<%=user.getProfilePicture()%>" class="cover" alt="">
             </div>
-            <h2>Player zero</h2>
-            <p>player@gmail.com</p>
-            <p>biography herrererer</p>
+            <h2><%=user.getUserName()%></h2>
+            <p><%=user.getEmail()%></p>
+            <p><%=user.getBio()%></p>
         </div>
     </div>
 
@@ -267,9 +288,9 @@
 
 </div>
 <script>
-    function getMessages(inboxId){
+    function getMessages(inboxId) {
         alert("hello");
-       $(document).ready(function () {
+        $(document).ready(function () {
             $.ajax({
                 url: "?action=getMessages",
                 type: 'post',
@@ -284,17 +305,17 @@
                 }
             });
         });
-       // var chatBox = document.getElementById("chatbox");
-       /* var xhttp = new XMLHttpRequest();
-        xhttp.open("POST","tx.jsp",true);
-        xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200*) {
-                chatBox = "hello";
-            }
-        };
-        var data="inboxId=1";
-        xhttp.send(data);*/
+        // var chatBox = document.getElementById("chatbox");
+        /* var xhttp = new XMLHttpRequest();
+         xhttp.open("POST","tx.jsp",true);
+         xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+         xhttp.onreadystatechange = function() {
+             if (this.readyState == 4 && this.status == 200*) {
+                 chatBox = "hello";
+             }
+         };
+         var data="inboxId=1";
+         xhttp.send(data);*/
 
     }
 
