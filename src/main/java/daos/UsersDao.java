@@ -17,7 +17,7 @@ public class UsersDao extends Dao {
         super(con);
     }
 
-    public Users Login(String email, String password){
+    public Users login(String email, String password){
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;

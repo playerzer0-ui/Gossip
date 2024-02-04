@@ -38,7 +38,7 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(dest);
                     break;
                 case "do_login":
-                    dest = Login(request,response);
+                    dest = login(request,response);
                     response.sendRedirect(dest);
                     break;
 
@@ -52,7 +52,7 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(dest);
                     break;
                 case "getMessages":
-                    getMessages(request,response);
+//                    getMessages(request,response);
                     break;
             }
         }
@@ -63,13 +63,13 @@ public class Controller extends HttpServlet {
     public void destroy() {
     }
 
-    public String Login (HttpServletRequest request, HttpServletResponse response){
+    public String login (HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession(true);
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         UsersDao usersDao = new UsersDao("gossip");
-        Users user = usersDao.Login(email,password);
+        Users user = usersDao.login(email,password);
 
         if(user != null){
             user.setPassword(password);
@@ -82,10 +82,11 @@ public class Controller extends HttpServlet {
             return "login.jsp";
         }
     }
-    public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
-        response.getWriter().write("hello inbox is");
-        System.out.println(inboxId  + "inbox");
-       // out.print("welcome");
-    }
+
+//    public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
+//        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+//        response.getWriter().write("hello inbox is");
+//        System.out.println(inboxId  + "inbox");
+//       // out.print("welcome");
+//    }
 }

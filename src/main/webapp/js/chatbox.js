@@ -1,4 +1,7 @@
 
+
+
+
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
     $( ".leftSide" ).css( "z-index", "2" );

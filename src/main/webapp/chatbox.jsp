@@ -6,6 +6,9 @@
 <%@ page import="daos.MessageDao" %>
 <%@ page import="business.Inbox" %>
 <%@ page import="business.Message" %>
+
+<% Users u = (Users) session.getAttribute("user"); %>
+
 <!DOCTYPE html>
 
 <html>
@@ -32,20 +35,14 @@
                 <img src="img/profile.jpg" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
-                <li>
-                    <ion-icon name="scan-circle-outline"></ion-icon>
-                </li>
-                <li>
-                    <ion-icon name="chatbox-ellipses"></ion-icon>
-                </li>
-                <li>
-                    <ion-icon name="ellipsis-vertical" class="header-menu" onclick="seeHeaderMenu()"></ion-icon>
-                </li>
+                <li><ion-icon name="scan-circle-outline"></ion-icon></li>
+                <li><ion-icon name="chatbox-ellipses"></ion-icon></li>
+                <li><ion-icon name="ellipsis-vertical" class="header-menu" onclick="seeHeaderMenu()"></ion-icon></li>
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <li>update profile</li>
-                    <li>logout</li>
+                    <a href="controller?action=show_update"><li>update profile</li></a>
+                    <a href="controller?action=logout"><li>logout</li></a>
                 </ul>
             </div>
         </div>
@@ -58,154 +55,50 @@
         </div>
         <!-- chat-list -->
         <div class="chatlist">
-            <%
-
-                Users user = (Users) session.getAttribute("user");
-                session.setAttribute("openedInbox", -1);
-                InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
-                InboxDao inboxDao = new InboxDao("gossip");
-                MessageDao messageDao = new MessageDao("gossip");
-                ArrayList <InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
-                for (InboxParticipants ibps : Ibps) {
-                    Inbox myInbox = inboxDao.getInbox(ibps.getInboxId());
-                    if (myInbox.getInboxType() == 1) {
-                        InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(myInbox.getInboxId(), user.getUserId());
-                        ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
-                        Message m = messages.get(messages.size() - 1);
-                        if (ibps.getUnseenMessages() > 0) {
-            %>
-            <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block active">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
                         <h4>Player zero</h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
+                        <p class="time">12:00 AM</p>
                     </div>
                     <div class="message-p">
-                        <p><%=m.getMessage()%>
-                        </p>
-                        <b>1</b>
-                    </div>
-                </div>
-            </div>
-            <%
-            } else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
-            %>
-            <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
-                <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
-                </div>
-                <div class="details">
-                    <div class="listhead">
-                        <h4> Player zero </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
-                    </div>
-                    <div class="message-p">
-                        <p><%=m.getMessage() %>
+                        <p>wffewefffadsadsadsadasdasdffewefffadsadsadsadasdasdffewefffadsadsadsadasdasdffewefffadsadsadsadasdasd
                         </p>
                     </div>
                 </div>
             </div>
-            <%
-            } else {
-
-            %>
-            <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block unread">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
                         <h4>Player zero</h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
+                        <p class="time">12:00 AM</p>
                     </div>
                     <div class="message-p">
-                        <p><%=m.getMessage()%>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <%
-                }
-            } else if (myInbox.getInboxType() == 2) {
-                Inbox groupInbox = inboxDao.getInbox(ibps.getInboxId());
-                ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
-                Message m = messages.get(messages.size() - 1);
-                if (ibps.getUnseenMessages() > 0) {
-            %>
-            <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
-                <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
-                </div>
-                <div class="details">
-                    <div class="listhead">
-                        <h4><%=groupInbox.getGroupName()%>
-                        </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
-                    </div>
-                    <div class="message-p">
-                        <p><%=m.getMessage()%>
-                        </p>
+                        <p>wfewefffwefwe</p>
                         <b>1</b>
                     </div>
                 </div>
             </div>
-            <%
-            } else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
-            %>
-            <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4><%=groupInbox.getGroupName()%>
-                        </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
+                        <h4>Player zero</h4>
+                        <p class="time">12:00 AM</p>
                     </div>
                     <div class="message-p">
-                        <p><%=m.getMessage() %>
-                        </p>
+                        <p>wfewefffwefwe</p>
                     </div>
                 </div>
             </div>
-            <%
-            } else {
-
-            %>
-            <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
-                <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
-                </div>
-                <div class="details">
-                    <div class="listhead">
-                        <h4><%=groupInbox.getGroupName()%>
-                        </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
-                        </p>
-                    </div>
-                    <div class="message-p">
-                        <p><%=m.getMessage()%>
-                        </p>
-                    </div>
-                </div>
-            </div>
-            <%
-                        }
-
-                    }
-                }
-
-            %>
-
-
 
 
         </div>
@@ -220,9 +113,9 @@
             <div class="profile-img">
                 <img src="img/profile.jpg" class="cover" alt="">
             </div>
-            <h2>Player zero</h2>
-            <p>player@gmail.com</p>
-            <p>biography herrererer</p>
+            <h2><%=u.getUserName()%></h2>
+            <p><%=u.getEmail()%></p>
+            <p><%=u.getBio()%></p>
         </div>
     </div>
 
@@ -237,17 +130,13 @@
                 <h4>player-zero<br><span>online</span></h4>
             </div>
             <ul class="nav-icons">
-                <li>
-                    <ion-icon name="search-outline"></ion-icon>
-                </li>
-                <li>
-                    <ion-icon name="ellipsis-vertical"></ion-icon>
-                </li>
+                <li><ion-icon name="search-outline"></ion-icon></li>
+                <li><ion-icon name="ellipsis-vertical"></ion-icon></li>
             </ul>
         </div>
 
         <!-- chatbox -->
-        <div class="chatbox" id="chatbox">
+        <div class="chatbox">
             <div class="message my-message">
                 <p>hi<br><span>12:45 AM</span></p>
             </div>
@@ -266,39 +155,6 @@
     </div>
 
 </div>
-<script>
-    function getMessages(inboxId){
-        alert("hello");
-       $(document).ready(function () {
-            $.ajax({
-                url: "?action=getMessages",
-                type: 'post',
-                data: {"inboxId": inboxId},
-                success: function (data) {
-                    var chatBox = document.getElementById("chatbox");
-                    chatBox.innerHTML = "not working yet";
-
-                },
-                error: function () {
-                    alert("Error with ajax");
-                }
-            });
-        });
-       // var chatBox = document.getElementById("chatbox");
-       /* var xhttp = new XMLHttpRequest();
-        xhttp.open("POST","tx.jsp",true);
-        xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-        xhttp.onreadystatechange = function() {
-            if (this.readyState == 4 && this.status == 200*) {
-                chatBox = "hello";
-            }
-        };
-        var data="inboxId=1";
-        xhttp.send(data);*/
-
-    }
-
-</script>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
