@@ -32,7 +32,7 @@
         <!-- header -->
         <div class="header">
             <div class="userimg" onclick="seeProfile()">
-                <img src="img/profile.jpg" alt="profile" class="cover">
+                <img src="img/<%=u.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
                 <li><ion-icon name="scan-circle-outline"></ion-icon></li>
@@ -111,7 +111,7 @@
         </div>
         <div class="profile-details">
             <div class="profile-img">
-                <img src="img/profile.jpg" class="cover" alt="">
+                <img src="img/<%=u.getProfilePicture()%>" class="cover" alt="">
             </div>
             <h2><%=u.getUserName()%></h2>
             <p><%=u.getEmail()%></p>
