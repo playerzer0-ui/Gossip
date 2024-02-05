@@ -2,11 +2,10 @@ package daos;
 
 import business.Message;
 import business.Users;
+import org.mindrot.jbcrypt.BCrypt;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 
 public class UsersDao extends Dao {
     public UsersDao(String dbName) {
@@ -54,5 +53,62 @@ public class UsersDao extends Dao {
             }
         }
         return user;
+    }
+
+    public Users getUserById(int id) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Users u = null;
+        try {
+            con = this.getConnection();
+
+            String query = "SELECT * FROM USERS WHERE userID = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, id);
+
+            rs = ps.executeQuery();
+            if (rs.next())
+            {
+                int userId = rs.getInt("userID");
+                String email = rs.getString("email");
+                String username = rs.getString("userName");
+                String profilePicture = rs.getString("profilePicture");
+                String password = rs.getString("password");
+                Date dateOfBirth = rs.getDate("dateOfBirth");
+                int userType = rs.getInt("userType");
+                int suspended = rs.getInt("suspended");
+                String bio = rs.getString("bio");
+                int online = rs.getInt("online");
+                u = new Users(userId, email, username, profilePicture, password, dateOfBirth.toLocalDate(), userType, suspended,bio,online);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the getUserById() method: " + e.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection(con);
+                }
+            }
+            catch (SQLException e)
+            {
+                System.out.println("An error occurred when shutting down the getUserById() method: " + e.getMessage());
+            }
+        }
+        return u;
     }
 }

@@ -6,6 +6,8 @@
 <%@ page import="daos.MessageDao" %>
 <%@ page import="business.Inbox" %>
 <%@ page import="business.Message" %>
+
+<%Users user = (Users) session.getAttribute("user");%>
 <!DOCTYPE html>
 
 <html>
@@ -29,7 +31,7 @@
         <!-- header -->
         <div class="header">
             <div class="userimg" onclick="seeProfile()">
-                <img src="img/profile.jpg" alt="profile" class="cover">
+                <img src="img/<%=user.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
                 <li>
@@ -44,8 +46,8 @@
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <li>update profile</li>
-                    <li>logout</li>
+                    <a href="controller?action=show_update"><li>update profile</li></a>
+                    <a href="controller?action=logout"><li>logout</li></a>
                 </ul>
             </div>
         </div>
@@ -59,8 +61,6 @@
         <!-- chat-list -->
         <div class="chatlist">
             <%
-
-                Users user = (Users) session.getAttribute("user");
                 session.setAttribute("openedInbox", -1);
                 InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
                 InboxDao inboxDao = new InboxDao("gossip");
@@ -239,11 +239,11 @@
         </div>
         <div class="profile-details">
             <div class="profile-img">
-                <img src="img/profile.jpg" class="cover" alt="">
+                <img src="img/<%=user.getProfilePicture()%>" class="cover" alt="">
             </div>
-            <h2>Player zero</h2>
-            <p>player@gmail.com</p>
-            <p>biography herrererer</p>
+            <h2><%=user.getUserName()%></h2>
+            <p><%=user.getEmail()%></p>
+            <p><%=user.getBio()%></p>
         </div>
     </div>
 
