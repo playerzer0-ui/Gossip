@@ -16,23 +16,23 @@ public class UsersDao extends Dao {
         super(con);
     }
 
-    public Users Login(String email, String password){
+    public Users Login(String email, String password) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Message m = null;
-        Users user=null;
+        Users user = null;
         try {
             con = getConnection();
 
             String query = "Select * from users where email=? and password=?";
             ps = con.prepareStatement(query);
-            ps.setString(1,email);
-            ps.setString(2,password);
+            ps.setString(1, email);
+            ps.setString(2, password);
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                user = new Users(rs.getInt("userId"),rs.getString("email"),rs.getString("userName"),rs.getString("profilePicture"),rs.getString("password"),rs.getDate("dateOfBirth").toLocalDate(),rs.getInt("userType"),rs.getInt("suspended"),rs.getString("bio"),rs.getInt("online"));
+                user = new Users(rs.getInt("userId"), rs.getString("email"), rs.getString("userName"), rs.getString("profilePicture"), rs.getString("password"), rs.getDate("dateOfBirth").toLocalDate(), rs.getInt("userType"), rs.getInt("suspended"), rs.getString("bio"), rs.getInt("online"));
             }
 
         } catch (SQLException e) {
@@ -68,8 +68,7 @@ public class UsersDao extends Dao {
             ps.setInt(1, id);
 
             rs = ps.executeQuery();
-            if (rs.next())
-            {
+            if (rs.next()) {
                 int userId = rs.getInt("userID");
                 String email = rs.getString("email");
                 String username = rs.getString("userName");
@@ -80,32 +79,22 @@ public class UsersDao extends Dao {
                 int suspended = rs.getInt("suspended");
                 String bio = rs.getString("bio");
                 int online = rs.getInt("online");
-                u = new Users(userId, email, username, profilePicture, password, dateOfBirth.toLocalDate(), userType, suspended,bio,online);
+                u = new Users(userId, email, username, profilePicture, password, dateOfBirth.toLocalDate(), userType, suspended, bio, online);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.out.println("An error occurred in the getUserById() method: " + e.getMessage());
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection(con);
                 }
-            }
-            catch (SQLException e)
-            {
+            } catch (SQLException e) {
                 System.out.println("An error occurred when shutting down the getUserById() method: " + e.getMessage());
             }
         }
