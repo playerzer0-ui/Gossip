@@ -6,6 +6,7 @@
 <%@ page import="daos.MessageDao" %>
 <%@ page import="business.Inbox" %>
 <%@ page import="business.Message" %>
+<%@ page import="daos.UsersDao" %>
 
 <%Users user = (Users) session.getAttribute("user");%>
 <!DOCTYPE html>
@@ -65,6 +66,7 @@
                 InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
                 InboxDao inboxDao = new InboxDao("gossip");
                 MessageDao messageDao = new MessageDao("gossip");
+                UsersDao usersDao= new UsersDao("gossip");
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
                 //loop through inboxparticipants
@@ -74,6 +76,8 @@
                     if (myInbox.getInboxType() == 1) {
                         //get the other person's inboxPartcipant
                         InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(myInbox.getInboxId(), user.getUserId());
+                        //get the other User
+                       Users otherUser= usersDao.getUserById(otherIbp.getUserId());
                         //get all the messages
                         ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
                         Message m = null;
@@ -90,7 +94,7 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4>Player zero</h4>
+                        <h4><%=otherUser.getUserName()%></h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -111,7 +115,7 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4> Player zero </h4>
+                        <h4><%=otherUser.getUserName()%> </h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -132,7 +136,7 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4>Player zero</h4>
+                        <h4><%=otherUser.getUserName()%></h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -292,12 +296,12 @@
         alert("hello");
         $(document).ready(function () {
             $.ajax({
-                url: "?action=getMessages",
+                url: "http://localhost:8080/Gossip-1.0-SNAPSHOT/",
                 type: 'post',
-                data: {"inboxId": inboxId},
+                data: {action:"getMessages","inboxId": inboxId},
                 success: function (data) {
                     var chatBox = document.getElementById("chatbox");
-                    chatBox.innerHTML = "not working yet";
+                    chatBox.innerHTML = "not working";
 
                 },
                 error: function () {
@@ -305,18 +309,17 @@
                 }
             });
         });
-        // var chatBox = document.getElementById("chatbox");
-        /* var xhttp = new XMLHttpRequest();
-         xhttp.open("POST","tx.jsp",true);
-         xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        /* var chatBox = document.getElementById("chatbox");
+         var xhttp = new XMLHttpRequest();
+        xhttp.open("POST","http://localhost:8080/Gossip-1.0-SNAPSHOT/",true);
+        // xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
          xhttp.onreadystatechange = function() {
-             if (this.readyState == 4 && this.status == 200*) {
+             if (this.readyState == 4 && this.status == 200) {
                  chatBox = "hello";
              }
          };
-         var data="inboxId=1";
+         var data="action=getMessages";
          xhttp.send(data);*/
-
     }
 
 </script>

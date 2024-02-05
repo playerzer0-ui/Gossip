@@ -70,7 +70,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deleteState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
             }
 
         } catch (SQLException e) {

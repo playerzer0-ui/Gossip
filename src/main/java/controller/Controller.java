@@ -83,9 +83,10 @@ public class Controller extends HttpServlet {
         }
     }
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+        //int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+        response.setHeader("Access-Control-Allow-Origin", "*");
         response.getWriter().write("hello inbox is");
-        System.out.println(inboxId  + "inbox");
+       // System.out.println(inboxId  + "inbox");
        // out.print("welcome");
     }
 }
