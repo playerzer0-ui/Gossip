@@ -108,6 +108,7 @@ public class Controller extends HttpServlet {
                 return "register.jsp";
             }
         }
+        return "register.jsp";
     }
 
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
