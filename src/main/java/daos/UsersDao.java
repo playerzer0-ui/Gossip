@@ -39,13 +39,13 @@ public class UsersDao extends Dao {
                     String email = rs.getString("email");
                     String username = rs.getString("userName");
                     String profilePicture = rs.getString("profilePicture");
-                    Date dateOfBirth = rs.getDate("dateOfBirth");
+                    LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
                     int userType = rs.getInt("userType");
                     int suspended = rs.getInt("suspended");
                     String bio = rs.getString("bio");
                     int online = rs.getInt("online");
 
-                    u = new Users(userId, email, username, password, profilePicture, dateOfBirth.toLocalDate(), userType, suspended, bio,online);
+                    u = new Users(userId, email, username, password, profilePicture, dateOfBirth, userType, suspended, bio,online);
                 }
             }
 
@@ -69,7 +69,7 @@ public class UsersDao extends Dao {
         return u;
     }
 
-    public int Register(String email, String uname, String pPicture, String pword, Date dOBirth, int userType, int suspended, String bio, int online) {
+    public int Register(String email, String uname, String pPicture, String pword, LocalDate dOBirth, int userType, int suspended, String bio, int online) {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet generatedKeys = null;
@@ -86,7 +86,7 @@ public class UsersDao extends Dao {
             ps.setString(2, uname);
             ps.setString(3,pPicture);
             ps.setString(4, hashPassword);
-            ps.setDate(5,dOBirth);
+            ps.setDate(5, Date.valueOf(dOBirth));
             ps.setInt(6,userType);
             ps.setInt(7,suspended);
             ps.setString(8,bio);
@@ -151,12 +151,12 @@ public class UsersDao extends Dao {
                 String username = rs.getString("userName");
                 String profilePicture = rs.getString("profilePicture");
                 String password = rs.getString("password");
-                Date dateOfBirth = rs.getDate("dateOfBirth");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
                 int userType = rs.getInt("userType");
                 int suspended = rs.getInt("suspended");
                 String bio = rs.getString("bio");
                 int online = rs.getInt("online");
-                u = new Users(userId, email, username, profilePicture, password, dateOfBirth.toLocalDate(), userType, suspended,bio,online);
+                u = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended,bio,online);
             }
         }
         catch (SQLException e)
