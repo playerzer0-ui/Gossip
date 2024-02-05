@@ -6,6 +6,7 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 public class UsersDao extends Dao {
     public UsersDao(String dbName) {
@@ -34,19 +35,32 @@ public class UsersDao extends Dao {
             if (rs.next()) {
                // user = new Users(rs.getInt("userId"),rs.getString("email"),rs.getString("userName"),rs.getString("profilePicture"),rs.getString("password"),rs.getDate("dateOfBirth").toLocalDate(),rs.getInt("userType"),rs.getInt("suspended"),rs.getString("bio"),rs.getInt("online"));
                 String password = rs.getString("password");
-                if(BCrypt.checkpw(pword, password)){
-                    int userId = rs.getInt("userID");
-                    String email = rs.getString("email");
-                    String username = rs.getString("userName");
-                    String profilePicture = rs.getString("profilePicture");
-                    LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
-                    int userType = rs.getInt("userType");
-                    int suspended = rs.getInt("suspended");
-                    String bio = rs.getString("bio");
-                    int online = rs.getInt("online");
+                //commented out for debugging
+//                if(BCrypt.checkpw(pword, password)){
+//                    int userId = rs.getInt("userID");
+//                    String email = rs.getString("email");
+//                    String username = rs.getString("userName");
+//                    String profilePicture = rs.getString("profilePicture");
+//                    LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+//                    int userType = rs.getInt("userType");
+//                    int suspended = rs.getInt("suspended");
+//                    String bio = rs.getString("bio");
+//                    int online = rs.getInt("online");
+//
+//                    user = new Users(userId, email, username, password, profilePicture, dateOfBirth, userType, suspended, bio,online);
+//                }
 
-                    u = new Users(userId, email, username, password, profilePicture, dateOfBirth, userType, suspended, bio,online);
-                }
+                int userId = rs.getInt("userID");
+                String email = rs.getString("email");
+                String username = rs.getString("userName");
+                String profilePicture = rs.getString("profilePicture");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+                int userType = rs.getInt("userType");
+                int suspended = rs.getInt("suspended");
+                String bio = rs.getString("bio");
+                int online = rs.getInt("online");
+
+                user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
             }
 
         } catch (SQLException e) {
@@ -89,7 +103,7 @@ public class UsersDao extends Dao {
                 String username = rs.getString("userName");
                 String profilePicture = rs.getString("profilePicture");
                 String password = rs.getString("password");
-                Date dateOfBirth = rs.getDate("dateOfBirth");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
                 int userType = rs.getInt("userType");
                 int suspended = rs.getInt("suspended");
                 String bio = rs.getString("bio");

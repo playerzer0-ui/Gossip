@@ -84,38 +84,38 @@ public class Controller extends HttpServlet {
         }
     }
 
-    public String Register (HttpServletRequest request, HttpServletResponse response){
-        HttpSession session = request.getSession(true);
-        String username = request.getParameter("username");
-        String email = request.getParameter("email");
-        String password = request.getParameter("password");
-        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
-
-        if (username != null && email != null && password != null && dateOfBirth !=null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
-            UsersDao userDao = new UsersDao("gossip");
-            int id = userDao.Register(email,username,"",password,dateOfBirth,0 ,0,"",0);
-
-            if(id != -1){
-                String msg = "You have been registered successfully!";
-                Users user = new Users(id, email, username, "", password, dateOfBirth, 0,0,"",0);
-                session.setAttribute("user", user);
-                session.setAttribute("msg", msg);
-                return  "index.jsp";
-            }
-            else{
-                String msg = "Registration was not successful, please try again!";
-                session.setAttribute("msg", msg);
-                return "register.jsp";
-            }
-        }
-        return "register.jsp";
-    }
+//    public String Register (HttpServletRequest request, HttpServletResponse response){
+//        HttpSession session = request.getSession(true);
+//        String username = request.getParameter("username");
+//        String email = request.getParameter("email");
+//        String password = request.getParameter("password");
+//        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
+//
+//        if (username != null && email != null && password != null && dateOfBirth !=null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
+//            UsersDao userDao = new UsersDao("gossip");
+//            int id = userDao.Register(email,username,"",password,dateOfBirth,0 ,0,"",0);
+//
+//            if(id != -1){
+//                String msg = "You have been registered successfully!";
+//                Users user = new Users(id, email, username, "", password, dateOfBirth, 0,0,"",0);
+//                session.setAttribute("user", user);
+//                session.setAttribute("msg", msg);
+//                return  "index.jsp";
+//            }
+//            else{
+//                String msg = "Registration was not successful, please try again!";
+//                session.setAttribute("msg", msg);
+//                return "register.jsp";
+//            }
+//        }
+//        return "register.jsp";
+//    }
 
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        //int inboxId=Integer.parseInt(request.getParameter("inboxId"));
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.getWriter().write("hello inbox is");
-       // System.out.println(inboxId  + "inbox");
-       // out.print("welcome");
+        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+        //response.setHeader("Access-Control-Allow-Origin", "*");
+        response.getWriter().write("hello inbox is" + inboxId);
+//        System.out.println(inboxId  + "inbox");
+//        System.out.print("welcome");
     }
 }

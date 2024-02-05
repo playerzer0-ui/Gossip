@@ -9,6 +9,7 @@
 <%@ page import="daos.UsersDao" %>
 
 <%Users user = (Users) session.getAttribute("user");%>
+
 <!DOCTYPE html>
 
 <html>
@@ -88,7 +89,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -109,7 +110,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -130,7 +131,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -162,7 +163,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -184,7 +185,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -206,7 +207,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%ibps.getInboxId();%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -296,12 +297,12 @@
         alert("hello");
         $(document).ready(function () {
             $.ajax({
-                url: "http://localhost:8080/Gossip-1.0-SNAPSHOT/",
+                url: "controller",
                 type: 'post',
                 data: {action:"getMessages","inboxId": inboxId},
                 success: function (data) {
                     var chatBox = document.getElementById("chatbox");
-                    chatBox.innerHTML = "not working";
+                    chatBox.innerHTML = data;
 
                 },
                 error: function () {
