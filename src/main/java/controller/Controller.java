@@ -84,7 +84,7 @@ public class Controller extends HttpServlet {
         }
     }
 
-    public String Register (HttpServletRequest request, HttpServletResponse response){
+    /*public String Register (HttpServletRequest request, HttpServletResponse response){
         HttpSession session = request.getSession(true);
         String username = request.getParameter("username");
         String email = request.getParameter("email");
@@ -109,12 +109,12 @@ public class Controller extends HttpServlet {
             }
         }
         return "register.jsp";
-    }
+    }*/
 
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        //int inboxId=Integer.parseInt(request.getParameter("inboxId"));
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.getWriter().write("hello inbox is");
+        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
+        //response.setHeader("Access-Control-Allow-Origin", "*");
+        response.getWriter().write("hello inbox is"  );
        // System.out.println(inboxId  + "inbox");
        // out.print("welcome");
     }

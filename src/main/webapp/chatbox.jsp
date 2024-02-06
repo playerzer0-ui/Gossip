@@ -296,12 +296,12 @@
         alert("hello");
         $(document).ready(function () {
             $.ajax({
-                url: "http://localhost:8080/Gossip-1.0-SNAPSHOT/",
+                url: "controller",
                 type: 'post',
                 data: {action:"getMessages","inboxId": inboxId},
                 success: function (data) {
                     var chatBox = document.getElementById("chatbox");
-                    chatBox.innerHTML = "not working";
+                    chatBox.innerHTML = data;
 
                 },
                 error: function () {
@@ -311,8 +311,8 @@
         });
         /* var chatBox = document.getElementById("chatbox");
          var xhttp = new XMLHttpRequest();
-        xhttp.open("POST","http://localhost:8080/Gossip-1.0-SNAPSHOT/",true);
-        // xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
+        xhttp.open("POST","controller",true);
+         xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
          xhttp.onreadystatechange = function() {
              if (this.readyState == 4 && this.status == 200) {
                  chatBox = "hello";
