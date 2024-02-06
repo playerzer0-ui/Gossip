@@ -33,13 +33,14 @@ body {
     flex: 30%;
     background: #720455;
     border-right: 1px solid;
+    min-width: 285px;
     z-index: 2;
 }
 
 .container .leftSide {
     position: absolute;
     width: 30%;
-    min-width: 306px;
+    min-width: 285px;
     height: auto;
     flex: 30%;
     background: #720455;
