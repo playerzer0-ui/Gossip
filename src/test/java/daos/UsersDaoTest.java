@@ -71,6 +71,32 @@ class UsersDaoTest {
     }
 
     @Test
+    void register_4args_FailwithDuplicateEmail() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("register_4args_FailwithDuplicateEmail");
+        String userName = "Gary";
+        String email = "joe@gmail.com";
+        String password = "password";
+        LocalDate dOfBirth = LocalDate.of(1992,8,11);
+
+        int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        assertTrue((result == -1));
+    }
+
+    @Test
+    void register_4args_FailwithDuplicateUsername() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("register_4args_FailwithDuplicateUsername");
+        String userName = "joseph";
+        String email = "neo@gmail.com";
+        String password = "password";
+        LocalDate dOfBirth = LocalDate.of(1999,7,5);
+
+        int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        assertTrue((result == -1));
+    }
+
+    @Test
     void register_Users() {
         UsersDao usersDao = new UsersDao("gossiptest");
         System.out.println("register_Users");
