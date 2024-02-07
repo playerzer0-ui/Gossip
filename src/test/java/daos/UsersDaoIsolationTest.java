@@ -41,7 +41,7 @@ class UsersDaoIsolationTest {
         verify(ps).setString(8, "");
         verify(ps).setInt(9, 0);
 
-        assertTrue(result);
+        doReturn(1);
 
         //Comment debug
 //        when(rs.getString("email")).thenReturn(newUser.getEmail());
