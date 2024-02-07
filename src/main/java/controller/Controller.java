@@ -110,8 +110,6 @@ public class Controller extends HttpServlet {
         String password = request.getParameter("password");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
 
-//      dateOfBirth !=null
-
         if (username != null && email != null && password != null  && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email,username,"default.png",password,dateOfBirth,0 ,0,"",0);
