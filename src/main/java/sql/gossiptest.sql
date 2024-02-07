@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 02, 2024 at 01:50 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 7.4.28
+-- Generation Time: Feb 07, 2024 at 09:07 PM
+-- Server version: 10.4.27-MariaDB
+-- PHP Version: 8.2.0
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -29,12 +29,11 @@ USE `gossiptest`;
 -- Table structure for table `blockedusers`
 --
 
-CREATE TABLE IF NOT EXISTS `blockedusers` (
+DROP TABLE IF EXISTS `blockedusers`;
+CREATE TABLE `blockedusers` (
   `userId` int(11) NOT NULL COMMENT 'the user that did the blocking',
-  `blockedId` int(11) NOT NULL COMMENT 'the user that was blocked',
-  KEY `userId` (`userId`),
-  KEY `blockedId` (`blockedId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `blockedId` int(11) NOT NULL COMMENT 'the user that was blocked'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `blockedusers`
@@ -49,14 +48,13 @@ INSERT INTO `blockedusers` (`userId`, `blockedId`) VALUES
 -- Table structure for table `inbox`
 --
 
-CREATE TABLE IF NOT EXISTS `inbox` (
-  `inboxId` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `inbox`;
+CREATE TABLE `inbox` (
+  `inboxId` int(11) NOT NULL,
   `inboxType` int(11) NOT NULL DEFAULT 1,
   `adminId` int(11) DEFAULT NULL,
-  `groupName` varchar(15) DEFAULT NULL,
-  PRIMARY KEY (`inboxId`),
-  KEY `adminId` (`adminId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+  `groupName` varchar(15) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inbox`
@@ -72,15 +70,14 @@ INSERT INTO `inbox` (`inboxId`, `inboxType`, `adminId`, `groupName`) VALUES
 -- Table structure for table `inboxparticipants`
 --
 
-CREATE TABLE IF NOT EXISTS `inboxparticipants` (
+DROP TABLE IF EXISTS `inboxparticipants`;
+CREATE TABLE `inboxparticipants` (
   `userId` int(11) NOT NULL,
   `inboxId` int(11) NOT NULL,
   `deletedState` tinyint(1) NOT NULL DEFAULT 0,
   `unseenMessages` int(3) NOT NULL DEFAULT 0,
-  `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open',
-  KEY `userId` (`userId`),
-  KEY `inboxId` (`inboxId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inboxparticipants`
@@ -99,18 +96,16 @@ INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMes
 -- Table structure for table `messages`
 --
 
-CREATE TABLE IF NOT EXISTS `messages` (
-  `messageId` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `messages`;
+CREATE TABLE `messages` (
+  `messageId` int(11) NOT NULL,
   `inboxId` int(11) NOT NULL,
   `senderId` int(11) NOT NULL,
   `message` varchar(535) NOT NULL,
   `messageType` int(11) NOT NULL DEFAULT 1 COMMENT '1 for text,2 for picture,3 for video, 4 for any other file',
   `timeSent` datetime NOT NULL DEFAULT current_timestamp(),
-  `deletedState` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'FALSE(0) for not deleted and TRUE for deleted',
-  PRIMARY KEY (`messageId`),
-  KEY `senderId` (`senderId`),
-  KEY `inboxId` (`inboxId`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+  `deletedState` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'FALSE(0) for not deleted and TRUE for deleted'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `messages`
@@ -129,17 +124,15 @@ INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageT
 -- Table structure for table `reports`
 --
 
-CREATE TABLE IF NOT EXISTS `reports` (
-  `reportId` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `reports`;
+CREATE TABLE `reports` (
+  `reportId` int(11) NOT NULL,
   `reporterId` int(11) NOT NULL,
   `userReportedId` int(11) NOT NULL,
   `reportReason` varchar(80) NOT NULL,
   `reportDate` datetime NOT NULL,
-  `reportStatus` int(11) NOT NULL DEFAULT 1 COMMENT '1 for unsolved(unseen) 2 for solved, 3 for ignored,4 for inreview',
-  PRIMARY KEY (`reportId`),
-  KEY `reporterId` (`reporterId`),
-  KEY `userReportedId` (`userReportedId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+  `reportStatus` int(11) NOT NULL DEFAULT 1 COMMENT '1 for unsolved(unseen) 2 for solved, 3 for ignored,4 for inreview'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reports`
@@ -154,16 +147,15 @@ INSERT INTO `reports` (`reportId`, `reporterId`, `userReportedId`, `reportReason
 -- Table structure for table `stories`
 --
 
-CREATE TABLE IF NOT EXISTS `stories` (
-  `storyId` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `stories`;
+CREATE TABLE `stories` (
+  `storyId` int(11) NOT NULL,
   `userId` int(11) NOT NULL,
   `story` varchar(255) NOT NULL,
   `storyType` int(1) NOT NULL COMMENT '1 for picture, 2 for video',
   `dateTime` datetime NOT NULL DEFAULT current_timestamp(),
-  `storyDescription` varchar(80) NOT NULL,
-  PRIMARY KEY (`storyId`),
-  KEY `userId` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+  `storyDescription` varchar(80) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `stories`
@@ -178,13 +170,12 @@ INSERT INTO `stories` (`storyId`, `userId`, `story`, `storyType`, `dateTime`, `s
 -- Table structure for table `storyviewers`
 --
 
-CREATE TABLE IF NOT EXISTS `storyviewers` (
+DROP TABLE IF EXISTS `storyviewers`;
+CREATE TABLE `storyviewers` (
   `storyId` int(11) NOT NULL,
   `viewerId` int(11) NOT NULL,
-  `viewTime` datetime NOT NULL,
-  KEY `storyId` (`storyId`),
-  KEY `viewerId` (`viewerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `viewTime` datetime NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `storyviewers`
@@ -200,8 +191,9 @@ INSERT INTO `storyviewers` (`storyId`, `viewerId`, `viewTime`) VALUES
 -- Table structure for table `users`
 --
 
-CREATE TABLE IF NOT EXISTS `users` (
-  `userId` int(11) NOT NULL AUTO_INCREMENT,
+DROP TABLE IF EXISTS `users`;
+CREATE TABLE `users` (
+  `userId` int(11) NOT NULL,
   `email` varchar(255) NOT NULL,
   `userName` varchar(24) NOT NULL,
   `profilePicture` varchar(80) NOT NULL DEFAULT 'default.png',
@@ -210,11 +202,8 @@ CREATE TABLE IF NOT EXISTS `users` (
   `userType` int(1) NOT NULL,
   `suspended` tinyint(1) NOT NULL DEFAULT 0,
   `bio` varchar(25) DEFAULT NULL,
-  `online` tinyint(1) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`userId`),
-  UNIQUE KEY `email` (`email`),
-  UNIQUE KEY `userName` (`userName`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+  `online` tinyint(1) NOT NULL DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
@@ -222,10 +211,107 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`userId`, `email`, `userName`, `profilePicture`, `password`, `dateOfBirth`, `userType`, `suspended`, `bio`, `online`) VALUES
 (1, 'joe@gmail.com', 'joseph', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2000-08-02 00:00:00', 1, 0, '', 0),
-(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2001-07-02 00:00:00', 1, 0, '', 0),
-(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2006-09-02 00:00:00', 1, 0, '', 0),
-(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2005-08-02 00:00:00', 1, 0, '', 0),
-(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '1990-08-02 00:00:00', 2, 0, '', 0);
+(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$z/vsk2OsTLeL2opWutyIxehqEHnoUb7qXaV2kI8PmkR4Q2AthyZJu', '2001-07-02 00:00:00', 1, 0, '', 0),
+(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$AGBePXjpT0OYza399OtQ/e6hor3KKv7qzdsekRPUKJKiVTnFwmh.6', '2006-09-02 00:00:00', 1, 0, '', 0),
+(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$2wrSV7XQavi8VSplujV7VOIWYUX8xqyrVdZ/dr.67Xb6jQt.Ollhy', '2005-08-02 00:00:00', 1, 0, '', 0),
+(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$mX.rCUPojcnX/rX3CaXN9.yUaEIC4rO7mtw.R.UQjXdtBlle9ktgK', '1990-08-02 00:00:00', 2, 0, '', 0);
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `blockedusers`
+--
+ALTER TABLE `blockedusers`
+  ADD KEY `userId` (`userId`),
+  ADD KEY `blockedId` (`blockedId`);
+
+--
+-- Indexes for table `inbox`
+--
+ALTER TABLE `inbox`
+  ADD PRIMARY KEY (`inboxId`),
+  ADD KEY `adminId` (`adminId`);
+
+--
+-- Indexes for table `inboxparticipants`
+--
+ALTER TABLE `inboxparticipants`
+  ADD KEY `userId` (`userId`),
+  ADD KEY `inboxId` (`inboxId`);
+
+--
+-- Indexes for table `messages`
+--
+ALTER TABLE `messages`
+  ADD PRIMARY KEY (`messageId`),
+  ADD KEY `senderId` (`senderId`),
+  ADD KEY `inboxId` (`inboxId`);
+
+--
+-- Indexes for table `reports`
+--
+ALTER TABLE `reports`
+  ADD PRIMARY KEY (`reportId`),
+  ADD KEY `reporterId` (`reporterId`),
+  ADD KEY `userReportedId` (`userReportedId`);
+
+--
+-- Indexes for table `stories`
+--
+ALTER TABLE `stories`
+  ADD PRIMARY KEY (`storyId`),
+  ADD KEY `userId` (`userId`);
+
+--
+-- Indexes for table `storyviewers`
+--
+ALTER TABLE `storyviewers`
+  ADD KEY `storyId` (`storyId`),
+  ADD KEY `viewerId` (`viewerId`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`userId`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD UNIQUE KEY `userName` (`userName`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `inbox`
+--
+ALTER TABLE `inbox`
+  MODIFY `inboxId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `messages`
+--
+ALTER TABLE `messages`
+  MODIFY `messageId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `reports`
+--
+ALTER TABLE `reports`
+  MODIFY `reportId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `stories`
+--
+ALTER TABLE `stories`
+  MODIFY `storyId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- Constraints for dumped tables
