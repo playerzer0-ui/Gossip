@@ -34,14 +34,20 @@ class MessageDaoTest {
     }
 
     /**
-     *
+     *sendMessage, normal scenario
      */
     @Test
-    void sendMessage() {
+    void sendMessage_normal() {
+        boolean act = messageDao.sendMessage(1, 1, "asdasdad", 1);
 
+        messageDao.deleteItem(6, "messages", "messageId");
+        messageDao.updateIncrement("messages", 5);
+
+        assertTrue(act);
     }
 
     @Test
     void getMessages() {
+
     }
 }
