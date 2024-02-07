@@ -38,6 +38,7 @@ public class Controller extends HttpServlet {
         if (action != null) {
             switch (action) {
                 case "index":
+                    break;
 
                 case "logout":
                     response.sendRedirect(dest);
@@ -113,14 +114,14 @@ public class Controller extends HttpServlet {
 
         if (username != null && email != null && password != null  && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
             UsersDao userDao = new UsersDao("gossip");
-            int id = userDao.Register(email,username,"",password,dateOfBirth,0 ,0,"",0);
+            int id = userDao.Register(email,username,"default.png",password,dateOfBirth,0 ,0,"",0);
 
             if(id != -1){
                 String msg = "You have been registered successfully!";
-                Users user = new Users(id, email, username, "", password, dateOfBirth, 0,0,"",0);
+                Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0,0,"",0);
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
-                return  "index.jsp";
+                return  "chatbox.jsp";
             }
             else{
                 String msg = "Registration was not successful, please try again!";

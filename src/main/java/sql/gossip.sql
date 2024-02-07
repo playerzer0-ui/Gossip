@@ -221,11 +221,11 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`userId`, `email`, `userName`, `profilePicture`, `password`, `dateOfBirth`, `userType`, `suspended`, `bio`, `online`) VALUES
-(1, 'joe@gmail.com', 'joseph', 'default.png', '123', '2000-08-02 00:00:00', 1, 0, '', 0),
-(2, 'paul@gmail.com', 'paul', 'default.png', '123', '2001-07-02 00:00:00', 1, 0, '', 0),
-(3, 'jacob@gmail.com', 'jacob', 'default.png', '123', '2006-09-02 00:00:00', 1, 0, '', 0),
-(4, 'kelly@gmail.com', 'kelly', 'default.png', '123', '2005-08-02 00:00:00', 1, 0, '', 0),
-(5, 'angel@gmail.com', 'angel', 'default.png', '123', '1990-08-02 00:00:00', 2, 0, '', 0);
+(1, 'joe@gmail.com', 'joseph', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2000-08-02 00:00:00', 1, 0, '', 0),
+(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2001-07-02 00:00:00', 1, 0, '', 0),
+(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2006-09-02 00:00:00', 1, 0, '', 0),
+(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2005-08-02 00:00:00', 1, 0, '', 0),
+(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '1990-08-02 00:00:00', 2, 0, '', 0);
 
 --
 -- Constraints for dumped tables
