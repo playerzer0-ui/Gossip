@@ -48,19 +48,7 @@ public class MessageDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getMessage() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getMessage() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the getMessage() method: ");
         }
         return m;
     }
@@ -97,19 +85,7 @@ public class MessageDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the sendMessage() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
         }
         return state;
     }
@@ -145,19 +121,7 @@ public class MessageDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getMessages() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
         }
         return messages;
     }
