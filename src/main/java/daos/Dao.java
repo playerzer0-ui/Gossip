@@ -6,7 +6,7 @@ public class Dao {
     protected PreparedStatement ps = null;
     protected ResultSet rs = null;
     private String databaseName;
-    private Connection con;
+    protected Connection con;
 
     public Dao(String databaseName) {
         this.databaseName = databaseName;
@@ -52,6 +52,7 @@ public class Dao {
             }
             if (con != null) {
                 con.close();
+                con = null;
             }
         } catch (SQLException e) {
             System.out.println(error);
@@ -70,6 +71,7 @@ public class Dao {
             }
             if (con != null) {
                 con.close();
+                con = null;
             }
         } catch (SQLException e) {
             System.out.println(error);
@@ -82,7 +84,6 @@ public class Dao {
         try {
             if (con != null) {
                 con.close();
-                con = null;
             }
         } catch (SQLException e) {
             System.out.println("Failed to free connection: " + e.getMessage());
@@ -112,5 +113,28 @@ public class Dao {
         }
     }
 
+    /**
+     * delete an item in the table
+     * @param ID the no. ID
+     * @param tableName the name of the table
+     * @param IDname the name of the ID
+     * @return number of items deleted
+     */
+    public int deleteItem(int ID, String tableName, String IDname){
+        int rowsAffected = 0;
+        try {
+            con = this.getConnection();
 
+            String query = "DELETE FROM " + tableName + " WHERE " + IDname + " = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, ID);
+            rowsAffected = ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("\tA problem occurred during the updateIncrement method:");
+            System.err.println("\t" + e.getMessage());
+        } finally {
+            freeConnectionUpdate("fail to close connection at deleteitem");
+        }
+        return rowsAffected;
+    }
 }

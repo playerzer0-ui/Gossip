@@ -71,7 +71,7 @@ public class MessageDao extends Dao {
      * @param senderId the sender based by ID
      * @param message the message written
      * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
-     * @return
+     * @return true or false, depends on if the message is sent or not
      */
     public boolean sendMessage(int inboxId, int senderId, String message, int messageType) {
         Connection con = null;
@@ -161,5 +161,4 @@ public class MessageDao extends Dao {
         }
         return messages;
     }
-
 }
