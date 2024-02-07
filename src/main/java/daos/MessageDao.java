@@ -24,9 +24,6 @@ public class MessageDao extends Dao {
      * @return Message
      */
     public Message getMessage(int messageId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Message m = null;
         try {
             con = getConnection();
@@ -62,10 +59,7 @@ public class MessageDao extends Dao {
      * @return true or false, depends on if the message is sent or not
      */
     public boolean sendMessage(int inboxId, int senderId, String message, int messageType) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        int rowsAffected = 0;
+        int rowsAffected;
         boolean state = false;
         try {
 
@@ -91,15 +85,12 @@ public class MessageDao extends Dao {
     }
 
     /**
-     * get all messages that are not deleted
+     * get all messages that are not deleted, from a certain inbox
      * @param inboxId the inboxId
      * @return all messages on the inbox
      */
     public ArrayList<Message> getMessages(int inboxId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        ArrayList<Message> messages = new ArrayList();
+        ArrayList<Message> messages = new ArrayList<>();
         try {
             con = getConnection();
 
