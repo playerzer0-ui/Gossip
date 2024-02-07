@@ -41,7 +41,7 @@ class UsersDaoIsolationTest {
         verify(ps).setString(8, "");
         verify(ps).setInt(9, 0);
 
-        doReturn(1);
+        assertTrue((result > 0));
 
         //Comment debug
 //        when(rs.getString("email")).thenReturn(newUser.getEmail());
@@ -60,7 +60,14 @@ class UsersDaoIsolationTest {
     }
 
     @Test
-    void getUserById() {
+    void getUserById_Found() {
+
+//        Users users = new Users();
+//
+//        int userID = 1;
+//        LocalDate dOfBirth = LocalDate.of(2000,8, 2 );
+//        Users user1 = new Users(1, "joe@gmail.com", "joseph", "default.png", "$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa",dOfBirth , 1, 0, "", 0);
+//
     }
 
     @Test
