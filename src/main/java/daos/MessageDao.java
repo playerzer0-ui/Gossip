@@ -34,7 +34,8 @@ public class MessageDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                String[] dateTimeSent = rs.getString("timeSent").split(" ");
+                String datetime = rs.getString("timeSent");
+                String[] dateTimeSent = datetime.split(" ");
                 String[] dateSent = dateTimeSent[0].split("-");
                 String[] timeSent = dateTimeSent[1].split(":");
                 LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateSent[0]), Integer.parseInt(dateSent[1]), Integer.parseInt(dateSent[2]), Integer.parseInt(timeSent[0]), Integer.parseInt(timeSent[1]), Integer.parseInt(timeSent[2]));

@@ -84,6 +84,7 @@ public class Dao {
         try {
             if (con != null) {
                 con.close();
+                con = null;
             }
         } catch (SQLException e) {
             System.out.println("Failed to free connection: " + e.getMessage());
