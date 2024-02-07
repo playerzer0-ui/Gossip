@@ -18,6 +18,11 @@ public class MessageDao extends Dao {
         super(con);
     }
 
+    /**
+     * get the message by ID
+     * @param messageId the messageId
+     * @return Message
+     */
     public Message getMessage(int messageId) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -60,6 +65,14 @@ public class MessageDao extends Dao {
         return m;
     }
 
+    /**
+     * sends a message to a person or group, depending on the inboxId
+     * @param inboxId the inboxId
+     * @param senderId the sender based by ID
+     * @param message the message written
+     * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
+     * @return
+     */
     public boolean sendMessage(int inboxId, int senderId, String message, int messageType) {
         Connection con = null;
         PreparedStatement ps = null;
@@ -101,6 +114,11 @@ public class MessageDao extends Dao {
         return state;
     }
 
+    /**
+     * get all messages that are not deleted
+     * @param inboxId the inboxId
+     * @return all messages on the inbox
+     */
     public ArrayList<Message> getMessages(int inboxId) {
         Connection con = null;
         PreparedStatement ps = null;
