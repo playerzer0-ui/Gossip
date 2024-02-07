@@ -70,6 +70,68 @@ public class UsersDao extends Dao {
         return user;
     }
 
+    public int Register(String email, String uname, String pPicture, String pword, LocalDate dOBirth, int userType, int suspended, String bio, int online) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet generatedKeys = null;
+        int newId = -1;
+        String hashPassword = BCrypt.hashpw(pword, BCrypt.gensalt());
+        try {
+            con = this.getConnection();
+
+            String query = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?,?,?,?,?)";
+
+            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, email);
+            ps.setString(2, uname);
+            ps.setString(3,pPicture);
+            ps.setString(4, hashPassword);
+            ps.setDate(5, Date.valueOf(dOBirth));
+            ps.setInt(6,userType);
+            ps.setInt(7,suspended);
+            ps.setString(8,bio);
+            ps.setInt(9,online);
+
+            ps.executeUpdate();
+
+            generatedKeys = ps.getGeneratedKeys();
+
+            if(generatedKeys.next())
+            {
+                newId = generatedKeys.getInt(1);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.err.println("\tA problem occurred during the register method:");
+            System.err.println("\t"+e.getMessage());
+            newId = -1;
+        }
+        finally
+        {
+            try
+            {
+                if(generatedKeys != null){
+                    generatedKeys.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection("");
+                }
+            }
+            catch (SQLException e)
+            {
+                System.err.println("A problem occurred when closing down the register method:\n" + e.getMessage());
+            }
+        }
+        return newId;
+    }
+
     public Users getUserById(int id) {
         Connection con = null;
         PreparedStatement ps = null;
