@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 07, 2024 at 09:07 PM
+-- Generation Time: Feb 07, 2024 at 11:21 PM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -198,7 +198,7 @@ CREATE TABLE `users` (
   `userName` varchar(24) NOT NULL,
   `profilePicture` varchar(80) NOT NULL DEFAULT 'default.png',
   `password` varchar(80) NOT NULL,
-  `dateOfBirth` datetime NOT NULL,
+  `dateOfBirth` date NOT NULL,
   `userType` int(1) NOT NULL,
   `suspended` tinyint(1) NOT NULL DEFAULT 0,
   `bio` varchar(25) DEFAULT NULL,
@@ -210,11 +210,11 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`userId`, `email`, `userName`, `profilePicture`, `password`, `dateOfBirth`, `userType`, `suspended`, `bio`, `online`) VALUES
-(1, 'joe@gmail.com', 'joseph', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2000-08-02 00:00:00', 1, 0, '', 0),
-(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$z/vsk2OsTLeL2opWutyIxehqEHnoUb7qXaV2kI8PmkR4Q2AthyZJu', '2001-07-02 00:00:00', 1, 0, '', 0),
-(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$AGBePXjpT0OYza399OtQ/e6hor3KKv7qzdsekRPUKJKiVTnFwmh.6', '2006-09-02 00:00:00', 1, 0, '', 0),
-(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$2wrSV7XQavi8VSplujV7VOIWYUX8xqyrVdZ/dr.67Xb6jQt.Ollhy', '2005-08-02 00:00:00', 1, 0, '', 0),
-(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$mX.rCUPojcnX/rX3CaXN9.yUaEIC4rO7mtw.R.UQjXdtBlle9ktgK', '1990-08-02 00:00:00', 2, 0, '', 0);
+(1, 'joe@gmail.com', 'joseph', 'default.png', '$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa', '2000-08-02', 1, 0, '', 0),
+(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$z/vsk2OsTLeL2opWutyIxehqEHnoUb7qXaV2kI8PmkR4Q2AthyZJu', '2001-07-02', 1, 0, '', 0),
+(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$AGBePXjpT0OYza399OtQ/e6hor3KKv7qzdsekRPUKJKiVTnFwmh.6', '2006-09-02', 1, 0, '', 0),
+(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$2wrSV7XQavi8VSplujV7VOIWYUX8xqyrVdZ/dr.67Xb6jQt.Ollhy', '2005-08-02', 1, 0, '', 0),
+(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$mX.rCUPojcnX/rX3CaXN9.yUaEIC4rO7mtw.R.UQjXdtBlle9ktgK', '1990-08-02', 2, 0, '', 0);
 
 --
 -- Indexes for dumped tables
