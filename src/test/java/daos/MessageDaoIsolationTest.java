@@ -86,13 +86,13 @@ class MessageDaoIsolationTest {
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
 
-        when(dbConn.prepareStatement("insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?)")).thenReturn(ps);
+        String query = "insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?)";
+        when(dbConn.prepareStatement(query)).thenReturn(ps);
         when(ps.executeUpdate()).thenReturn(1);
 
         MessageDao messageDao = new MessageDao(dbConn);
         boolean result = messageDao.sendMessage(1, 1, "asdasdad", 1);
 
-        verify(ps).executeUpdate();
         verify(ps).setInt(1, 1);
         verify(ps).setInt(2, 1);
         verify(ps).setString(3, "asdasdad");
@@ -105,7 +105,81 @@ class MessageDaoIsolationTest {
      *sendMessage, no inboxId found
      */
     @Test
-    void sendMessage_noInboxId() {
+    void sendMessage_noInboxId() throws SQLException {
+// Create mock objects
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
 
+        when(dbConn.prepareStatement
+                ("insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?)")).thenReturn(ps);
+        when(ps.executeUpdate()).thenReturn(0);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        boolean result = messageDao.sendMessage(100, 1, "asdasdad", 1);
+
+        verify(ps).setInt(1, 100);
+        verify(ps).setInt(2, 1);
+        verify(ps).setString(3, "asdasdad");
+        verify(ps).setInt(4, 1);
+
+        assertFalse(result);
+    }
+
+    /**
+     * getMessages, normal scenario
+     */
+    @Test
+    void getMessages_normal() throws SQLException {
+        ArrayList<Message> messages = new ArrayList<>();
+
+        Message exp1 = new Message(2, 1, 2, "hi", 1, LocalDateTime.of(2024,1,31,21,58,28), 0);
+
+        messages.add(msg1);
+        messages.add(exp1);
+        // Create mock objects
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+
+        when(dbConn.prepareStatement("Select * from messages where inboxId=? and deletedState=0")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
+
+        when(rs.next()).thenReturn(true, true, false); // First call returns true, second call returns false
+
+        // Set up the values to be returned when rs.getInt, rs.getString, etc. are called
+        when(rs.getInt("messageId")).thenReturn(msg1.getMessageId(), exp1.getMessageId());
+        when(rs.getInt("inboxId")).thenReturn(msg1.getInboxId(), exp1.getInboxId());
+        when(rs.getInt("senderId")).thenReturn(msg1.getSenderId(), exp1.getSenderId());
+        when(rs.getString("message")).thenReturn(msg1.getMessage(), exp1.getMessage());
+        when(rs.getInt("messageType")).thenReturn(msg1.getMessageType(), exp1.getMessageType());
+        when(rs.getString("timeSent")).thenReturn("2024-01-31 21:57:14", "2024-01-31 21:58:28");
+        when(rs.getInt("deletedState")).thenReturn(msg1.getDeletedState(), exp1.getDeletedState());
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        ArrayList<Message> result = messageDao.getMessages(1);
+
+        assertEquals(messages, result);
+    }
+
+    /**
+     * getMessages, no inboxId, means so such conversation happened
+     */
+    @Test
+    void getMessages_noInboxId() throws SQLException {
+        ArrayList<Message> messages = new ArrayList<>();
+        // Create mock objects
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+
+        when(dbConn.prepareStatement("Select * from messages where inboxId=? and deletedState=0")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
+
+        when(rs.next()).thenReturn(false);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        ArrayList<Message> result = messageDao.getMessages(100);
+
+        assertEquals(messages, result);
     }
 }

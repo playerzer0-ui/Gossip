@@ -53,7 +53,7 @@ class MessageDaoTest {
     @Test
     void sendMessage_noInboxId() {
         boolean act = messageDao.sendMessage(100, 1, "asdasdad", 1);
-
+        messageDao.updateIncrement("messages", 5);
         assertFalse(act);
     }
 
@@ -63,7 +63,7 @@ class MessageDaoTest {
     @Test
     void sendMessage_noSenderId() {
         boolean act = messageDao.sendMessage(1, 100, "asdasdad", 1);
-
+        messageDao.updateIncrement("messages", 5);
         assertFalse(act);
     }
 

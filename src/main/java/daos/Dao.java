@@ -17,16 +17,13 @@ public class Dao {
     }
 
     public Connection getConnection() {
-        // If there is a connection already present in the object, use that
         if (con != null) {
             return con;
         }
-        // Otherwise, create one and return it
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/" + databaseName;
         String username = "root";
         String password = "";
-        Connection con = null;
         try {
             Class.forName(driver);
             con = DriverManager.getConnection(url, username, password);
@@ -38,6 +35,7 @@ public class Dao {
         }
         return con;
     }
+
 
     /**
      * free the connection
