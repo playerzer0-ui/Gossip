@@ -35,7 +35,37 @@ class UsersDaoTest {
     }
 
     @Test
-    void register() {
+    void register_4args() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("register_4args");
+        String userName = "Cherry";
+        String email = "cherry10@gmail.com";
+        String password = "password";
+        LocalDate dOfBirth = LocalDate.of(1992,8,11);
+
+        int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        assertTrue((result > 0));
+    }
+
+    @Test
+    void register_Users() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("register_Users");
+        String userName = "Marry";
+        String email = "marry@gmail.com";
+        String pPicture = "default.png";
+        String password = "password";
+        LocalDate dOfBirth = LocalDate.of(1989,7,1);
+        int userType = 1;
+        int susp = 0;
+        String bio = "";
+        int online = 0;
+
+        Users u = new Users(email,userName,pPicture,password,dOfBirth,userType,susp,bio,online);
+
+        int result = usersDao.Register(u);
+        assertTrue((result > 0));
+
     }
 
     @Test
@@ -59,7 +89,4 @@ class UsersDaoTest {
         assertEquals(expResult, result);
     }
 
-    @Test
-    void testRegister() {
-    }
 }
