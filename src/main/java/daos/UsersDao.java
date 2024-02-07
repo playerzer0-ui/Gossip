@@ -21,7 +21,6 @@ public class UsersDao extends Dao {
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        Message m = null;
         Users user=null;
         try {
             con = getConnection();
@@ -60,9 +59,9 @@ public class UsersDao extends Dao {
                 String bio = rs.getString("bio");
                 int online = rs.getInt("online");
 
-                    u = new Users(userId, email, username, password, profilePicture, dateOfBirth, userType, suspended, bio,online);
+                    user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
                 }
-            }
+
 
         } catch (SQLException e) {
             System.out.println("Exception occurred in the Login() method: " + e.getMessage());

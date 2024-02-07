@@ -48,8 +48,12 @@
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <a href="controller?action=show_update"><li>update profile</li></a>
-                    <a href="controller?action=logout"><li>logout</li></a>
+                    <a href="controller?action=show_update">
+                        <li>update profile</li>
+                    </a>
+                    <a href="controller?action=logout">
+                        <li>logout</li>
+                    </a>
                 </ul>
             </div>
         </div>
@@ -67,7 +71,7 @@
                 InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
                 InboxDao inboxDao = new InboxDao("gossip");
                 MessageDao messageDao = new MessageDao("gossip");
-                UsersDao usersDao= new UsersDao("gossip");
+                UsersDao usersDao = new UsersDao("gossip");
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
                 //loop through inboxparticipants
@@ -78,7 +82,7 @@
                         //get the other person's inboxPartcipant
                         InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(myInbox.getInboxId(), user.getUserId());
                         //get the other User
-                       Users otherUser= usersDao.getUserById(otherIbp.getUserId());
+                        Users otherUser = usersDao.getUserById(otherIbp.getUserId());
                         //get all the messages
                         ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
                         Message m = null;
@@ -95,7 +99,8 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4><%=otherUser.getUserName()%></h4>
+                        <h4><%=otherUser.getUserName()%>
+                        </h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -116,7 +121,8 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4><%=otherUser.getUserName()%> </h4>
+                        <h4><%=otherUser.getUserName()%>
+                        </h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -137,7 +143,8 @@
                 </div>
                 <div class="details">
                     <div class="listhead">
-                        <h4><%=otherUser.getUserName()%></h4>
+                        <h4><%=otherUser.getUserName()%>
+                        </h4>
                         <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
                         </p>
                     </div>
@@ -246,9 +253,12 @@
             <div class="profile-img">
                 <img src="img/<%=user.getProfilePicture()%>" class="cover" alt="">
             </div>
-            <h2><%=user.getUserName()%></h2>
-            <p><%=user.getEmail()%></p>
-            <p><%=user.getBio()%></p>
+            <h2><%=user.getUserName()%>
+            </h2>
+            <p><%=user.getEmail()%>
+            </p>
+            <p><%=user.getBio()%>
+            </p>
         </div>
     </div>
 
@@ -274,32 +284,40 @@
 
         <!-- chatbox -->
         <div class="chatbox" id="chatbox">
-            <div class="message my-message">
-                <p>hi<br><span>12:45 AM</span></p>
-            </div>
-            <div class="message frnd-message">
-                <p>hi<br><span>12:45 AM</span></p>
-            </div>
+
 
         </div>
         <!-- chat input -->
         <div class="chatbox-input">
             <ion-icon name="happy-outline"></ion-icon>
             <ion-icon name="attach-outline"></ion-icon>
-            <input type="text" placeholder="type a message">
+            <input type="text" placeholder="type a message" id="messageEntered">
             <ion-icon name="send"></ion-icon>
+            <button onclick="sendMessage()">send</button>
         </div>
     </div>
 
 </div>
 <script>
+    var mainInboxId = 0;
+    var otherUserId = 0;
+    setInterval(refreshMessages, 2000);
+
+    function refreshMessages() {
+        if (mainInboxId !== 0) {
+            // alert("in");
+            getMessages(mainInboxId);
+        }
+    }
+
     function getMessages(inboxId) {
-        alert("hello");
+        mainInboxId = inboxId;
+        otherUserId = 0;
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
                 type: 'post',
-                data: {action:"getMessages","inboxId": inboxId},
+                data: {action: "getMessages", "inboxId": inboxId},
                 success: function (data) {
                     var chatBox = document.getElementById("chatbox");
                     chatBox.innerHTML = data;
@@ -310,17 +328,50 @@
                 }
             });
         });
-        /* var chatBox = document.getElementById("chatbox");
-         var xhttp = new XMLHttpRequest();
-        xhttp.open("POST","controller",true);
-         xhttp.setRequestHeader("Content-Type","application/x-www-form-urlencoded");
-         xhttp.onreadystatechange = function() {
-             if (this.readyState == 4 && this.status == 200) {
-                 chatBox = "hello";
-             }
-         };
-         var data="action=getMessages";
-         xhttp.send(data);*/
+
+    }
+
+    //i need to add another function to set otherUserId
+
+
+    function sendMessage() {
+        var msg = document.getElementById("messageEntered").value;
+        if (msg !== null) {
+
+            //if it's the first time sending the user a message
+            if (mainInboxId === 0 && otherUserId !== 0) {
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "controller",
+                        type: 'post',
+                        data: {action: "firstMessage", "userId": otherUserId, "message": msg},
+                        success: function (data) {
+
+                        },
+                        error: function () {
+                            alert("Error with ajax");
+                        }
+                    });
+                });
+            } else if (mainInboxId !== 0) {
+                $(document).ready(function () {
+                    $.ajax({
+                        url: "controller",
+                        type: 'post',
+                        data: {action: "sendMessage", "inboxId": mainInboxId, "message": msg},
+                        success: function (data) {
+
+                        },
+                        error: function () {
+                            alert("Error with ajax");
+                        }
+                    });
+                });
+            }
+        } else {
+            alert("please enter a message");
+        }
+        document.getElementById("messageEntered").value = "";
     }
 
 </script>

@@ -2,8 +2,15 @@ package controller;
 
 import java.io.*;
 import java.time.LocalDate;
+import java.util.ArrayList;
 
+import business.Inbox;
+import business.InboxParticipants;
+import business.Message;
 import business.Users;
+import daos.InboxDao;
+import daos.InboxParticipantsDao;
+import daos.MessageDao;
 import daos.UsersDao;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -11,6 +18,7 @@ import jakarta.servlet.annotation.*;
 @WebServlet(name = "Controller", value = "/controller")
 public class Controller extends HttpServlet {
     private String message;
+    private Users user;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -28,7 +36,7 @@ public class Controller extends HttpServlet {
         String dest = "index.jsp";
 
         if (action != null) {
-            switch (action){
+            switch (action) {
                 case "index":
                     dest = "index.jsp";
                     response.sendRedirect(dest);
@@ -39,7 +47,7 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(dest);
                     break;
                 case "do_login":
-                    dest = Login(request,response);
+                    dest = Login(request, response);
                     response.sendRedirect(dest);
                     break;
 
@@ -53,7 +61,13 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(dest);
                     break;
                 case "getMessages":
-                    getMessages(request,response);
+                    getMessages(request, response);
+                    break;
+                case "firstMessage":
+                    firstMessage(request, response);
+                    break;
+                case "sendMessage":
+                    sendMessage(request, response);
                     break;
             }
         }
@@ -64,20 +78,19 @@ public class Controller extends HttpServlet {
     public void destroy() {
     }
 
-    public String Login (HttpServletRequest request, HttpServletResponse response){
+    public String Login(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         String email = request.getParameter("email");
         String password = request.getParameter("password");
 
         UsersDao usersDao = new UsersDao("gossip");
-        Users user = usersDao.Login(email,password);
+        user = usersDao.Login(email, password);
 
-        if(user != null){
+        if (user != null) {
             user.setPassword(password);
             session.setAttribute("user", user);
             return "chatbox.jsp";
-        }
-        else{
+        } else {
             String msg = "Wrong password or email";
             session.setAttribute("msg", msg);
             return "login.jsp";
@@ -111,11 +124,95 @@ public class Controller extends HttpServlet {
 //        return "register.jsp";
 //    }
 
-    public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        int inboxId=Integer.parseInt(request.getParameter("inboxId"));
-        //response.setHeader("Access-Control-Allow-Origin", "*");
-        response.getWriter().write("hello inbox is" + inboxId);
-//        System.out.println(inboxId  + "inbox");
-//        System.out.print("welcome");
+    public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        MessageDao messageDao = new MessageDao("gossip");
+        ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
+        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
+        //set unseenMessages to 0
+        ibpsDao.resetUnSeenMessages(inboxId,user.getUserId());
+        //set open state to true
+        ibpsDao.openInbox(inboxId,user.getUserId(),1);
+        String messages = "";
+        for (Message m : allMessages) {
+            //if it's the user that send the message
+            if (user.getUserId() == m.getSenderId()) {
+                messages = messages + "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+            } else {
+                messages = messages + "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+            }
+        }
+        response.getWriter().write(messages);
+
+    }
+    public void firstMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int otherUserId = Integer.parseInt(request.getParameter("userId"));
+        String message = request.getParameter("message");
+        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
+        InboxDao inboxDao=new InboxDao("gossip");
+        MessageDao messageDao = new MessageDao("gossip");
+       ArrayList<InboxParticipants> myIbps= ibpsDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> otherIbps= ibpsDao.getAllInbox(otherUserId);
+        Inbox matchingInbox=null;
+        //checking if there is any Inbox that links the 2 users
+        label:
+        for(InboxParticipants Myibps:myIbps){
+            for(InboxParticipants Otheribps:otherIbps){
+              if(Myibps.getInboxId()==Otheribps.getInboxId()){
+                  Inbox inbox=inboxDao.getInbox(Myibps.getInboxId());
+                  if(inbox.getInboxType()==1){
+                      matchingInbox=inbox;
+                     break label;
+                  }
+              }
+            }
+        }
+        //if a matching inbox was found
+        if(matchingInbox!=null){
+            //send message
+            messageDao.sendMessage(matchingInbox.getInboxId(),user.getUserId(),message,1);
+            //update unseen messages for the other user
+            ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(),otherUserId );
+            //set openState to true
+            ibpsDao.openInbox(matchingInbox.getInboxId(),user.getUserId(),1);
+        }
+        else{
+            // create a new inbox for them
+           int inboxId= inboxDao.createNormalInbox();
+           //insert the current user
+           ibpsDao.insertInboxParticipant(inboxId,user.getUserId());
+           //insert the other user
+           ibpsDao.insertInboxParticipant(inboxId,otherUserId);
+           messageDao.sendMessage(inboxId,user.getUserId(),message,1);
+           ibpsDao.updateUnSeenMessages(inboxId,otherUserId);
+        }
+
+    }
+    public void sendMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        String message = request.getParameter("message");
+        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
+        UsersDao usersDao= new UsersDao("gossip");
+        MessageDao messageDao = new MessageDao("gossip");
+        InboxDao inboxDao=new InboxDao("gossip");
+        Inbox inbox=inboxDao.getInbox(inboxId);
+        //if it's a normal chat
+        if(inbox.getInboxType()==1) {
+            //send message
+            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
+            // get the other person's InboxParticipant
+            InboxParticipants ibp =ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+            //update unseen messages for the other user
+            ibpsDao.updateUnSeenMessages(inboxId,ibp.getUserId());
+        }
+        else{
+            //send message
+            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
+            ArrayList <InboxParticipants> allIbps=ibpsDao.getAllInboxParticipants(inboxId);
+            //add unseenMessages for all users in the groupChat
+            for(InboxParticipants Ibps: allIbps){
+               ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+            }
+        }
     }
 }
