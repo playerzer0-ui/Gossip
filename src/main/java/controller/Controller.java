@@ -111,7 +111,7 @@ public class Controller extends HttpServlet {
 
 //      dateOfBirth !=null
 
-        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
+        if (username != null && email != null && password != null  && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email,username,"",password,dateOfBirth,0 ,0,"",0);
 

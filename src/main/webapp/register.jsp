@@ -23,29 +23,30 @@
 <main class="wallpaper">
     <div class="left">
         <h1><b>Register</b></h1>
-        <form action="">
+        <form action="controller" method="post">
             <div class="mb-3">
                 <label for="exampleInputEmail2" class="form-label">username</label>
-                <input type="text" class="form-control" id="exampleInputEmail2" aria-describedby="userhelp" />
+                <input type="text" class="form-control" id="exampleInputEmail2" aria-describedby="userhelp"  required/>
                 <div id="userhelp" class="form-text">
                     make sure your username is as unique as possible
                 </div>
             </div>
             <div class="mb-3">
                 <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" />
+                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required />
                 <div id="emailHelp" class="form-text">
                     your email will be kept secret
                 </div>
             </div>
             <div class="mb-3">
                 <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1" />
+                <input type="password" class="form-control" id="exampleInputPassword1" required />
             </div>
             <div class="mb-3">
                 <label for="exampleInputdoB1" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="exampleInputdoB1" />
+                <input type="date" class="form-control" id="exampleInputdoB1" required />
             </div>
+            <input type="hidden" name="action" value="do_register"/>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
     </div>
