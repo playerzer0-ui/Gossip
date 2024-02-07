@@ -8,7 +8,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class UsersDao extends Dao {
+public class UsersDao extends Dao implements UsersDaoInterface{
     public UsersDao(String dbName) {
         super(dbName);
     }
@@ -187,6 +187,11 @@ public class UsersDao extends Dao {
             }
         }
         return u;
+    }
+
+    @Override
+    public int Register(Users newUser) {
+        return Register(newUser.getEmail(), newUser.getUserName(), newUser.getProfilePicture(), newUser.getPassword(), newUser.getDateOfBirth(), newUser.getUserType(), newUser.getSuspended(), newUser.getBio(), newUser.getOnline());
     }
 
 
