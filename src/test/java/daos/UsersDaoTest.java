@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsersDaoTest {
-
+/**when details match**/
     @Test
     void login_Success() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -29,6 +29,29 @@ class UsersDaoTest {
         String email = "Sherry@gmail.com";
         String password = "password";
 
+        Users expResult = null;
+        Users result = usersDao.Login(email,password);
+        assertEquals(expResult,result);
+    }
+/**when the email match but the password don't match**/
+    @Test
+    void login_WhenJustEmailMatch() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("login_UserCantFound");
+        String email = "joe@gmail.com";
+        String password = "password";
+        Users expResult = null;
+        Users result = usersDao.Login(email,password);
+        assertEquals(expResult,result);
+    }
+
+    /**when just the password match but the email don't match**/
+    @Test
+    void login_WhenJustPasswordMatch() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("login_UserCantFound");
+        String email = "pau@gmail.com";
+        String password = "123";
         Users expResult = null;
         Users result = usersDao.Login(email,password);
         assertEquals(expResult,result);

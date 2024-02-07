@@ -65,7 +65,7 @@ public class MessageDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?) ";
+            String command = "insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?)";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, senderId);

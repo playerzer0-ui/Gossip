@@ -35,7 +35,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
                 String password = rs.getString("password");
                 if(BCrypt.checkpw(pword, password)){
-                    int userId = rs.getInt("userID");
+                    int userId = rs.getInt("userId");
                     String email = rs.getString("email");
                     String username = rs.getString("userName");
                     String profilePicture = rs.getString("profilePicture");
