@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 07, 2024 at 11:21 PM
+-- Generation Time: Feb 08, 2024 at 12:38 AM
 -- Server version: 10.4.27-MariaDB
 -- PHP Version: 8.2.0
 
@@ -76,19 +76,20 @@ CREATE TABLE `inboxparticipants` (
   `inboxId` int(11) NOT NULL,
   `deletedState` tinyint(1) NOT NULL DEFAULT 0,
   `unseenMessages` int(3) NOT NULL DEFAULT 0,
-  `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open'
+  `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open',
+  `timeSent` datetime(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000' ON UPDATE current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inboxparticipants`
 --
 
-INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMessages`, `isOpen`) VALUES
-(1, 1, 0, 0, 0),
-(2, 1, 0, 0, 0),
-(1, 2, 0, 0, 0),
-(2, 2, 0, 0, 0),
-(3, 2, 0, 0, 0);
+INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMessages`, `isOpen`, `timeSent`) VALUES
+(1, 1, 0, 0, 0, '0000-00-00 00:00:00.000000'),
+(2, 1, 0, 0, 0, '0000-00-00 00:00:00.000000'),
+(1, 2, 0, 0, 0, '0000-00-00 00:00:00.000000'),
+(2, 2, 0, 0, 0, '0000-00-00 00:00:00.000000'),
+(3, 2, 0, 0, 0, '0000-00-00 00:00:00.000000');
 
 -- --------------------------------------------------------
 
@@ -311,7 +312,7 @@ ALTER TABLE `stories`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `userId` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- Constraints for dumped tables
