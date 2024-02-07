@@ -38,6 +38,8 @@ public class Controller extends HttpServlet {
         if (action != null) {
             switch (action) {
                 case "index":
+
+                case "logout":
                     dest = "index.jsp";
                     response.sendRedirect(dest);
                     break;
@@ -132,11 +134,11 @@ public class Controller extends HttpServlet {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
-        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         //set unseenMessages to 0
-        ibpsDao.resetUnSeenMessages(inboxId,user.getUserId());
+        ibpsDao.resetUnSeenMessages(inboxId, user.getUserId());
         //set open state to true
-        ibpsDao.openInbox(inboxId,user.getUserId(),1);
+        ibpsDao.openInbox(inboxId, user.getUserId(), 1);
         String messages = "";
         for (Message m : allMessages) {
             //if it's the user that send the message
@@ -149,73 +151,73 @@ public class Controller extends HttpServlet {
         response.getWriter().write(messages);
 
     }
+
     public void firstMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int otherUserId = Integer.parseInt(request.getParameter("userId"));
         String message = request.getParameter("message");
-        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
-        InboxDao inboxDao=new InboxDao("gossip");
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
         MessageDao messageDao = new MessageDao("gossip");
-       ArrayList<InboxParticipants> myIbps= ibpsDao.getAllInbox(user.getUserId());
-        ArrayList<InboxParticipants> otherIbps= ibpsDao.getAllInbox(otherUserId);
-        Inbox matchingInbox=null;
+        ArrayList<InboxParticipants> myIbps = ibpsDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> otherIbps = ibpsDao.getAllInbox(otherUserId);
+        Inbox matchingInbox = null;
         //checking if there is any Inbox that links the 2 users
         label:
-        for(InboxParticipants Myibps:myIbps){
-            for(InboxParticipants Otheribps:otherIbps){
-              if(Myibps.getInboxId()==Otheribps.getInboxId()){
-                  Inbox inbox=inboxDao.getInbox(Myibps.getInboxId());
-                  if(inbox.getInboxType()==1){
-                      matchingInbox=inbox;
-                     break label;
-                  }
-              }
+        for (InboxParticipants Myibps : myIbps) {
+            for (InboxParticipants Otheribps : otherIbps) {
+                if (Myibps.getInboxId() == Otheribps.getInboxId()) {
+                    Inbox inbox = inboxDao.getInbox(Myibps.getInboxId());
+                    if (inbox.getInboxType() == 1) {
+                        matchingInbox = inbox;
+                        break label;
+                    }
+                }
             }
         }
         //if a matching inbox was found
-        if(matchingInbox!=null){
+        if (matchingInbox != null) {
             //send message
-            messageDao.sendMessage(matchingInbox.getInboxId(),user.getUserId(),message,1);
+            messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1);
             //update unseen messages for the other user
-            ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(),otherUserId );
+            ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
             //set openState to true
-            ibpsDao.openInbox(matchingInbox.getInboxId(),user.getUserId(),1);
-        }
-        else{
+            ibpsDao.openInbox(matchingInbox.getInboxId(), user.getUserId(), 1);
+        } else {
             // create a new inbox for them
-           int inboxId= inboxDao.createNormalInbox();
-           //insert the current user
-           ibpsDao.insertInboxParticipant(inboxId,user.getUserId());
-           //insert the other user
-           ibpsDao.insertInboxParticipant(inboxId,otherUserId);
-           messageDao.sendMessage(inboxId,user.getUserId(),message,1);
-           ibpsDao.updateUnSeenMessages(inboxId,otherUserId);
+            int inboxId = inboxDao.createNormalInbox();
+            //insert the current user
+            ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
+            //insert the other user
+            ibpsDao.insertInboxParticipant(inboxId, otherUserId);
+            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
+            ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
         }
 
     }
+
     public void sendMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         String message = request.getParameter("message");
-        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
-        UsersDao usersDao= new UsersDao("gossip");
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
         MessageDao messageDao = new MessageDao("gossip");
-        InboxDao inboxDao=new InboxDao("gossip");
-        Inbox inbox=inboxDao.getInbox(inboxId);
+        InboxDao inboxDao = new InboxDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
         //if it's a normal chat
-        if(inbox.getInboxType()==1) {
+        if (inbox.getInboxType() == 1) {
             //send message
             messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
             // get the other person's InboxParticipant
-            InboxParticipants ibp =ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+            InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             //update unseen messages for the other user
-            ibpsDao.updateUnSeenMessages(inboxId,ibp.getUserId());
-        }
-        else{
+            ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+        } else {
             //send message
             messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
-            ArrayList <InboxParticipants> allIbps=ibpsDao.getAllInboxParticipants(inboxId);
+            ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
             //add unseenMessages for all users in the groupChat
-            for(InboxParticipants Ibps: allIbps){
-               ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+            for (InboxParticipants Ibps : allIbps) {
+                ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
             }
         }
     }
