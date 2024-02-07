@@ -55,6 +55,10 @@ public class Controller extends HttpServlet {
                     dest = "register.jsp";
                     response.sendRedirect(dest);
                     break;
+//                case "do_register":
+//                    dest = Register(request,response);
+//                    response.sendRedirect(dest);
+//                    break;
 
                 case "chatbox":
                     dest = "chatbox.jsp";

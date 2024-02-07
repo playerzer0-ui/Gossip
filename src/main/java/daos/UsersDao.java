@@ -17,51 +17,38 @@ public class UsersDao extends Dao {
         super(con);
     }
 
-    public Users Login(String uemail, String pword) {
+    public Users Login(String uemail, String pword){
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        Message m = null;
         Users user=null;
         try {
             con = getConnection();
 
-            String query = "Select * from users where email=? and password=?";
+            String query = "Select * from users where email=?";
             ps = con.prepareStatement(query);
-            ps.setString(1, uemail);
-            ps.setString(2, pword);
+            ps.setString(1,uemail);
             rs = ps.executeQuery();
 
             if (rs.next()) {
-               // user = new Users(rs.getInt("userId"),rs.getString("email"),rs.getString("userName"),rs.getString("profilePicture"),rs.getString("password"),rs.getDate("dateOfBirth").toLocalDate(),rs.getInt("userType"),rs.getInt("suspended"),rs.getString("bio"),rs.getInt("online"));
-                String password = rs.getString("password");
-                //commented out for debugging
-//                if(BCrypt.checkpw(pword, password)){
-//                    int userId = rs.getInt("userID");
-//                    String email = rs.getString("email");
-//                    String username = rs.getString("userName");
-//                    String profilePicture = rs.getString("profilePicture");
-//                    LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
-//                    int userType = rs.getInt("userType");
-//                    int suspended = rs.getInt("suspended");
-//                    String bio = rs.getString("bio");
-//                    int online = rs.getInt("online");
-//
-//                    user = new Users(userId, email, username, password, profilePicture, dateOfBirth, userType, suspended, bio,online);
-//                }
 
-                int userId = rs.getInt("userID");
-                String email = rs.getString("email");
-                String username = rs.getString("userName");
-                String profilePicture = rs.getString("profilePicture");
-                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
-                int userType = rs.getInt("userType");
-                int suspended = rs.getInt("suspended");
-                String bio = rs.getString("bio");
-                int online = rs.getInt("online");
+                String password = rs.getString("password");
+                if(BCrypt.checkpw(pword, password)){
+                    int userId = rs.getInt("userID");
+                    String email = rs.getString("email");
+                    String username = rs.getString("userName");
+                    String profilePicture = rs.getString("profilePicture");
+                    LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+                    int userType = rs.getInt("userType");
+                    int suspended = rs.getInt("suspended");
+                    String bio = rs.getString("bio");
+                    int online = rs.getInt("online");
 
                     user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
                 }
 
+            }
 
         } catch (SQLException e) {
             System.out.println("Exception occurred in the Login() method: " + e.getMessage());
