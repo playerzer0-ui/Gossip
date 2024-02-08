@@ -96,7 +96,7 @@ public class InboxDao extends Dao {
     }
 
     public Inbox getInbox(int inboxId) {
-        con = null;
+       Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         Inbox inbox = null;

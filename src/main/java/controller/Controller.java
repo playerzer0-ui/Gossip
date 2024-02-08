@@ -143,9 +143,13 @@ public class Controller extends HttpServlet {
         for (Message m : allMessages) {
             //if it's the user that send the message
             if (user.getUserId() == m.getSenderId()) {
-                messages = messages + "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+                if(m.getMessageType()==1) {
+                    messages = messages + "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+                }
             } else {
-                messages = messages + "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+                if(m.getMessageType()==1) {
+                    messages = messages + "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p> </div>";
+                }
             }
         }
         response.getWriter().write(messages);

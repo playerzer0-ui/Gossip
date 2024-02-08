@@ -56,7 +56,7 @@ public class InboxParticipantsDao extends Dao {
     }
 
     public ArrayList<InboxParticipants> getAllInboxParticipants(int inboxId) {
-         con = null;
+       Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
@@ -94,9 +94,9 @@ public class InboxParticipantsDao extends Dao {
     }
 
     public InboxParticipants getOtherInboxParticipant(int inboxId, int userId) {
-         con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
+//        Connection con = null;
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
         InboxParticipants ibp = null;
         try {
             con = getConnection();
@@ -114,19 +114,20 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getOtherInboxParticipant() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getOtherInboxParticipant() method: " + e.getMessage());
-            }
+//            try {
+//                if (rs != null) {
+//                    rs.close();
+//                }
+//                if (ps != null) {
+//                    ps.close();
+//                }
+//                if (con != null) {
+//                    freeConnection(con);
+//                }
+//            } catch (SQLException e) {
+//                System.out.println("Exception occurred in the final section of the getOtherInboxParticipant() method: " + e.getMessage());
+//            }
+            freeConnection("gjjhjh");
         }
         return ibp;
     }
