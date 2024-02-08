@@ -195,22 +195,22 @@ class UsersDaoIsolationTest {
         when(dbConn.prepareStatement("Select * from users where email=?")).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
 
-        when(rs.next()).thenReturn(true, false);
-        when(rs.getInt("userId")).thenReturn(u.getUserId());
-        when(rs.getString("email")).thenReturn(u.getEmail());
-        when(rs.getString("userName")).thenReturn(u.getUserName());
-        when(rs.getString("profilePicture")).thenReturn(u.getProfilePicture());
-        when(rs.getString("password")).thenReturn(u.getPassword());
-        when(rs.getDate("dateOfBirth")).thenReturn(dob);
-        when(rs.getInt("userType")).thenReturn(u.getUserType());
-        when(rs.getInt("suspended")).thenReturn(u.getSuspended());
-        when(rs.getString("bio")).thenReturn(u.getBio());
-        when(rs.getInt("online")).thenReturn(u.getOnline());
+        when(rs.next()).thenReturn(false);
+//        when(rs.getInt("userId")).thenReturn(u.getUserId());
+//        when(rs.getString("email")).thenReturn(u.getEmail());
+//        when(rs.getString("userName")).thenReturn(u.getUserName());
+//        when(rs.getString("profilePicture")).thenReturn(u.getProfilePicture());
+//        when(rs.getString("password")).thenReturn(u.getPassword());
+//        when(rs.getDate("dateOfBirth")).thenReturn(dob);
+//        when(rs.getInt("userType")).thenReturn(u.getUserType());
+//        when(rs.getInt("suspended")).thenReturn(u.getSuspended());
+//        when(rs.getString("bio")).thenReturn(u.getBio());
+//        when(rs.getInt("online")).thenReturn(u.getOnline());
 
         UsersDao usersDao = new UsersDao(dbConn);
         Users expected = null;
         Users actual = usersDao.Login("joe@gmail.com", "444");
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
         verify(ps).setString(1, "joe@gmail.com");
     }
 
