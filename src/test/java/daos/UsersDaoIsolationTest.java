@@ -19,11 +19,14 @@ class UsersDaoIsolationTest {
 
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
-        //ResultSet rs = mock(ResultSet.class);
+        ResultSet rs = mock(ResultSet.class);
 
         String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
-        when(dbConn.prepareStatement(query)).thenReturn(ps);
+        when(dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
         when(ps.executeUpdate()).thenReturn(1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(1);
 
         LocalDate dOfBirth = LocalDate.of(1999, 12, 1);
         UsersDao usersDao = new UsersDao(dbConn);
@@ -32,7 +35,7 @@ class UsersDaoIsolationTest {
         verify(ps).setString(1, "lily@gmail.com");
         verify(ps).setString(2, "Lily");
         verify(ps).setString(3, "default.png");
-        verify(ps).setString(4, "password");
+        verify(ps).setString(eq(4), anyString());
         verify(ps).setDate(5, Date.valueOf(dOfBirth));
         verify(ps).setInt(6, 1);
         verify(ps).setInt(7, 0);
@@ -51,10 +54,14 @@ class UsersDaoIsolationTest {
 
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
 
         String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
-        when(dbConn.prepareStatement(query)).thenReturn(ps);
+        when(dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
         when(ps.executeUpdate()).thenReturn(-1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(-1);
 
         LocalDate dOfBirth = LocalDate.of(1989, 4, 19);
         UsersDao usersDao = new UsersDao(dbConn);
@@ -63,7 +70,7 @@ class UsersDaoIsolationTest {
         verify(ps).setString(1, "lily@gmail.com");
         verify(ps).setString(2, "joseph");
         verify(ps).setString(3, "default.png");
-        verify(ps).setString(4, "password");
+        verify(ps).setString(eq(4), anyString());
         verify(ps).setDate(5, Date.valueOf(dOfBirth));
         verify(ps).setInt(6, 1);
         verify(ps).setInt(7, 0);
@@ -82,10 +89,14 @@ class UsersDaoIsolationTest {
 
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
 
         String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
-        when(dbConn.prepareStatement(query)).thenReturn(ps);
+        when(dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
         when(ps.executeUpdate()).thenReturn(-1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(-1);
 
         LocalDate dOfBirth = LocalDate.of(1989, 4, 19);
         UsersDao usersDao = new UsersDao(dbConn);
@@ -94,14 +105,14 @@ class UsersDaoIsolationTest {
         verify(ps).setString(1, "joe@gmail.com");
         verify(ps).setString(2, "lily");
         verify(ps).setString(3, "default.png");
-        verify(ps).setString(4, "password");
+        verify(ps).setString(eq(4), anyString());
         verify(ps).setDate(5, Date.valueOf(dOfBirth));
         verify(ps).setInt(6, 1);
         verify(ps).setInt(7, 0);
         verify(ps).setString(8, "");
         verify(ps).setInt(9, 0);
 
-        assertTrue((result == -1));
+        assertEquals(-1, result);
 
     }
 
@@ -218,22 +229,22 @@ class UsersDaoIsolationTest {
         when(dbConn.prepareStatement("Select * from users where email=?")).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
 
-        when(rs.next()).thenReturn(true, false);
-        when(rs.getInt("userId")).thenReturn(u.getUserId());
-        when(rs.getString("email")).thenReturn(u.getEmail());
-        when(rs.getString("userName")).thenReturn(u.getUserName());
-        when(rs.getString("profilePicture")).thenReturn(u.getProfilePicture());
-        when(rs.getString("password")).thenReturn(u.getPassword());
-        when(rs.getDate("dateOfBirth")).thenReturn(dob);
-        when(rs.getInt("userType")).thenReturn(u.getUserType());
-        when(rs.getInt("suspended")).thenReturn(u.getSuspended());
-        when(rs.getString("bio")).thenReturn(u.getBio());
-        when(rs.getInt("online")).thenReturn(u.getOnline());
+        when(rs.next()).thenReturn(false);
+//        when(rs.getInt("userId")).thenReturn(u.getUserId());
+//        when(rs.getString("email")).thenReturn(u.getEmail());
+//        when(rs.getString("userName")).thenReturn(u.getUserName());
+//        when(rs.getString("profilePicture")).thenReturn(u.getProfilePicture());
+//        when(rs.getString("password")).thenReturn(u.getPassword());
+//        when(rs.getDate("dateOfBirth")).thenReturn(dob);
+//        when(rs.getInt("userType")).thenReturn(u.getUserType());
+//        when(rs.getInt("suspended")).thenReturn(u.getSuspended());
+//        when(rs.getString("bio")).thenReturn(u.getBio());
+//        when(rs.getInt("online")).thenReturn(u.getOnline());
 
         UsersDao usersDao = new UsersDao(dbConn);
         Users expected = null;
         Users actual = usersDao.Login("hey", "123");
-        assertEquals(actual, expected);
+        assertEquals(expected, actual);
         verify(ps).setString(1, "hey");
 
     }
