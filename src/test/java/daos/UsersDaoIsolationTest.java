@@ -11,6 +11,9 @@ import static org.mockito.Mockito.*;
 
 class UsersDaoIsolationTest {
 
+    /**
+     * Isolation register_4 args test
+     **/
     @Test
     void register_4args() throws SQLException {
 
@@ -40,6 +43,9 @@ class UsersDaoIsolationTest {
 
     }
 
+    /**
+     * Isolation register_4 args with duplicateUsername test
+     **/
     @Test
     void register_4args_FailwithDuplicateUsername() throws SQLException {
 
@@ -68,6 +74,9 @@ class UsersDaoIsolationTest {
 
     }
 
+    /**
+     * Isolation register_4 args with duplicateEmail test
+     **/
     @Test
     void register_4args_FailwithDuplicateEmail() throws SQLException {
 
@@ -96,6 +105,9 @@ class UsersDaoIsolationTest {
 
     }
 
+    /**
+     * Isolation getUserById_Found test
+     **/
     @Test
     void getUserById_Found() throws SQLException {
 
@@ -161,7 +173,7 @@ class UsersDaoIsolationTest {
      * When password is incorrect
      **/
     @Test
-    void LoginTest_IncorectPassword() throws SQLException {
+    void LoginTest_IncorrectPassword() throws SQLException {
         // Create mock objects
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
@@ -195,7 +207,7 @@ class UsersDaoIsolationTest {
      * when email doesn't match but password is correct
      **/
     @Test
-    void LoginTest_IncorectEmail() throws SQLException {
+    void LoginTest_IncorrectEmail() throws SQLException {
         // Create mock objects
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);

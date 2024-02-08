@@ -8,7 +8,10 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UsersDaoTest {
-/**when details match**/
+
+    /**
+     * Test of login_Success() method, of class UsersDao.
+     */
     @Test
     void login_Success() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -22,6 +25,9 @@ class UsersDaoTest {
         assertEquals(expResult,result);
     }
 
+    /**
+     * Test of login_UserCantFound() method, of class UsersDao.
+     */
     @Test
     void login_UserCantFound() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -57,6 +63,9 @@ class UsersDaoTest {
         assertEquals(expResult,result);
     }
 
+    /**
+     * Test of register_4args() method, of class UsersDao.
+     */
     @Test
     void register_4args() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -70,6 +79,9 @@ class UsersDaoTest {
         assertTrue((result > 0));
     }
 
+    /**
+     * Test of register_4args_FailwithDuplicateEmail() method, of class UsersDao.
+     */
     @Test
     void register_4args_FailwithDuplicateEmail() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -83,6 +95,9 @@ class UsersDaoTest {
         assertTrue((result == -1));
     }
 
+    /**
+     * Test of register_4args_FailwithDuplicateUsername() method, of class UsersDao.
+     */
     @Test
     void register_4args_FailwithDuplicateUsername() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -96,6 +111,9 @@ class UsersDaoTest {
         assertTrue((result == -1));
     }
 
+    /**
+     * Test of register_Users() method, of class UsersDao.
+     */
     @Test
     void register_Users() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -117,6 +135,9 @@ class UsersDaoTest {
 
     }
 
+    /**
+     * Test of getUserById_Found() method, of class UsersDao.
+     */
     @Test
     void getUserById_Found() {
         UsersDao usersDao = new UsersDao("gossiptest");
@@ -128,6 +149,9 @@ class UsersDaoTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test of getUserById_NotFound() method, of class UsersDao.
+     */
     @Test
     void getUserById_NotFound() {
         UsersDao usersDao = new UsersDao("gossiptest");
