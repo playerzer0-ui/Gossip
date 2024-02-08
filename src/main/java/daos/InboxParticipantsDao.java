@@ -56,7 +56,7 @@ public class InboxParticipantsDao extends Dao {
     }
 
     public ArrayList<InboxParticipants> getAllInboxParticipants(int inboxId) {
-        Connection con = null;
+         con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
@@ -94,7 +94,7 @@ public class InboxParticipantsDao extends Dao {
     }
 
     public InboxParticipants getOtherInboxParticipant(int inboxId, int userId) {
-        Connection con = null;
+         con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         InboxParticipants ibp = null;

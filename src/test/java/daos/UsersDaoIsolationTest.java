@@ -23,7 +23,7 @@ class UsersDaoIsolationTest {
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
 
-        String query = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?,?,?,?,?)";
+        String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
         when(dbConn.prepareStatement(query)).thenReturn(ps);
         when(ps.executeUpdate()).thenReturn(1);
 
@@ -104,6 +104,7 @@ class UsersDaoIsolationTest {
         UsersDao usersDao = new UsersDao(dbConn);
         Users actual = usersDao.Login("joe@gmail.com", "123");
         assertEquals(actual, u);
+        verify(ps).setString(1, "joe@gmail.com");
     }
 
     /**
@@ -137,10 +138,11 @@ class UsersDaoIsolationTest {
         Users expected = null;
         Users actual = usersDao.Login("joe@gmail.com", "444");
         assertEquals(actual, expected);
+        verify(ps).setString(1, "joe@gmail.com");
     }
 
     /**
-     * when email doesn't match
+     * when email doesn't match but password is correct
      **/
     @Test
     void LoginTest_IncorectEmail() throws SQLException {
@@ -170,5 +172,7 @@ class UsersDaoIsolationTest {
         Users expected = null;
         Users actual = usersDao.Login("hey", "123");
         assertEquals(actual, expected);
+        verify(ps).setString(1, "hey");
+
     }
 }

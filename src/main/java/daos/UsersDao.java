@@ -79,7 +79,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            String query = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?,?,?,?,?)";
+            String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
 
             ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 
