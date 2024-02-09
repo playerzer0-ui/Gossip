@@ -15,10 +15,7 @@ public class InboxDao extends Dao {
     }
 
     public int createGroupChat(int adminId, String groupName) {
-        Connection con = null;
         int rowsAffected = 0;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int id = 0;
         try {
 
@@ -38,27 +35,12 @@ public class InboxDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the inbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the inbox() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the inbox() method: ");
         }
         return id;
     }
 
     public int createNormalInbox() {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         int id = 0;
         try {
@@ -78,27 +60,12 @@ public class InboxDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the createNormalInbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the createNormalInbox() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the createNormalInbox() method: ");
         }
         return id;
     }
 
     public Inbox getInbox(int inboxId) {
-        con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Inbox inbox = null;
         try {
             con = getConnection();
@@ -120,19 +87,7 @@ public class InboxDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in  the getInbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in  the getInbox() method:  " + e.getMessage());
-            }
+            freeConnection("Exception occurred in  the getInbox() method:  ");
         }
         return inbox;
     }
