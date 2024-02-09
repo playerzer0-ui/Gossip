@@ -75,6 +75,9 @@ public class Controller extends HttpServlet {
                 case "sendMessage":
                     sendMessage(request, response);
                     break;
+                case "getMessagesHeader":
+                    getMessagesHeader(request, response);
+                    break;
             }
         }
 
@@ -146,7 +149,7 @@ public class Controller extends HttpServlet {
                 if(m.getMessageType()==1) {
                     messages += "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
-            } else {
+            } else if(user.getUserId() != m.getSenderId()) {
                 if(m.getMessageType()==1) {
                     messages += "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
@@ -224,5 +227,27 @@ public class Controller extends HttpServlet {
                 ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
             }
         }
+    }
+    public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        String header="";
+        Inbox inbox=inboxDao.getInbox(inboxId);
+        if(inbox.getInboxType()==1){
+       InboxParticipants otherIbp= ibpsDao.getOtherInboxParticipant(inboxId,user.getUserId());
+          Users otherUser= usersDao.getUserById(otherIbp.getUserId());
+          if(otherUser.getOnline()==1){
+              header= "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/"+otherUser.getProfilePicture()+"' alt='profile' class='cover'> </div><h4>"+otherUser.getUserName()+"<br><span>online</span></h4>";
+          }
+          else {
+              header= "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/"+otherUser.getProfilePicture()+"' alt='profile' class='cover'> </div><h4>"+otherUser.getUserName()+"<br><span></span></h4>";
+          }
+       }
+       else{
+           header="<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>"+inbox.getGroupName()+"<br><span></span></h4>";
+       }
+        response.getWriter().write(header);
     }
 }

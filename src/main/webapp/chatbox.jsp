@@ -269,12 +269,7 @@
 
     <div class="right">
         <div class="header">
-            <div class="imgtext">
-                <ion-icon class="return" name="arrow-back-outline"></ion-icon>
-                <div class="userimg">
-                    <img src="img/profile.jpg" alt="profile" class="cover">
-                </div>
-                <h4>player-zero<br><span>online</span></h4>
+            <div class="imgtext" id="imgtext">
             </div>
             <ul class="nav-icons">
                 <li>
@@ -312,10 +307,28 @@
             getMessages(mainInboxId);
         }
     }
+    function getMessagesHeader(inboxId){
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "getMessagesHeader", "inboxId": inboxId},
+                success: function (data) {
+                    var header = document.getElementById("imgtext");
+                    header.innerHTML = data;
+
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
 
     function getMessages(inboxId) {
         mainInboxId = inboxId;
         otherUserId = 0;
+        getMessagesHeader(inboxId);
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
