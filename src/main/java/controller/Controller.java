@@ -134,7 +134,7 @@ public class Controller extends HttpServlet {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
-        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        InboxParticipantsDao ibpsDao= new InboxParticipantsDao("gossip");
         //set unseenMessages to 0
         ibpsDao.resetUnSeenMessages(inboxId, user.getUserId());
         //set open state to true
