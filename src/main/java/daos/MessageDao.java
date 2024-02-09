@@ -110,4 +110,13 @@ public class MessageDao extends Dao {
         }
         return messages;
     }
+
+    /**
+     * deletes a message by Id
+     * @param messageId the messageId
+     * @return number of messages deleted
+     */
+    public int deleteMessages(int messageId){
+        return deleteItem(messageId, "messages", "messageId");
+    }
 }
