@@ -25,9 +25,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      * @return user's detail
      */
     public Users Login(String uemail, String pword){
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Message m = null;
         Users user=null;
         try {
@@ -60,19 +57,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         } catch (SQLException e) {
             System.out.println("Exception occurred in the Login() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the Login() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the Login() method: ");
         }
         return user;
     }
@@ -94,9 +79,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      * @return int of user id if added else added fail will return -1
      */
     public int Register(String email, String uname, String pPicture, String pword, LocalDate dOBirth, int userType, int suspended, String bio, int online) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet generatedKeys = null;
         int newId = -1;
         String hashPassword = BCrypt.hashpw(pword, BCrypt.gensalt());
         try {
@@ -118,11 +100,11 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
             ps.executeUpdate();
 
-            generatedKeys = ps.getGeneratedKeys();
+            rs = ps.getGeneratedKeys();
 
-            if(generatedKeys.next())
+            if(rs.next())
             {
-                newId = generatedKeys.getInt(1);
+                newId = rs.getInt(1);
             }
         }
         catch (SQLException e)
@@ -133,24 +115,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         }
         finally
         {
-            try
-            {
-                if(generatedKeys != null){
-                    generatedKeys.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection("");
-                }
-            }
-            catch (SQLException e)
-            {
-                System.err.println("A problem occurred when closing down the register method:\n" + e.getMessage());
-            }
+            freeConnection("A problem occurred when closing down the register method: ");
         }
         return newId;
     }
@@ -161,9 +126,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      * @return that userId's user detail
      */
     public Users getUserById(int id) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Users u = null;
         try {
             con = this.getConnection();
@@ -194,25 +156,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         }
         finally
         {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection(con);
-                }
-            }
-            catch (SQLException e)
-            {
-                System.out.println("An error occurred when shutting down the getUserById() method: " + e.getMessage());
-            }
+            freeConnection("An error occurred when shutting down the getUserById() method: ");
         }
         return u;
     }

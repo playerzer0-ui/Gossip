@@ -18,9 +18,6 @@ public class InboxParticipantsDao extends Dao {
     }
 
     public ArrayList<InboxParticipants> getAllInbox(int userId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
         try {
             con = getConnection();
@@ -38,27 +35,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getAllInbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getAllInbox() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the getAllInbox() method: ");
         }
         return inboxParticipants;
     }
 
     public ArrayList<InboxParticipants> getAllInboxParticipants(int inboxId) {
-       Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
         try {
             con = getConnection();
@@ -76,27 +58,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getAllInbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getAllInbox() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final getAllInbox() method: ");
         }
         return inboxParticipants;
     }
 
     public InboxParticipants getOtherInboxParticipant(int inboxId, int userId) {
-//        Connection con = null;
-//        PreparedStatement ps = null;
-//        ResultSet rs = null;
         InboxParticipants ibp = null;
         try {
             con = getConnection();
@@ -114,28 +81,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getOtherInboxParticipant() method: " + e.getMessage());
         } finally {
-//            try {
-//                if (rs != null) {
-//                    rs.close();
-//                }
-//                if (ps != null) {
-//                    ps.close();
-//                }
-//                if (con != null) {
-//                    freeConnection(con);
-//                }
-//            } catch (SQLException e) {
-//                System.out.println("Exception occurred in the final section of the getOtherInboxParticipant() method: " + e.getMessage());
-//            }
-            freeConnection("gjjhjh");
+            freeConnection("Exception occurred in the getOtherInboxParticipant() final method: ");
         }
         return ibp;
     }
 
     public boolean openInbox(int inboxId, int userId, int openState) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         boolean state = false;
         try {
@@ -155,27 +106,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the openInbox() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the openInbox() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the openInbox() method: ");
         }
         return state;
     }
 
     public boolean updateUnSeenMessages(int inboxId, int userId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         boolean state = false;
         try {
@@ -194,27 +130,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the updateUnSeenMessages() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the updateUnSeenMessages() method: " + e.getMessage());
-            }
+            freeConnectionUpdate("Exception occurred in the final section of the updateUnSeenMessages() method: ");
         }
         return state;
     }
 
     public boolean resetUnSeenMessages(int inboxId, int userId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         boolean state = false;
         try {
@@ -233,27 +154,12 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the resetUnSeenMessages() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the resetUnSeenMessages() method: " + e.getMessage());
-            }
+            freeConnectionUpdate("Exception occurred in the final section of the resetUnSeenMessages() method: ");
         }
         return state;
     }
 
     public boolean insertInboxParticipant(int inboxId, int userId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         boolean state = false;
         try {
@@ -275,19 +181,7 @@ public class InboxParticipantsDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the insertInboxParticipant() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the insertInboxParticipant() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the insertInboxParticipant() method: ");
         }
         return state;
     }
