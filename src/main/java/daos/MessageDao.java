@@ -34,11 +34,7 @@ public class MessageDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                String datetime = rs.getString("timeSent");
-                String[] dateTimeSent = datetime.split(" ");
-                String[] dateSent = dateTimeSent[0].split("-");
-                String[] timeSent = dateTimeSent[1].split(":");
-                LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateSent[0]), Integer.parseInt(dateSent[1]), Integer.parseInt(dateSent[2]), Integer.parseInt(timeSent[0]), Integer.parseInt(timeSent[1]), Integer.parseInt(timeSent[2]));
+                LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
                 m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"));
 
             }
@@ -101,10 +97,7 @@ public class MessageDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] dateTimeSent = rs.getString("timeSent").split(" ");
-                String[] dateSent = dateTimeSent[0].split("-");
-                String[] timeSent = dateTimeSent[1].split(":");
-                LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateSent[0]), Integer.parseInt(dateSent[1]), Integer.parseInt(dateSent[2]), Integer.parseInt(timeSent[0]), Integer.parseInt(timeSent[1]), Integer.parseInt(timeSent[2]));
+                LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
                 Message m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"));
 
                 messages.add(m);
