@@ -129,6 +129,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage() %>
                         </p>
+                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -151,6 +152,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
+                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -206,6 +208,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage() %>
                         </p>
+                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -214,7 +217,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -228,6 +231,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
+                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -292,8 +296,7 @@
             <ion-icon name="happy-outline"></ion-icon>
             <ion-icon name="attach-outline"></ion-icon>
             <input type="text" placeholder="type a message" id="messageEntered">
-            <ion-icon name="send"></ion-icon>
-            <button onclick="sendMessage()">send</button>
+            <ion-icon name="send" onclick="sendMessage()"></ion-icon>
         </div>
     </div>
 
@@ -328,7 +331,6 @@
                 }
             });
         });
-
     }
 
     //i need to add another function to set otherUserId
