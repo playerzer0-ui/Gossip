@@ -92,7 +92,7 @@ public class StoryViewersDao extends Dao{
      * @return number of storyviewers added, 1 is the correct value
      */
     public int insertStoryViewer(int storyId, int viewerId, LocalDateTime viewTime){
-        int rowsAffected = -1;
+        int rowsAffected = 0;
 
         try{
             con = getConnection();

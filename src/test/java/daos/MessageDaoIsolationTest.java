@@ -5,14 +5,9 @@ import static org.junit.jupiter.api.Assertions.*;
 import business.Message;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.mockito.Mockito.*;
 
@@ -41,7 +36,7 @@ class MessageDaoIsolationTest {
         when(rs.getInt("senderId")).thenReturn(msg1.getSenderId());
         when(rs.getString("message")).thenReturn(msg1.getMessage());
         when(rs.getInt("messageType")).thenReturn(msg1.getMessageType());
-        when(rs.getString("timeSent")).thenReturn("2024-01-31 21:57:14");
+        when(rs.getTimestamp("timeSent")).thenReturn(Timestamp.valueOf(msg1.getTimeSent()));
         when(rs.getInt("deletedState")).thenReturn(msg1.getDeletedState());
 
         MessageDao messageDao = new MessageDao(dbConn);
@@ -152,7 +147,7 @@ class MessageDaoIsolationTest {
         when(rs.getInt("senderId")).thenReturn(msg1.getSenderId(), exp1.getSenderId());
         when(rs.getString("message")).thenReturn(msg1.getMessage(), exp1.getMessage());
         when(rs.getInt("messageType")).thenReturn(msg1.getMessageType(), exp1.getMessageType());
-        when(rs.getString("timeSent")).thenReturn("2024-01-31 21:57:14", "2024-01-31 21:58:28");
+        when(rs.getTimestamp("timeSent")).thenReturn(Timestamp.valueOf(msg1.getTimeSent()), Timestamp.valueOf(exp1.getTimeSent()));
         when(rs.getInt("deletedState")).thenReturn(msg1.getDeletedState(), exp1.getDeletedState());
 
         MessageDao messageDao = new MessageDao(dbConn);
@@ -181,5 +176,51 @@ class MessageDaoIsolationTest {
         ArrayList<Message> result = messageDao.getMessages(100);
 
         assertEquals(messages, result);
+    }
+
+    /**
+     * delete messages, normal scenario
+     */
+    @Test
+    void deleteMessages_normal() throws SQLException {
+        // Create mock objects
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        String tableName = "messages";
+        String IDname = "messageId";
+
+        String query = "DELETE FROM " + tableName + " WHERE " + IDname + " = ?";
+        when(dbConn.prepareStatement(query)).thenReturn(ps);
+        when(ps.executeUpdate()).thenReturn(1);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        int result = messageDao.deleteMessages(6);
+
+        verify(ps).setInt(1, 6);
+
+        assertEquals(1, result);
+    }
+
+    /**
+     * delete messages, no ID found
+     */
+    @Test
+    void deleteMessages_noID() throws SQLException {
+        // Create mock objects
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        String tableName = "messages";
+        String IDname = "messageId";
+
+        String q = String.format("DELETE FROM %s WHERE %s = ?", tableName, IDname);
+        when(dbConn.prepareStatement(q)).thenReturn(ps);
+        when(ps.executeUpdate()).thenReturn(0);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        int result = messageDao.deleteMessages(60);
+
+        verify(ps).setInt(1, 60);
+
+        assertEquals(0, result);
     }
 }

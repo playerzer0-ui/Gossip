@@ -124,8 +124,8 @@ public class Dao {
         try {
             con = this.getConnection();
 
-            String query = "DELETE FROM " + tableName + " WHERE " + IDname + " = ?";
-            ps = con.prepareStatement(query);
+            String q = String.format("DELETE FROM %s WHERE %s = ?", tableName, IDname);
+            ps = con.prepareStatement(q);
             ps.setInt(1, ID);
             rowsAffected = ps.executeUpdate();
         } catch (SQLException e) {

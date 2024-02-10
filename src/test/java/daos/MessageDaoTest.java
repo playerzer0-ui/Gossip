@@ -92,4 +92,26 @@ class MessageDaoTest {
         ArrayList<Message> exp = new ArrayList<>();
         assertEquals(exp, messages);
     }
+
+    /**
+     * delete messages, normal scenario
+     */
+    @Test
+    void deleteMessages_normal(){
+        messageDao.sendMessage(1, 1, "asdasdad", 1);
+        int act = messageDao.deleteMessages(6);
+        messageDao.updateIncrement("messages", 5);
+
+        assertEquals(1, act);
+    }
+
+    /**
+     * delete messages, no ID found
+     */
+    @Test
+    void deleteMessages_noID(){
+        int act = messageDao.deleteMessages(60);
+
+        assertEquals(0, act);
+    }
 }
