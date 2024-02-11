@@ -65,7 +65,7 @@
             </div>
         </div>
         <!-- chat-list -->
-        <div class="chatlist">
+        <div class="chatlist" id="chatlist">
             <%
                 session.setAttribute("openedInbox", -1);
                 InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
@@ -95,7 +95,7 @@
             %>
             <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -107,7 +107,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b>1</b>
+                        <b><%=ibps.getUnseenMessages()%></b>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
             %>
             <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -129,7 +129,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage() %>
                         </p>
-                        <b>1</b>
+                        <b></b>
                     </div>
                 </div>
             </div>
@@ -140,7 +140,7 @@
             %>
             <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -152,7 +152,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b>1</b>
+
                     </div>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b>1</b>
+                        <b><%=ibps.getUnseenMessages()%></b>
                     </div>
                 </div>
             </div>
@@ -208,7 +208,6 @@
                     <div class="message-p">
                         <p><%=m.getMessage() %>
                         </p>
-                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -217,7 +216,7 @@
             else {
 
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -231,7 +230,6 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b>1</b>
                     </div>
                 </div>
             </div>
@@ -300,7 +298,7 @@
     var mainInboxId = 0;
     var otherUserId = 0;
     setInterval(refreshMessages, 2000);
-
+    setInterval(getChatList, 2000);
     function refreshMessages() {
         if (mainInboxId !== 0) {
             // alert("in");
@@ -337,7 +335,23 @@
                 success: function (data) {
                     var chatBox = document.getElementById("chatbox");
                     chatBox.innerHTML = data;
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
 
+    function getChatList(){
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "getChatlist"},
+                success: function (data) {
+                    var chatList = document.getElementById("chatlist");
+                    chatList.innerHTML = data;
                 },
                 error: function () {
                     alert("Error with ajax");

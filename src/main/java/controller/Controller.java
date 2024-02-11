@@ -19,6 +19,7 @@ import jakarta.servlet.annotation.*;
 public class Controller extends HttpServlet {
     private String message;
     private Users user;
+    private int activeInboxId = 0;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -58,7 +59,7 @@ public class Controller extends HttpServlet {
                     response.sendRedirect(dest);
                     break;
                 case "do_register":
-                    dest = Register(request,response);
+                    dest = Register(request, response);
                     response.sendRedirect(dest);
                     break;
 
@@ -77,6 +78,9 @@ public class Controller extends HttpServlet {
                     break;
                 case "getMessagesHeader":
                     getMessagesHeader(request, response);
+                    break;
+                case "getChatlist":
+                    getChatList(request, response);
                     break;
             }
         }
@@ -106,25 +110,24 @@ public class Controller extends HttpServlet {
         }
     }
 
-    public String Register (HttpServletRequest request, HttpServletResponse response){
+    public String Register(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         String username = request.getParameter("username");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
 
-        if (username != null && email != null && password != null  && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
+        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
             UsersDao userDao = new UsersDao("gossip");
-            int id = userDao.Register(email,username,"default.png",password,dateOfBirth,0 ,0,"",0);
+            int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
-            if(id != -1){
+            if (id != -1) {
                 String msg = "You have been registered successfully!";
-                Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0,0,"",0);
+                Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
-                return  "chatbox.jsp";
-            }
-            else{
+                return "chatbox.jsp";
+            } else {
                 String msg = "Registration was not successful, please try again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -135,6 +138,9 @@ public class Controller extends HttpServlet {
 
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        HttpSession session = request.getSession(true);
+        activeInboxId = inboxId;
+        session.setAttribute("inboxId", inboxId);
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -146,11 +152,11 @@ public class Controller extends HttpServlet {
         for (Message m : allMessages) {
             //if it's the user that send the message
             if (user.getUserId() == m.getSenderId()) {
-                if(m.getMessageType()==1) {
+                if (m.getMessageType() == 1) {
                     messages += "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
-            } else if(user.getUserId() != m.getSenderId()) {
-                if(m.getMessageType()==1) {
+            } else if (user.getUserId() != m.getSenderId()) {
+                if (m.getMessageType() == 1) {
                     messages += "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
             }
@@ -228,26 +234,88 @@ public class Controller extends HttpServlet {
             }
         }
     }
+
     public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
-        String header="";
-        Inbox inbox=inboxDao.getInbox(inboxId);
-        if(inbox.getInboxType()==1){
-       InboxParticipants otherIbp= ibpsDao.getOtherInboxParticipant(inboxId,user.getUserId());
-          Users otherUser= usersDao.getUserById(otherIbp.getUserId());
-          if(otherUser.getOnline()==1){
-              header= "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/"+otherUser.getProfilePicture()+"' alt='profile' class='cover'> </div><h4>"+otherUser.getUserName()+"<br><span>online</span></h4>";
-          }
-          else {
-              header= "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/"+otherUser.getProfilePicture()+"' alt='profile' class='cover'> </div><h4>"+otherUser.getUserName()+"<br><span></span></h4>";
-          }
-       }
-       else{
-           header="<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>"+inbox.getGroupName()+"<br><span></span></h4>";
-       }
+        String header = "";
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if (inbox.getInboxType() == 1) {
+            InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+            Users otherUser = usersDao.getUserById(otherIbp.getUserId());
+            if (otherUser.getOnline() == 1) {
+                header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>";
+            } else {
+                header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
+            }
+        } else {
+            header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
+        }
         response.getWriter().write(header);
+    }
+
+    public void getChatList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        MessageDao messageDao = new MessageDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
+        //gets all the inboxParticipants for that particular user
+        ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+        String chatlist = "";
+        //loop through inboxparticipants
+        for (InboxParticipants ibps : Ibps) {
+            Inbox myInbox = inboxDao.getInbox(ibps.getInboxId());
+            //if it's a normal chat
+            if (myInbox.getInboxType() == 1) {
+                //get the other person's inboxPartcipant
+                InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(myInbox.getInboxId(), user.getUserId());
+                //get the other User
+                Users otherUser = usersDao.getUserById(otherIbp.getUserId());
+                //get all the messages
+                ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
+                Message m = null;
+                //if there are messages
+                if (messages.size() > 0) {
+                    //get the last message
+                    m = messages.get(messages.size() - 1);
+                    //if there are unseenMessages
+                    if (ibps.getUnseenMessages() > 0) {
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
+
+                    } else if (activeInboxId == ibps.getInboxId()) {
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> </div></div></div>";
+                    } else {
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
+                    }
+                }
+            } else if (myInbox.getInboxType() == 2) {
+                //get the group inbox
+                Inbox groupInbox = inboxDao.getInbox(ibps.getInboxId());
+                ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
+                Message m = null;
+                //if there are messages
+                if (messages.size() > 0) {
+                    //get the last message
+                    m = messages.get(messages.size() - 1);
+                    //if there are unseen messages
+                    if (ibps.getUnseenMessages() > 0) {
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
+                    } else if (activeInboxId == ibps.getInboxId()) {
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
+                    } else {
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
+                    }
+                }
+            }
+        }
+        response.getWriter().write(chatlist);
     }
 }
