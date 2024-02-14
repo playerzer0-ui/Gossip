@@ -8,6 +8,7 @@ import business.Inbox;
 import business.InboxParticipants;
 import business.Message;
 import business.Users;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import daos.InboxDao;
 import daos.InboxParticipantsDao;
 import daos.MessageDao;
@@ -17,9 +18,7 @@ import jakarta.servlet.annotation.*;
 
 @WebServlet(name = "Controller", value = "/controller")
 public class Controller extends HttpServlet {
-    private String message;
-    private Users user;
-    private int activeInboxId = 0;
+
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -97,7 +96,7 @@ public class Controller extends HttpServlet {
         String password = request.getParameter("password");
 
         UsersDao usersDao = new UsersDao("gossip");
-        user = usersDao.Login(email, password);
+        Users user = usersDao.Login(email, password);
 
         if (user != null) {
             user.setPassword(password);
@@ -139,8 +138,8 @@ public class Controller extends HttpServlet {
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         HttpSession session = request.getSession(true);
-        activeInboxId = inboxId;
-        session.setAttribute("inboxId", inboxId);
+        Users user = (Users) session.getAttribute("user");
+        session.setAttribute("activeInboxId", inboxId);
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -149,9 +148,21 @@ public class Controller extends HttpServlet {
         //set open state to true
         ibpsDao.openInbox(inboxId, user.getUserId(), 1);
         String messages = "";
+        ArrayList<String[]> messagesList = new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
         for (Message m : allMessages) {
+            String[] messageArray = new String[7];
+            messageArray[0] = m.getMessageId() + "";
+            messageArray[1] = m.getInboxId() + "";
+            messageArray[2] = m.getSenderId() + "";
+            messageArray[3] = m.getMessage();
+            messageArray[4] = m.getMessageType() + "";
+            messageArray[5] = m.getTimeSent().toString();
+            messageArray[6] = m.getDeletedState() + "";
+            messagesList.add(messageArray);
+
             //if it's the user that send the message
-            if (user.getUserId() == m.getSenderId()) {
+           /* if (user.getUserId() == m.getSenderId()) {
                 if (m.getMessageType() == 1) {
                     messages += "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
@@ -159,13 +170,17 @@ public class Controller extends HttpServlet {
                 if (m.getMessageType() == 1) {
                     messages += "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
                 }
-            }
+            }*/
         }
-        response.getWriter().write(messages);
-
+        String jsonString = objectMapper.writeValueAsString(messagesList);
+        response.getWriter().write(jsonString);
+        //response.getWriter().write(messages);
+        //session.setAttribute("allMessages",messagesList);
     }
 
     public void firstMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
         int otherUserId = Integer.parseInt(request.getParameter("userId"));
         String message = request.getParameter("message");
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -209,6 +224,8 @@ public class Controller extends HttpServlet {
     }
 
     public void sendMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         String message = request.getParameter("message");
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -236,6 +253,8 @@ public class Controller extends HttpServlet {
     }
 
     public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
@@ -257,6 +276,16 @@ public class Controller extends HttpServlet {
     }
 
     public void getChatList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        String checkInboxId = null;
+        //checkInboxId=(String)session.getAttribute("activeInboxId");
+        int activeInboxId = 0;
+        /*activeInboxId=(Integer) session.getAttribute("activeInboxId");*/
+        /*if(activeInboxId==0){
+          activeInboxId=Integer.parseInt(checkInboxId);
+        }*/
+
         InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
         MessageDao messageDao = new MessageDao("gossip");
