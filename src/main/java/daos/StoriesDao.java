@@ -1,16 +1,11 @@
 package daos;
 
 import business.Stories;
-import business.StoryViewers;
-import business.Users;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 public class StoriesDao extends Dao implements StoriesDaoInterface{
     public StoriesDao(String databaseName) {
@@ -21,9 +16,22 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
         super(con);
     }
 
+    /**
+     * addStory method able to add a new story.
+     * storyId will increase automatic.
+     *
+     * @param storyId is story's id
+     * @param userId is user's id
+     * @param story is the story's file name
+     * @param storyType is story's type - 1 is picture and 2 is video
+     * @param dateTime is when story's date time is post
+     * @param storyDescription is description of story
+
+     * @return int of story id if added else added fail will return -1
+     */
     @Override
     public int addStory(int storyId, int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription) {
-        int rowsAffected = 0;
+        int rowsAffected = -1;
 
         try{
             con = getConnection();
@@ -48,11 +56,25 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
         return rowsAffected;
     }
 
+    /**
+     * deleteStory method able to delete story by story's id .
+     *
+     * @param storyId is the story's id to delete
+     *
+     * @return an int after deleted else return 0 when no rows are affected by the deleted.
+     */
     @Override
     public int deleteStory(int storyId) {
         return deleteItem(storyId, "stories", "storyId");
     }
 
+    /**
+     * getStoryById method able to get story by storyId.
+     *
+     * @param id is the story's id that want to get.
+     *
+     * @return that story of id's detail
+     */
     @Override
     public Stories getStoryById(int id) {
         Stories s = null;
