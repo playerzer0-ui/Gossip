@@ -6,7 +6,8 @@ import org.mindrot.jbcrypt.BCrypt;
 
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsersDao extends Dao implements UsersDaoInterface{
     public UsersDao(String dbName) {
@@ -172,6 +173,155 @@ public class UsersDao extends Dao implements UsersDaoInterface{
     @Override
     public int Register(Users newUser) {
         return Register(newUser.getEmail(), newUser.getUserName(), newUser.getProfilePicture(), newUser.getPassword(), newUser.getDateOfBirth(), newUser.getUserType(), newUser.getSuspended(), newUser.getBio(), newUser.getOnline());
+    }
+
+    /**
+     * changePassword method allow user to change new password.
+     *
+     * @param username is the user's name
+     * @param oldPass is the user's old password
+     * @param newPass is new password that user's set
+     *
+     * @return int of user id if added else added fail will return -1
+     */
+    @Override
+    public int changePassword(String username, String oldPass, String newPass) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        int rowsAffected = -1;
+        try {
+            con = this.getConnection();
+
+            String query = "UPDATE USERS SET password = ? WHERE userName = ? AND password = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, newPass);
+            ps.setString(2, username);
+            ps.setString(3, oldPass);
+
+            rowsAffected = ps.executeUpdate();
+        }
+        catch (SQLException e){
+            System.out.println("An error occurred in the changePassword() method: " + e.getMessage());
+        }
+        finally{
+            try{
+                if (ps != null){
+                    ps.close();
+                }
+                if (con != null){
+                    freeConnection(con);
+                }
+            }
+            catch (SQLException e){
+                System.out.println("An error occurred when shutting down the changePassword() method: " + e.getMessage());
+            }
+        }
+        return rowsAffected;
+    }
+
+    /**
+     * searchUserByUsername method let user able to search other user by username .
+     *
+     * @param username is the user's name to search
+     *
+     * @return a list of user that contain the search's username or will return null if not contain the search's username.
+     */
+    @Override
+    public List<Users> searchUserByUsername(String username) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Users> users = new ArrayList<>();
+
+        try{
+
+            con = this.getConnection();
+
+            String query = "SELECT * FROM USERS WHERE userName LIKE ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, "%"+username+"%");
+
+            rs = ps.executeQuery();
+            while (rs.next()){
+                int userId = rs.getInt("userID");
+                String email = rs.getString("email");
+                String uname = rs.getString("userName");
+                String profilePicture = rs.getString("profilePicture");
+                String password = rs.getString("password");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+                int userType = rs.getInt("userType");
+                int suspended = rs.getInt("suspended");
+                String bio = rs.getString("bio");
+                int online = rs.getInt("online");
+                Users u = new Users(userId, email, uname, profilePicture, password,dateOfBirth,userType,suspended,bio,online);
+                users.add(u);
+            }
+        }
+        catch (SQLException e){
+            System.out.println("An error occurred in the searchUserByUsername() method: " + e.getMessage());
+        }
+        finally{
+            try{
+                if (rs != null){
+                    rs.close();
+                }
+                if (ps != null){
+                    ps.close();
+                }
+                if (con != null){
+                    freeConnection(con);
+                }
+            }
+            catch (SQLException e){
+                System.out.println("An error occurred when shutting down the searchUserByUsername() method: " + e.getMessage());
+            }
+        }
+        return users;
+    }
+
+    /**
+     * deleteUserById method able to delete user by userId .
+     *
+     * @param userId is the user's id to delete
+     *
+     * @return an int after deleted else return 0 when no rows are affected by the deleted.
+     */
+    @Override
+    public int deleteUserById(int userId) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int rowsAffected = 0;
+        try {
+            con = getConnection();
+
+            String command = "DELETE FROM Users WHERE userID=?";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, userId);
+
+            rowsAffected = ps.executeUpdate();
+
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the deleteUserById() method: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
+                    ps.close();
+                }
+                if (con != null) {
+                    freeConnection("");
+                }
+            } catch (SQLException e)
+            {
+                System.out.println("An error occurred when shutting down the deleteUserById() method: " + e.getMessage());
+            }
+        }
+        return rowsAffected;
     }
 
 
