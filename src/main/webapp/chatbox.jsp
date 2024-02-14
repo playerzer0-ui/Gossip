@@ -107,7 +107,8 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b><%=ibps.getUnseenMessages()%></b>
+                        <b><%=ibps.getUnseenMessages()%>
+                        </b>
                     </div>
                 </div>
             </div>
@@ -186,7 +187,8 @@
                     <div class="message-p">
                         <p><%=m.getMessage()%>
                         </p>
-                        <b><%=ibps.getUnseenMessages()%></b>
+                        <b><%=ibps.getUnseenMessages()%>
+                        </b>
                     </div>
                 </div>
             </div>
@@ -246,6 +248,7 @@
         </div>
 
     </div>
+
     <div class="leftSide">
         <div class="profile-header">
             <ion-icon name="arrow-back-outline" onclick="seeChatList()"></ion-icon>
@@ -299,13 +302,15 @@
     var otherUserId = 0;
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
+
     function refreshMessages() {
         if (mainInboxId !== 0) {
             // alert("in");
             getMessages(mainInboxId);
         }
     }
-    function getMessagesHeader(inboxId){
+
+    function getMessagesHeader(inboxId) {
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
@@ -333,8 +338,32 @@
                 type: 'post',
                 data: {action: "getMessages", "inboxId": inboxId},
                 success: function (data) {
+                    var allMessages=JSON.parse(data);
                     var chatBox = document.getElementById("chatbox");
-                    chatBox.innerHTML = data;
+                   chatBox.innerHTML = "";
+                   for(var i=0; i<allMessages.length; i++){
+                       if(parseInt(allMessages[i][2])===<%=user.getUserId()%>){
+                         if(parseInt(allMessages[i][4])===1){
+                             chatBox.innerHTML+="<div class='message my-message'><p>" + allMessages[i][3]+ "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                         }
+                       }
+                       else{
+                           if(parseInt(allMessages[i][4])===1) {
+                               chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                           }
+                       }
+                   }
+                    ///chatBox.innerHTML = data;
+                    /* var messages = "";
+                     var allMessages =
+                     if (allMessages!=null){
+                         for (var i = 0; i < allMessages.length; i++) {
+                             messages = messages + " " + allMessages[i];
+                             alert("in");
+                         }
+                 }
+                     chatBox.innerHTML =messages;*/
+
                 },
                 error: function () {
                     alert("Error with ajax");
@@ -343,7 +372,7 @@
         });
     }
 
-    function getChatList(){
+    function getChatList() {
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
