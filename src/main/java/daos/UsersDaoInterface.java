@@ -3,6 +3,7 @@ package daos;
 import business.Users;
 
 import java.time.LocalDate;
+import java.util.List;
 
 public interface UsersDaoInterface {
 
@@ -47,4 +48,33 @@ public interface UsersDaoInterface {
      * @return int of user id if added else added fail will return -1
      */
     public int Register(Users newUser);
+
+    /**
+     * changePassword method allow user to change new password.
+     *
+     * @param username is the user's name
+     * @param oldPass is the user's old password
+     * @param newPass is new password that user's set
+     *
+     * @return int of user id if added else added fail will return -1
+     */
+    int changePassword(String username, String oldPass, String newPass);
+
+    /**
+     * searchUserByUsername method let user able to search other user by username .
+     *
+     * @param username is the user's name to search
+     *
+     * @return a list of user that contain the search's username or will return null if not contain the search's username.
+     */
+    List<Users> searchUserByUsername(String username);
+
+    /**
+     * deleteUserById method able to delete user by userId .
+     *
+     * @param userId is the user's id to delete
+     *
+     * @return an int after deleted else return 0 when no rows are affected by the deleted.
+     */
+    public int deleteUserById(int userId);
 }
