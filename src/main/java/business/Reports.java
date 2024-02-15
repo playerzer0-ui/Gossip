@@ -1,6 +1,7 @@
 package business;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Reports {
@@ -18,13 +19,13 @@ public class Reports {
     private int reporterId;
     private int userReportedId;
     private String reportReason;
-    private LocalDate reportDate;
+    private LocalDateTime reportDate;
     private int reportStatus;
 
     public Reports() {
     }
 
-    public Reports(int reportId, int reporterId, int userReportedId, String reportReason, LocalDate reportDate, int reportStatus) {
+    public Reports(int reportId, int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus) {
         this.reportId = reportId;
         this.reporterId = reporterId;
         this.userReportedId = userReportedId;
@@ -65,11 +66,11 @@ public class Reports {
         this.reportReason = reportReason;
     }
 
-    public LocalDate getReportDate() {
+    public LocalDateTime getReportDate() {
         return reportDate;
     }
 
-    public void setReportDate(LocalDate reportDate) {
+    public void setReportDate(LocalDateTime reportDate) {
         this.reportDate = reportDate;
     }
 
