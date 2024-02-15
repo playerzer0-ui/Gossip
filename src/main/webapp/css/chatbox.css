@@ -347,11 +347,13 @@ body {
     position: relative;
     right: 0;
     text-align: right;
-    max-width: 65%;
+    max-width: 25vw;
     padding: 12px;
     background-color: #910A67;
     border-radius: 10px;
     font-size: 0.9em;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
 .message p::before {

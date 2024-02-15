@@ -36,4 +36,7 @@
     .return {
         visibility: visible;
     }
+    .message p{
+        max-width: 250px;
+    }
 }

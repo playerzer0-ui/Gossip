@@ -28,7 +28,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
                 inboxParticipants.add(ibp);
             }
 
@@ -51,7 +51,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
                 inboxParticipants.add(ibp);
             }
 
@@ -75,7 +75,31 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"));
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the getOtherInboxParticipant() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the getOtherInboxParticipant() final method: ");
+        }
+        return ibp;
+    }
+
+    public InboxParticipants getInboxParticipant(int inboxId, int userId) {
+        InboxParticipants ibp = null;
+        try {
+            con = getConnection();
+
+            String query = "Select * from inboxparticipants where inboxId=? and userId=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, userId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                LocalDateTime localDateTime =rs.getTimestamp("timeSent").toLocalDateTime();
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),localDateTime);
             }
 
         } catch (SQLException e) {
