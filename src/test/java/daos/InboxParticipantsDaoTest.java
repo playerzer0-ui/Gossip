@@ -79,15 +79,15 @@ class InboxParticipantsDaoTest {
     void openInbox() {
         InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         InboxParticipants ibp1 = ibpoDao.getInboxParticipant(1, 1);
-        Boolean actual = ibpoDao.openInbox(1, 1, 1);
-        Boolean expected = true;
+        boolean actual = ibpoDao.openInbox(1, 1, 1);
+        boolean expected = true;
         assertEquals(actual, expected);
         if (actual == expected) {
             InboxParticipants ibp2 = ibpoDao.getInboxParticipant(1, 1);
             assertEquals(ibp1.getInboxId(), ibp2.getInboxId());
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
-            // assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            //assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent()); //not working properly
             System.out.println(ibp1.getTimeSent().toString());
             assertEquals(ibp1.getUnseenMessages(), ibp2.getUnseenMessages());
             assertEquals(ibp2.getIsOpen(), 1);
