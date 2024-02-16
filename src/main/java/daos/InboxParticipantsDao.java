@@ -98,7 +98,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                LocalDateTime localDateTime =rs.getTimestamp("timeSent").toLocalDateTime();
+                LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
                 ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),localDateTime);
             }
 

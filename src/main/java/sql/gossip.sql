@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2024 at 11:10 AM
+-- Generation Time: Feb 16, 2024 at 01:07 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.4
 
@@ -72,7 +72,7 @@ CREATE TABLE `inboxparticipants` (
                                      `deletedState` tinyint(1) NOT NULL DEFAULT 0,
                                      `unseenMessages` int(3) NOT NULL DEFAULT 0,
                                      `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open',
-                                     `timeSent` datetime(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000' ON UPDATE current_timestamp(6)
+                                     `timeSent` datetime(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -80,7 +80,7 @@ CREATE TABLE `inboxparticipants` (
 --
 
 INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMessages`, `isOpen`, `timeSent`) VALUES
-                                                                                                                  (1, 1, 0, 0, 0, '2024-02-16 10:09:42.582880'),
+                                                                                                                  (1, 1, 0, 0, 1, '2024-02-16 11:43:05.519809'),
                                                                                                                   (2, 1, 0, 2, 0, '2024-02-16 08:31:25.080636'),
                                                                                                                   (1, 2, 0, 0, 1, '2024-02-16 08:30:38.153926'),
                                                                                                                   (2, 2, 0, 0, 0, '2024-02-16 08:29:24.000000'),

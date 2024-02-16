@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 16, 2024 at 11:13 AM
+-- Generation Time: Feb 16, 2024 at 01:08 PM
 -- Server version: 10.4.24-MariaDB
 -- PHP Version: 8.1.4
 
@@ -71,7 +71,7 @@ CREATE TABLE `inboxparticipants` (
                                      `deletedState` tinyint(1) NOT NULL DEFAULT 0,
                                      `unseenMessages` int(3) NOT NULL DEFAULT 0,
                                      `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open',
-                                     `timeSent` datetime(6) NOT NULL DEFAULT '0000-00-00 00:00:00.000000' ON UPDATE current_timestamp(6)
+                                     `timeSent` datetime(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --

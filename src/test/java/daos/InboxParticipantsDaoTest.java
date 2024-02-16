@@ -9,14 +9,13 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 class InboxParticipantsDaoTest {
-    private InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
+    private InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossiptest");
 
     /**
      * when there are InboxParticipants available
      **/
     @Test
     void getAllInbox() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         ArrayList<InboxParticipants> expected = new ArrayList<>();
         LocalDateTime timeSent = null;
         InboxParticipants ibp = new InboxParticipants(3, 2, 0, 0, 0, timeSent);
@@ -30,7 +29,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void getAllInbox_whenNoInboxParticipant() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         ArrayList<InboxParticipants> expected = new ArrayList<>();
         ArrayList<InboxParticipants> actual = ibpoDao.getAllInbox(5);
         assertEquals(actual, expected);
@@ -38,7 +36,6 @@ class InboxParticipantsDaoTest {
 
     @Test
     void getAllInboxParticipants() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         ArrayList<InboxParticipants> actual = ibpoDao.getAllInboxParticipants(1);
         ArrayList<InboxParticipants> expected = new ArrayList<>();
         LocalDateTime timeSent = null;
@@ -54,7 +51,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void getOtherInboxParticipant() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         InboxParticipants actual = ibpoDao.getOtherInboxParticipant(1, 1);
         LocalDateTime timeSent = null;
         InboxParticipants expected = new InboxParticipants(2, 1, 0, 0, 0, timeSent);
@@ -77,7 +73,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void openInbox() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         InboxParticipants ibp1 = ibpoDao.getInboxParticipant(1, 1);
         boolean actual = ibpoDao.openInbox(1, 1, 1);
         boolean expected = true;
@@ -87,7 +82,7 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getInboxId(), ibp2.getInboxId());
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
-            //assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent()); //not working properly
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
             System.out.println(ibp1.getTimeSent().toString());
             assertEquals(ibp1.getUnseenMessages(), ibp2.getUnseenMessages());
             assertEquals(ibp2.getIsOpen(), 1);
@@ -102,7 +97,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void openInbox_whenItFails() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         Boolean actual = ibpoDao.openInbox(1, 5, 1);
         Boolean expected = false;
         assertEquals(actual, expected);
@@ -113,7 +107,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void updateUnSeenMessages() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         Boolean actual = ibpoDao.updateUnSeenMessages(1, 1);
         InboxParticipants ibp1 = ibpoDao.getInboxParticipant(1, 1);
         Boolean expected = true;
@@ -125,7 +118,7 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
             assertEquals(ibp1.getIsOpen(), ibp2.getIsOpen());
-            // assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
             System.out.println(ibp1.getTimeSent().toString());
             if (ibp2.getUnseenMessages() == 1) {
                 ibpoDao.resetUnSeenMessages(1, 1);
@@ -139,7 +132,6 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void updateUnSeenMessages_whenUpdateFails() {
-        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         Boolean actual = ibpoDao.updateUnSeenMessages(1, 5);
         Boolean expected = false;
         assertEquals(actual, expected);
@@ -161,7 +153,7 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getInboxId(), ibp2.getInboxId());
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
-            // assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
             System.out.println(ibp1.getTimeSent().toString());
             assertEquals(ibp2.getIsOpen(), ibp1.getIsOpen());
         }

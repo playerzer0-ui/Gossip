@@ -45,10 +45,13 @@ function seeMessage(){
     $( ".right" ).css( "z-index", "3" );
 }
 
-$(".return").click(function (){
-    seeChatList();
+$(document).ready(function (){
+
+    $(".block").click(function (){
+        seeMessage();
+    });
 });
 
-$(".block").click(function (){
-    seeMessage();
+$(".return").click(function (){
+    seeChatList();
 });
