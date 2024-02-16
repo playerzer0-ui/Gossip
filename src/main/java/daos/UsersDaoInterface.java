@@ -40,6 +40,12 @@ public interface UsersDaoInterface {
     public Users getUserById(int id);
 
     /**
+     * getAllUsers method able to list out all user.
+     * @return a list of User
+     */
+    public List<Users> getAllUsers();
+
+    /**
      * Register(with Users) method able to register a new user.
      * userID will increase automatic.
      *
@@ -77,4 +83,24 @@ public interface UsersDaoInterface {
      * @return an int after deleted else return 0 when no rows are affected by the deleted.
      */
     public int deleteUserById(int userId);
+
+    /**
+     * checkUsername(unique) method able to check username that already register.
+     *
+     * @param uname is the user's name that want to be checked.
+
+     * @return true when the username is register else return false .
+     */
+    public boolean checkUsername(String uname);
+
+    /**
+     * checkEmail(unique) method able to check email that already register.
+     *
+     * @param email is the user's email that want to be checked.
+
+     * @return true when the email is register else return false .
+     */
+    public boolean checkEmail(String email);
+
+
 }
