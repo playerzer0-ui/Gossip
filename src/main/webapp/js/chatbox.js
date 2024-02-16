@@ -1,14 +1,18 @@
-
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
-    $( ".leftSide" ).css( "z-index", "2" );
+    $( ".leftSide" ).css( "z-index", "3" );
+    $( ".right" ).css( "z-index", "2" );
 }
 
 function seeChatList(){
-    $( ".left" ).css( "z-index", "2" );
+    $( ".left" ).css( "z-index", "3" );
     $( ".leftSide" ).css( "z-index", "1" );
+    $( ".right" ).css( "z-index", "2" );
 }
 
+/**
+ * see the menu in the header (the triple dots on the left)
+ */
 function seeHeaderMenu() {
     $(".drop-menu").css("visibility", "visible");
 
@@ -33,4 +37,18 @@ $(".drop-menu").on("click", function (event) {
 // Example: If you want to close the dropdown when a menu item is clicked
 $(".drop-menu li").on("click", function () {
     $(".drop-menu").css("visibility", "hidden");
+});
+
+function seeMessage(){
+    $( ".left" ).css( "z-index", "2" );
+    $( ".leftSide" ).css( "z-index", "1" );
+    $( ".right" ).css( "z-index", "3" );
+}
+
+$(".return").click(function (){
+    seeChatList();
+});
+
+$(".block").click(function (){
+    seeMessage();
 });

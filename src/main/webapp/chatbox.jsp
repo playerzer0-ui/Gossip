@@ -389,7 +389,7 @@
         });
     }
 
-    //i need to add another function to set otherUserId
+    //I need to add another function to set otherUserId
 
 
     function sendMessage() {
@@ -432,12 +432,19 @@
         document.getElementById("messageEntered").value = "";
     }
 
+    document.addEventListener('keydown', function(event){
+        if(event.key === "Enter"){
+            sendMessage();
+        }
+    });
+
 </script>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="js/chatbox.js"></script>
+<script src="js/index.js"></script>
 </body>
 
 </html>

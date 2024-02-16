@@ -5,6 +5,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+a {
+    text-decoration: none;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -48,6 +52,7 @@ body {
     position: relative;
     flex: 70%;
     background: rgb(184, 100, 133);
+    z-index: 1;
 }
 
 .container .right::before {
