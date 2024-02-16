@@ -265,12 +265,12 @@ public class Controller extends HttpServlet {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>";
             } else {
-                header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
             }
         } else {
-            header = "<ion-icon class='return' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
         }
         response.getWriter().write(header);
     }
@@ -311,14 +311,14 @@ public class Controller extends HttpServlet {
                     m = messages.get(messages.size() - 1);
                     //if there are unseenMessages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
 
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> </div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }
@@ -333,13 +333,13 @@ public class Controller extends HttpServlet {
                     m = messages.get(messages.size() - 1);
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ")'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }

@@ -93,7 +93,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -116,7 +116,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -139,7 +139,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -173,7 +173,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -196,7 +196,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -218,7 +218,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -277,9 +277,22 @@
                     <ion-icon name="search-outline"></ion-icon>
                 </li>
                 <li>
-                    <ion-icon name="ellipsis-vertical"></ion-icon>
+                    <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon>
                 </li>
             </ul>
+            <div class="drop-menu-chat">
+                <ul>
+                    <a href="controller?action=block_user">
+                        <li>block user</li>
+                    </a>
+                    <a href="controller?action=report_user">
+                        <li>report user</li>
+                    </a>
+                    <a href="controller?action=leave_chat">
+                        <li>leave chat</li>
+                    </a>
+                </ul>
+            </div>
         </div>
 
         <!-- chatbox -->

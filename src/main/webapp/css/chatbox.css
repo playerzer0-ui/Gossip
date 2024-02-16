@@ -83,6 +83,11 @@ body {
     border-radius: 50%;
 }
 
+.chat-menu:hover {
+    background-color: #3C0753;
+    border-radius: 50%;
+}
+
 .drop-menu {
     position: absolute;
     background-color: #ff9ae4;
@@ -93,16 +98,40 @@ body {
 }
 
 .drop-menu ul {
-    color: #FFEEAA;
     list-style: none;
     font-size: 15px;
 }
 
 .drop-menu li {
+    color: #FFEEAA;
     padding: 20px;
 }
 
 .drop-menu li:hover {
+    background-color: #fd4acd;
+    cursor: pointer;
+}
+
+.drop-menu-chat {
+    position: absolute;
+    background-color: #ff9ae4;
+    right: 0;
+    top: 60px;
+    z-index: 3;
+    visibility: hidden;
+}
+
+.drop-menu-chat ul {
+    list-style: none;
+    font-size: 15px;
+}
+
+.drop-menu-chat li {
+    color: #FFEEAA;
+    padding: 20px;
+}
+
+.drop-menu-chat li:hover {
     background-color: #fd4acd;
     cursor: pointer;
 }
