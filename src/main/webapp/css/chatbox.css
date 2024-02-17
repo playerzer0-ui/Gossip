@@ -18,6 +18,32 @@ body {
     background: linear-gradient(137deg, rgba(195,7,83,1) 0%, rgba(114,4,85,1) 100%);
 }
 
+.zoom {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    background-color: rgba(87, 5, 65, 0.6);
+
+}
+
+.zoom img {
+    width: 40vw;
+    height: auto;
+}
+
+.zoom ion-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #FFEEAA;
+    cursor: pointer;
+    font-size: 3.5em;
+}
+
 .container {
     position: relative;
     width: 1396px;
@@ -377,6 +403,37 @@ body {
     color: white;
 }
 
+.chat-bubble {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+    position: relative;
+    margin: 5px 0;
+    width: 40%;
+    cursor: pointer;
+}
+
+.chat-bubble img {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
+
+.chat-bubble span {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+    opacity: 0.5;
+}
+
+.chat-bubble video {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
+
 .message p {
     position: relative;
     right: 0;
@@ -405,6 +462,17 @@ body {
     margin-top: 5px;
     font-size: 0.85em;
     opacity: 0.5;
+}
+
+.my-message-file {
+    background-color: #910A67;
+    color: white;
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+.frnd-message-file {
+    margin-right: auto;
 }
 
 .my-message {

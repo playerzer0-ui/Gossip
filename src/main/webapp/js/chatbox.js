@@ -73,3 +73,18 @@ function seeMessage(){
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "3" );
 }
+
+function checkImage(clickedDiv) {
+    let imageElement = clickedDiv.querySelector('img');
+    let imageUrl = imageElement.src;
+
+    // Remove the protocol part from the URL
+    let relativePath = imageUrl.replace(/^(https?:\/\/[^/]+)?/, '');
+
+    document.querySelector('.zoom img').src = relativePath;
+    document.querySelector('.zoom').style.display = 'flex';
+}
+
+function closeZoom() {
+    document.querySelector('.zoom').style.display = 'none';
+}
