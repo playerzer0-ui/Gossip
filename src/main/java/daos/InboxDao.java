@@ -40,6 +40,33 @@ public class InboxDao extends Dao {
         return id;
     }
 
+    public Boolean updateInbox(Inbox inbox) {
+        int rowsAffected = 0;
+        Boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "update inbox set inboxType=?,adminId=?,groupName=?,groupProfilePicture=? where inboxId=?";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, inbox.getInboxType());
+            ps.setInt(2, inbox.getAdminId());
+            ps.setString(3, inbox.getGroupName());
+            ps.setString(4, inbox.getGroupProfilePicture());
+            ps.setInt(5, inbox.getInboxId());
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the updateInbox() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the updateInbox() method: ");
+        }
+        return state;
+    }
+
     public int createNormalInbox() {
         int rowsAffected = 0;
         int id = 0;
@@ -78,7 +105,7 @@ public class InboxDao extends Dao {
                 String adminId = null;
                 adminId = rs.getInt("adminId") + "";
                 if (adminId != null) {
-                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), rs.getInt("adminId"), rs.getString("groupName"));
+                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), rs.getInt("adminId"), rs.getString("groupName"),rs.getString("groupProfilePicture"));
                 } else {
                     inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), -1, rs.getString("groupName"));
                 }

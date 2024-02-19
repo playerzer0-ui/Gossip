@@ -189,7 +189,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "insert into inboxparticipants (inboxId,userId,deletedSate,unseenMessages,isOpen) values (?,?,?,?,?) ";
+            String command = "insert into inboxparticipants (inboxId,userId,deletedState,unseenMessages,isOpen) values (?,?,?,?,?) ";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, userId);
@@ -206,6 +206,30 @@ public class InboxParticipantsDao extends Dao {
             System.out.println("Exception occurred in the insertInboxParticipant() method: " + e.getMessage());
         } finally {
             freeConnection("Exception occurred in the final section of the insertInboxParticipant() method: ");
+        }
+        return state;
+    }
+
+    public boolean deleteInboxParticipant(int inboxId, int userId) {
+        int rowsAffected = 0;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = " delete from inboxparticipants where inboxId=? and userId=?";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, userId);
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the deleteInboxParticipant() method: " + e.getMessage());
+        } finally {
+            freeConnectionUpdate("Exception occurred in the final section of the deleteInboxParticipant() method: ");
         }
         return state;
     }

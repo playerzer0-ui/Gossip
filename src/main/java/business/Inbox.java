@@ -7,12 +7,20 @@ public class Inbox {
     private int inboxType;
     private int adminId;
     private String groupName;
+    private String groupProfilePicture;
 
     public Inbox(int inboxId, int inboxType, int adminId, String groupName) {
         this.inboxId = inboxId;
         this.inboxType = inboxType;
         this.adminId = adminId;
         this.groupName = groupName;
+    }
+    public Inbox(int inboxId, int inboxType, int adminId, String groupName, String groupProfilePicture) {
+        this.inboxId = inboxId;
+        this.inboxType = inboxType;
+        this.adminId = adminId;
+        this.groupName = groupName;
+        this.groupProfilePicture=groupProfilePicture;
     }
     public Inbox(){
 
@@ -49,6 +57,14 @@ public class Inbox {
         this.groupName = groupName;
     }
 
+    public String getGroupProfilePicture() {
+        return groupProfilePicture;
+    }
+
+    public void setGroupProfilePicture(String groupProfilePicture) {
+        this.groupProfilePicture = groupProfilePicture;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -68,7 +84,8 @@ public class Inbox {
                 "inboxId=" + inboxId +
                 ", inboxType=" + inboxType +
                 ", adminId=" + adminId +
-                ", groupName='" + groupName + '\'' +
+                ", groupName='" + groupName +
+                ", groupProfilePicture='" + groupProfilePicture + '\'' +
                 '}';
     }
 }
