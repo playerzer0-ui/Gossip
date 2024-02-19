@@ -163,6 +163,71 @@ public class UsersDao extends Dao implements UsersDaoInterface{
     }
 
     /**
+     * getAllUsers method able to list out all user.
+     *
+     * @return a list of User
+     */
+    @Override
+    public List<Users> getAllUsers() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Users> users = new ArrayList<Users>();
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "SELECT * FROM USERS";
+            ps = con.prepareStatement(query);
+
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int userId = rs.getInt("userID");
+                String email = rs.getString("email");
+                String username = rs.getString("userName");
+                String profilePicture = rs.getString("profilePicture");
+                String password = rs.getString("password");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+                int userType = rs.getInt("userType");
+                int suspended = rs.getInt("suspended");
+                String bio = rs.getString("bio");
+                int online = rs.getInt("online");
+                Users u = new Users(userId, email, username, profilePicture, password,dateOfBirth,userType,suspended,bio,online);
+                users.add(u);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the getAllUsers() method: " + e.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection("");
+                }
+            }
+            catch (SQLException e)
+            {
+                System.out.println("An error occurred when shutting down the getAllUsers() method: " + e.getMessage());
+            }
+        }
+        return users;
+    }
+
+    /**
      * Register(with Users) method able to register a new user.
      * userID will increase automatic.
      *
@@ -322,6 +387,75 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             }
         }
         return rowsAffected;
+    }
+
+    /**
+     * checkUsername(unique) method able to check username that already register.
+     *
+     * @param uname is the user's name that want to be checked.
+     * @return true when the username is register else return false .
+     */
+    @Override
+    public boolean checkUsername(String uname) {
+        boolean isPresent = false;
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = this.getConnection();
+            String query = "SELECT * from users where username=? ";
+            ps = con.prepareStatement(query);
+            ps.setString(1, uname);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                isPresent = count > 0;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println(" A problem occurred during the checkUsername() method:");
+        } finally {
+            freeConnection("An error occurred when shutting down the checkUsername() method: ");
+        }
+        return isPresent;
+    }
+
+    /**
+     * checkEmail(unique) method able to check email that already register.
+     *
+     * @param email is the user's email that want to be checked.
+     * @return true when the email is register else return false .
+     */
+    @Override
+    public boolean checkEmail(String email) {
+        boolean isPresent = false;
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            con = this.getConnection();
+            String query = "SELECT * from users where email=? ";
+            ps = con.prepareStatement(query);
+            ps.setString(1, email);
+
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                isPresent = count > 0;
+
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("A problem occurred during the checkEmail() method:");
+        } finally {
+            freeConnection("An error occurred when shutting down the checkEmail() method: ");
+        }
+        return isPresent;
     }
 
 

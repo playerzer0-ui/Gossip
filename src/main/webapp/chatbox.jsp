@@ -28,6 +28,10 @@
 </head>
 
 <body>
+<div class="zoom">
+    <ion-icon name="close-outline" onclick="closeZoom()"></ion-icon>
+    <img src="" alt="">
+</div>
 <div class="container">
     <div class="left">
         <!-- header -->
@@ -93,7 +97,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -116,7 +120,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -139,7 +143,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -173,7 +177,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -196,7 +200,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -218,7 +222,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>)">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -277,14 +281,56 @@
                     <ion-icon name="search-outline"></ion-icon>
                 </li>
                 <li>
-                    <ion-icon name="ellipsis-vertical"></ion-icon>
+                    <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon>
                 </li>
             </ul>
+            <div class="drop-menu-chat">
+                <ul>
+                    <a href="controller?action=block_user">
+                        <li>block user</li>
+                    </a>
+                    <a href="controller?action=report_user">
+                        <li>report user</li>
+                    </a>
+                    <a href="controller?action=leave_chat">
+                        <li>leave chat</li>
+                    </a>
+                </ul>
+            </div>
         </div>
 
         <!-- chatbox -->
         <div class="chatbox" id="chatbox">
-
+            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
+                <img src="img/pattern.jpg" alt="User Image">
+                <span>12:45 AM</span>
+            </div>
+            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
+                <img src="img/phones.png" alt="User Image">
+                <span>12:45 AM</span>
+            </div>
+            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
+                <img src="img/wallpaper.jpg" alt="User Image">
+                <span>12:45 AM</span>
+            </div>
+            <div class="chat-bubble frnd-message-file" onclick="checkImage(this)">
+                <img src="img/picture2.jpg" alt="User Image">
+                <span>12:45 AM</span>
+            </div>
+            <div class="chat-bubble my-message-file">
+                <video controls>
+                    <source src="video/2023-09-30 16-22-05.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <span>12:45 AM</span>
+            </div>
+            <div class="chat-bubble frnd-message-file">
+                <video controls>
+                    <source src="video/Screenrecorder.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <span>12:45 AM</span>
+            </div>
 
         </div>
         <!-- chat input -->
@@ -300,7 +346,7 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    setInterval(refreshMessages, 2000);
+    //setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
@@ -389,7 +435,7 @@
         });
     }
 
-    //i need to add another function to set otherUserId
+    //I need to add another function to set otherUserId
 
 
     function sendMessage() {
@@ -432,12 +478,19 @@
         document.getElementById("messageEntered").value = "";
     }
 
+    document.addEventListener('keydown', function(event){
+        if(event.key === "Enter"){
+            sendMessage();
+        }
+    });
+
 </script>
 
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="js/chatbox.js"></script>
+<script src="js/index.js"></script>
 </body>
 
 </html>

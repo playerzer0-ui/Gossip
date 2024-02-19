@@ -2,11 +2,13 @@ package daos;
 
 import business.Reports;
 import business.Stories;
+import business.Users;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ReportsDao extends Dao implements ReportsDaoInterface {
 
@@ -107,5 +109,66 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
             freeConnection("Exception occurred in  the getReportById() final method:");
         }
         return r;
+    }
+
+    /**
+     * getAllReports method able to list out all reports.
+     *
+     * @return a list of reports
+     */
+    @Override
+    public List<Reports> getAllReports() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Reports> reports = new ArrayList<Reports>();
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "SELECT * FROM reports";
+            ps = con.prepareStatement(query);
+
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int reportId = rs.getInt("reportId");
+                int reporterId = rs.getInt("reporterId");
+                int userReportedId = rs.getInt("userReportedId");
+                String reportReason = rs.getString("reportReason");
+                LocalDateTime reportDate = rs.getTimestamp("reportDate").toLocalDateTime();
+                int reportStatus = rs.getInt("reportStatus");
+                Reports r = new Reports(reportId, reporterId, userReportedId, reportReason, reportDate, reportStatus);
+                reports.add(r);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the getAllReports() method: " + e.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection("");
+                }
+            }
+            catch (SQLException e)
+            {
+                System.out.println("An error occurred when shutting down the getAllReports() method: " + e.getMessage());
+            }
+        }
+        return reports;
     }
 }

@@ -1,10 +1,12 @@
 package daos;
 
 import business.Reports;
+import business.Users;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-public interface ReportsDaoInterface {
+public interface  ReportsDaoInterface {
 
     /**
      * addReport method able to add a new report.
@@ -20,6 +22,7 @@ public interface ReportsDaoInterface {
      * @return int of report id if report added else added fail will return -1
      */
     public int addReport(int reportId, int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus);
+
 
     /**
      * deleteReport method able to delete report by report's id .
@@ -38,4 +41,10 @@ public interface ReportsDaoInterface {
      * @return that report of id's detail
      */
     public Reports getReportById (int id);
+
+    /**
+     * getAllReports method able to list out all reports.
+     * @return a list of reports
+     */
+    public List<Reports> getAllReports();
 }

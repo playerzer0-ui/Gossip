@@ -39,4 +39,14 @@
     .message p{
         max-width: 250px;
     }
+
+    .chat-bubble {
+        width: 200px;
+    }
+
+    .zoom img {
+        width: 20em;
+        height: auto;
+    }
+
 }

@@ -16,11 +16,12 @@ class InboxParticipantsDaoTest {
      **/
     @Test
     void getAllInbox() {
+        InboxParticipantsDao ibpoDao = new InboxParticipantsDao("gossip");
         ArrayList<InboxParticipants> expected = new ArrayList<>();
         LocalDateTime timeSent = null;
         InboxParticipants ibp = new InboxParticipants(3, 2, 0, 0, 0, timeSent);
         expected.add(ibp);
-        ArrayList<InboxParticipants> actual = ibpDao.getAllInbox(3);
+        ArrayList<InboxParticipants> actual = ibpoDao.getAllInbox(3);
         assertEquals(actual, expected);
     }
 
@@ -81,8 +82,8 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getInboxId(), ibp2.getInboxId());
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
-            //assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
-            System.out.println(ibp1.getTimeSent().toString() + " " + ibp2.getTimeSent().toString());
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            System.out.println(ibp1.getTimeSent().toString());
             assertEquals(ibp1.getUnseenMessages(), ibp2.getUnseenMessages());
             assertEquals(ibp2.getIsOpen(), 1);
             if (ibp2.getIsOpen() == 1) {
@@ -117,7 +118,7 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
             assertEquals(ibp1.getIsOpen(), ibp2.getIsOpen());
-            // assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
             System.out.println(ibp1.getTimeSent().toString());
             if (ibp2.getUnseenMessages() == 1) {
                 ibpDao.resetUnSeenMessages(1, 1);
@@ -152,7 +153,7 @@ class InboxParticipantsDaoTest {
             assertEquals(ibp1.getInboxId(), ibp2.getInboxId());
             assertEquals(ibp1.getDeletedState(), ibp2.getDeletedState());
             assertEquals(ibp1.getUserId(), ibp2.getUserId());
-            // assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
+            assertEquals(ibp1.getTimeSent(), ibp2.getTimeSent());
             System.out.println(ibp1.getTimeSent().toString());
             assertEquals(ibp2.getIsOpen(), ibp1.getIsOpen());
         }

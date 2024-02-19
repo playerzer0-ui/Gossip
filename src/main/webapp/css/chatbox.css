@@ -5,6 +5,10 @@
     font-family: 'Poppins', sans-serif;
 }
 
+a {
+    text-decoration: none;
+}
+
 body {
     display: flex;
     justify-content: center;
@@ -12,6 +16,32 @@ body {
     min-height: 100vh;
     background: rgb(195,7,83);
     background: linear-gradient(137deg, rgba(195,7,83,1) 0%, rgba(114,4,85,1) 100%);
+}
+
+.zoom {
+    position: absolute;
+    display: none;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    background-color: rgba(87, 5, 65, 0.6);
+
+}
+
+.zoom img {
+    width: 40vw;
+    height: auto;
+}
+
+.zoom ion-icon {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #FFEEAA;
+    cursor: pointer;
+    font-size: 3.5em;
 }
 
 .container {
@@ -48,6 +78,7 @@ body {
     position: relative;
     flex: 70%;
     background: rgb(184, 100, 133);
+    z-index: 1;
 }
 
 .container .right::before {
@@ -78,6 +109,11 @@ body {
     border-radius: 50%;
 }
 
+.chat-menu:hover {
+    background-color: #3C0753;
+    border-radius: 50%;
+}
+
 .drop-menu {
     position: absolute;
     background-color: #ff9ae4;
@@ -88,16 +124,40 @@ body {
 }
 
 .drop-menu ul {
-    color: #FFEEAA;
     list-style: none;
     font-size: 15px;
 }
 
 .drop-menu li {
+    color: #FFEEAA;
     padding: 20px;
 }
 
 .drop-menu li:hover {
+    background-color: #fd4acd;
+    cursor: pointer;
+}
+
+.drop-menu-chat {
+    position: absolute;
+    background-color: #ff9ae4;
+    right: 0;
+    top: 60px;
+    z-index: 3;
+    visibility: hidden;
+}
+
+.drop-menu-chat ul {
+    list-style: none;
+    font-size: 15px;
+}
+
+.drop-menu-chat li {
+    color: #FFEEAA;
+    padding: 20px;
+}
+
+.drop-menu-chat li:hover {
     background-color: #fd4acd;
     cursor: pointer;
 }
@@ -343,6 +403,37 @@ body {
     color: white;
 }
 
+.chat-bubble {
+    display: flex;
+    flex-direction: column;
+    background-color: #ffffff;
+    border-radius: 15px;
+    padding: 10px;
+    position: relative;
+    margin: 5px 0;
+    width: 40%;
+    cursor: pointer;
+}
+
+.chat-bubble img {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
+
+.chat-bubble span {
+    display: block;
+    margin-top: 5px;
+    font-size: 0.85em;
+    opacity: 0.5;
+}
+
+.chat-bubble video {
+    width: 100%;
+    border-radius: 15px;
+    display: block;
+}
+
 .message p {
     position: relative;
     right: 0;
@@ -371,6 +462,17 @@ body {
     margin-top: 5px;
     font-size: 0.85em;
     opacity: 0.5;
+}
+
+.my-message-file {
+    background-color: #910A67;
+    color: white;
+    align-items: flex-end;
+    margin-left: auto;
+}
+
+.frnd-message-file {
+    margin-right: auto;
 }
 
 .my-message {
