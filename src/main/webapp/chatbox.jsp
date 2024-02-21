@@ -336,7 +336,9 @@
         <!-- chat input -->
         <div class="chatbox-input">
             <ion-icon name="happy-outline"></ion-icon>
-            <ion-icon name="attach-outline"></ion-icon>
+            <ion-icon name="attach-outline">
+            </ion-icon>
+            <input type="file" id="msgFile">
             <input type="text" placeholder="type a message" id="messageEntered">
             <ion-icon name="send" onclick="sendMessage()"></ion-icon>
         </div>
@@ -384,21 +386,28 @@
                 type: 'post',
                 data: {action: "getMessages", "inboxId": inboxId},
                 success: function (data) {
-                    var allMessages=JSON.parse(data);
+                    var allMessages = JSON.parse(data);
                     var chatBox = document.getElementById("chatbox");
-                   chatBox.innerHTML = "";
-                   for(var i=0; i<allMessages.length; i++){
-                       if(parseInt(allMessages[i][2])===<%=user.getUserId()%>){
-                         if(parseInt(allMessages[i][4])===1){
-                             chatBox.innerHTML+="<div class='message my-message'><p>" + allMessages[i][3]+ "<br><span>" + allMessages[i][5] + "</span></p></div>";
-                         }
-                       }
-                       else{
-                           if(parseInt(allMessages[i][4])===1) {
-                               chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
-                           }
-                       }
-                   }
+                    chatBox.innerHTML = "";
+                    for (var i = 0; i < allMessages.length; i++) {
+                        if (parseInt(allMessages[i][2]) ===<%=user.getUserId()%>) {
+                            if (parseInt(allMessages[i][4]) === 1) {
+                                chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                            } else if (parseInt(allMessages[i][4]) === 2) {
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                            } else if (parseInt(allMessages[i][4]) === 3) {
+                                chatBox.innerHTML += "<div className='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                            }
+                        } else {
+                            if (parseInt(allMessages[i][4]) === 1) {
+                                chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                            } else if (parseInt(allMessages[i][4]) === 2) {
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                            } else if (parseInt(allMessages[i][4]) === 3) {
+                                chatBox.innerHTML += "<div className='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                            }
+                        }
+                    }
                     ///chatBox.innerHTML = data;
                     /* var messages = "";
                      var allMessages =
@@ -438,48 +447,74 @@
     //I need to add another function to set otherUserId
 
 
+    /*async*/
     function sendMessage() {
-        var msg = document.getElementById("messageEntered").value;
-        if (msg !== null) {
-
-            //if it's the first time sending the user a message
-            if (mainInboxId === 0 && otherUserId !== 0) {
-                $(document).ready(function () {
-                    $.ajax({
-                        url: "controller",
-                        type: 'post',
-                        data: {action: "firstMessage", "userId": otherUserId, "message": msg},
-                        success: function (data) {
-
-                        },
-                        error: function () {
-                            alert("Error with ajax");
-                        }
-                    });
-                });
-            } else if (mainInboxId !== 0) {
-                $(document).ready(function () {
-                    $.ajax({
-                        url: "controller",
-                        type: 'post',
-                        data: {action: "sendMessage", "inboxId": mainInboxId, "message": msg},
-                        success: function (data) {
-
-                        },
-                        error: function () {
-                            alert("Error with ajax");
-                        }
-                    });
-                });
-            }
+        var file = document.getElementById("msgFile");
+        if (file.value != "") {
+            var formData = new FormData();
+            var extension = file.value.split(".").pop();
+            formData.append("action", "sendFile");
+            formData.append("file", file.files[0]);
+            formData.append("extension", extension);
+            formData.append("inboxId", mainInboxId);
+            /* var xhr = new XMLHttpRequest();
+             xhr.open('POST', 'controller', true);
+             xhr.onload = function() {
+                 if (xhr.status === 200) {
+                     console.log('Image uploaded successfully');
+                 } else {
+                     console.error('Error uploading image');
+                 }
+             };
+             xhr.send(formData);*/
+            /*await*/
+            fetch('controller', {
+                method: "POST",
+                body: formData
+            });
         } else {
-            alert("please enter a message");
+            var msg = document.getElementById("messageEntered").value;
+            if (msg !== null) {
+
+                //if it's the first time sending the user a message
+                if (mainInboxId === 0 && otherUserId !== 0) {
+                    $(document).ready(function () {
+                        $.ajax({
+                            url: "controller",
+                            type: 'post',
+                            data: {action: "firstMessage", "userId": otherUserId, "message": msg},
+                            success: function (data) {
+
+                            },
+                            error: function () {
+                                alert("Error with ajax");
+                            }
+                        });
+                    });
+                } else if (mainInboxId !== 0) {
+                    $(document).ready(function () {
+                        $.ajax({
+                            url: "controller",
+                            type: 'post',
+                            data: {action: "sendMessage", "inboxId": mainInboxId, "message": msg},
+                            success: function (data) {
+
+                            },
+                            error: function () {
+                                alert("Error with ajax");
+                            }
+                        });
+                    });
+                }
+            } else {
+                alert("please enter a message");
+            }
+            document.getElementById("messageEntered").value = "";
         }
-        document.getElementById("messageEntered").value = "";
     }
 
-    document.addEventListener('keydown', function(event){
-        if(event.key === "Enter"){
+    document.addEventListener('keydown', function (event) {
+        if (event.key === "Enter") {
             sendMessage();
         }
     });
@@ -494,3 +529,4 @@
 </body>
 
 </html>
+

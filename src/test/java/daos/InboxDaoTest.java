@@ -14,7 +14,7 @@ class InboxDaoTest {
         if(id>0){
             actual=true;
          Inbox  inbox1 = inboxDao.getInbox(id);
-         Inbox  inbox2 =new Inbox(id,2,1,"Barcelona","groupPicture.png");
+         Inbox  inbox2 =new Inbox(id,2,1,"Barcelona",null);
          assertEquals(inbox1,inbox2);
             assertEquals(inbox1.getInboxType(),inbox2.getInboxType());
             assertEquals(inbox1.getGroupName(),inbox2.getGroupName());

@@ -1,8 +1,15 @@
 package controller;
 
+import java.awt.image.BufferedImage;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.StandardCopyOption;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Map;
 
 import business.Inbox;
 import business.InboxParticipants;
@@ -13,10 +20,24 @@ import daos.InboxDao;
 import daos.InboxParticipantsDao;
 import daos.MessageDao;
 import daos.UsersDao;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.imageio.ImageIO;
+
+//@RestController
 @WebServlet(name = "Controller", value = "/controller")
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 - 1,
+        maxFileSize = 1024 * 1024 * 10,
+        maxRequestSize = 1024 * 1024 * 100
+)
 public class Controller extends HttpServlet {
 
 
@@ -80,6 +101,13 @@ public class Controller extends HttpServlet {
                     break;
                 case "getChatlist":
                     getChatList(request, response);
+                    break;
+                case "sendFile":
+                    try {
+                        sendFile(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("register.jsp");
+                    }
                     break;
             }
         }
@@ -247,7 +275,9 @@ public class Controller extends HttpServlet {
             ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
             //add unseenMessages for all users in the groupChat
             for (InboxParticipants Ibps : allIbps) {
-                ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                if (Ibps.getUserId() != user.getUserId()) {
+                    ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                }
             }
         }
     }
@@ -347,4 +377,99 @@ public class Controller extends HttpServlet {
         }
         response.getWriter().write(chatlist);
     }
+
+    public void sendFile(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        String extension = request.getParameter("extension");
+        Part file = request.getPart("file");
+        String currentTime = LocalDateTime.now().toString() + user.getUserId();
+        String filteredFileName = "";
+        for (int i = 0; i < currentTime.length(); i++) {
+            if (!(currentTime.charAt(i) + "").equalsIgnoreCase(":")) {
+                filteredFileName = filteredFileName + currentTime.charAt(i);
+            }
+        }
+        filteredFileName = filteredFileName + "." + extension;
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
+        MessageDao messageDao = new MessageDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        //if it's a normal chat
+        if (inbox.getInboxType() == 1) {
+            //if it's an image or video
+            if (checkImage(extension)) {
+                boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                if (uploadState) {
+                    //send message
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+                }
+            } else if (checkVideo(extension)) {
+                boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                if (uploadState) {
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+                }
+            } else {
+                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+            }
+            // get the other person's InboxParticipant
+            InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+            //update unseen messages for the other user
+            ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+        } else {
+            //if it's an image or video
+            if (checkImage(extension)) {
+                //send message
+                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+            } else if (checkVideo(extension)) {
+                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+            } else {
+                //send message
+                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+            }
+            ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
+            //add unseenMessages for all users in the groupChat
+            for (InboxParticipants Ibps : allIbps) {
+                if (Ibps.getUserId() != user.getUserId()) {
+                    ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                }
+            }
+        }
+    }
+
+    /**
+     * Check if the extension is an image, returns true if it's an image and false for otherwise
+     **/
+    public boolean checkImage(String extension) {
+        return extension.equalsIgnoreCase("png") || extension.equalsIgnoreCase("jpg") || extension.equalsIgnoreCase("jpeg") || extension.equalsIgnoreCase("gif");
+    }
+
+    /**
+     * Check if the extension is a video, returns true if it's a video and false for otherwise
+     **/
+    public boolean checkVideo(String extension) {
+        return extension.equalsIgnoreCase("mp4") || extension.equalsIgnoreCase("avi");
+    }
+
+    public boolean uploadFile(Part file, String fileName, String directory) {
+        try (InputStream inputStream = file.getInputStream();
+             //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
+             //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
+             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+            System.out.println("File " + fileName + " has been uploaded successfully.");
+        } catch (IOException e) {
+            System.err.println("Error uploading the file: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
 }

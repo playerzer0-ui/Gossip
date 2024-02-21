@@ -61,6 +61,13 @@
             <version>2.12.5</version> <!-- Replace with the latest version -->
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/org.springframework/spring-web -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>4.3.11.RELEASE</version>
+        </dependency>
+
     </dependencies>
 
     <build>
