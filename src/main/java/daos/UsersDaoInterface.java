@@ -103,12 +103,18 @@ public interface UsersDaoInterface {
     public boolean checkEmail(String email);
 
     /**
-     * updateSuspend method let admin able to suspend user who be reported.
+     * updateUser method allow user and admin to update their detail.
+     *userID will not be able to change.
      *
-     * @param username is the user's name who be reported.
-     * @param suspendedStatus is the user's suspended status - 0 is not suspended and 1 is suspended
-     *
-     * @return 1 when the user is suspended and return 0 when user is not suspended.
+     * @param u is the user's detail that able to change.
+
+     * @return an int after update else return 0 when no rows are affected by the update.
      */
-    int updateSuspend(String username, int suspendedStatus);
+    public int updateUser(Users u) ;
+
+    /**
+     * getOnlineUsers method able to list out all online user to admin.
+     * @return a list of online user
+     */
+    public List<Users> getOnlineUsers();
 }

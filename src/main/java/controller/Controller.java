@@ -457,7 +457,7 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\asus\\Documents\\Gossip\\src\\main\\webapp\\ " + directory + fileName))) {
 
             byte[] buffer = new byte[1024];
             int bytesRead;
