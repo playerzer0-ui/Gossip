@@ -24,7 +24,7 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
      * addReport method able to add a new report.
      * reportId will increase automatic.
      *
-     * @param reportId is report's id
+     *
      * @param reporterId is user's id who do the report
      * @param userReportedId is user's id who be reported
      * @param reportReason is the reason of why report
@@ -34,20 +34,19 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
      * @return int of report id if report added else added fail will return -1
      */
     @Override
-    public int addReport(int reportId, int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus) {
+    public int addReport( int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus) {
         int rowsAffected = -1;
 
         try{
             con = getConnection();
 
-            String query = "INSERT INTO reports (reportId, reporterId, userReportedId, reportReason, reportDate, reportStatus) VALUES (?, ?, ?, ?, ?，?)";
+            String query = "INSERT INTO reports (reporterId, userReportedId, reportReason, reportDate, reportStatus) VALUES ( ?, ?, ?, ?,?)";
             ps = con.prepareStatement(query);
-            ps.setInt(1, reportId);
-            ps.setInt(2, reporterId);
-            ps.setInt(3,userReportedId);
-            ps.setString(4,reportReason);
-            ps.setTimestamp(5, Timestamp.valueOf(reportDate));
-            ps.setInt(6, reportStatus);
+            ps.setInt(1, reporterId);
+            ps.setInt(2,userReportedId);
+            ps.setString(3,reportReason);
+            ps.setTimestamp(4, Timestamp.valueOf(reportDate));
+            ps.setInt(5, reportStatus);
 
             rowsAffected = ps.executeUpdate();
         }
