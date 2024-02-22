@@ -170,4 +170,46 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
         }
         return reports;
     }
+
+    /**
+     * updateReport method let admin able to update report status.
+     *
+     * @param reportId is the report's id.
+     * @param reportStatus is the report's status - 1 is unseen, 2 is solved, 3 is ignored,4 is inreview
+     *
+     * @return 1 when report is unseen, 2 when report is solved, 3 when report is ignored and 4 when report is inreview
+     */
+    @Override
+    public int updateReport(int reportId, int reportStatus) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        int rpStatus = 1;
+        try {
+            con = this.getConnection();
+
+            String query = "UPDATE reports SET reportStatus = ? WHERE reportId = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, reportStatus);
+            ps.setInt(2, reportId);
+
+            rpStatus = ps.executeUpdate();
+        }
+        catch (SQLException e){
+            System.out.println("An error occurred in the updateReport() method: " + e.getMessage());
+        }
+        finally{
+            try{
+                if (ps != null){
+                    ps.close();
+                }
+                if (con != null){
+                    freeConnection(con);
+                }
+            }
+            catch (SQLException e){
+                System.out.println("An error occurred when shutting down the updateReport() method: " + e.getMessage());
+            }
+        }
+        return rpStatus;
+    }
 }

@@ -458,5 +458,39 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         return isPresent;
     }
 
+    @Override
+    public int updateSuspend(String username, int suspendedStatus) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        int suspended = 0;
+        try {
+            con = this.getConnection();
+
+            String query = "UPDATE USERS SET suspended = ? WHERE userName = ?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, suspendedStatus);
+            ps.setString(2, username);
+
+            suspended = ps.executeUpdate();
+        }
+        catch (SQLException e){
+            System.out.println("An error occurred in the updateSuspend() method: " + e.getMessage());
+        }
+        finally{
+            try{
+                if (ps != null){
+                    ps.close();
+                }
+                if (con != null){
+                    freeConnection(con);
+                }
+            }
+            catch (SQLException e){
+                System.out.println("An error occurred when shutting down the updateSuspend() method: " + e.getMessage());
+            }
+        }
+        return suspended;
+    }
+
 
 }

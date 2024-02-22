@@ -1,6 +1,9 @@
 package daos;
 
+import business.Reports;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface BlockedusersDaoInterface {
 
@@ -22,5 +25,6 @@ public interface BlockedusersDaoInterface {
      * @return an int after deleted else return 0 when no rows are affected by the deleted.
      */
     public int deleteBlockUser (int blockedId);
+
 
 }
