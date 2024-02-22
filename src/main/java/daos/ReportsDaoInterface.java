@@ -47,4 +47,14 @@ public interface  ReportsDaoInterface {
      * @return a list of reports
      */
     public List<Reports> getAllReports();
+
+    /**
+     * updateReport method let admin able to update report status.
+     *
+     * @param reportId is the report's id.
+     * @param reportStatus is the report's status - 1 is unseen, 2 is solved, 3 is ignored,4 is inreview
+     *
+     * @return 1 when report is unseen, 2 when report is solved, 3 when report is ignored and 4 when report is inreview
+     */
+    int updateReport(int reportId, int reportStatus);
 }
