@@ -12,7 +12,6 @@ public interface  ReportsDaoInterface {
      * addReport method able to add a new report.
      * reportId will increase automatic.
      *
-     * @param reportId is report's id
      * @param reporterId is user's id who do the report
      * @param userReportedId is user's id who be reported
      * @param reportReason is the reason of why report
@@ -21,7 +20,7 @@ public interface  ReportsDaoInterface {
 
      * @return int of report id if report added else added fail will return -1
      */
-    public int addReport(int reportId, int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus);
+    public int addReport( int reporterId, int userReportedId, String reportReason, LocalDateTime reportDate, int reportStatus);
 
 
     /**

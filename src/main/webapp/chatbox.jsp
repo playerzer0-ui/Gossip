@@ -284,19 +284,7 @@
                     <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon>
                 </li>
             </ul>
-            <div class="drop-menu-chat">
-                <ul>
-                    <a href="controller?action=block_user">
-                        <li>block user</li>
-                    </a>
-                    <a href="controller?action=report_user">
-                        <li>report user</li>
-                    </a>
-                    <a href="controller?action=leave_chat">
-                        <li>leave chat</li>
-                    </a>
-                </ul>
-            </div>
+
         </div>
 
         <!-- chatbox -->
@@ -366,8 +354,8 @@
                 data: {action: "getMessagesHeader", "inboxId": inboxId},
                 success: function (data) {
                     var header = document.getElementById("imgtext");
+                    var dropMenuChat = document.getElementById("drop-menu-chat");
                     header.innerHTML = data;
-
                 },
                 error: function () {
                     alert("Error with ajax");
@@ -396,7 +384,7 @@
                             } else if (parseInt(allMessages[i][4]) === 2) {
                                 chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div className='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
                             }
                         } else {
                             if (parseInt(allMessages[i][4]) === 1) {
@@ -404,7 +392,7 @@
                             } else if (parseInt(allMessages[i][4]) === 2) {
                                 chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div className='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
                             }
                         }
                     }
@@ -426,6 +414,23 @@
             });
         });
     }
+
+   /* function seeReport() {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "showReport","inboxId": mainInboxId},
+                success: function (data) {
+                   /* var chatList = document.getElementById("chatlist");
+                    chatList.innerHTML = data;
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }*/
 
     function getChatList() {
         $(document).ready(function () {
