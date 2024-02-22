@@ -102,5 +102,13 @@ public interface UsersDaoInterface {
      */
     public boolean checkEmail(String email);
 
-
+    /**
+     * updateSuspend method let admin able to suspend user who be reported.
+     *
+     * @param username is the user's name who be reported.
+     * @param suspendedStatus is the user's suspended status - 0 is not suspended and 1 is suspended
+     *
+     * @return 1 when the user is suspended and return 0 when user is not suspended.
+     */
+    int updateSuspend(String username, int suspendedStatus);
 }
