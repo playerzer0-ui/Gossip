@@ -16,18 +16,10 @@ import business.InboxParticipants;
 import business.Message;
 import business.Users;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import daos.InboxDao;
-import daos.InboxParticipantsDao;
-import daos.MessageDao;
-import daos.UsersDao;
+import daos.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
 
@@ -109,6 +101,16 @@ public class Controller extends HttpServlet {
                     } catch (ServletException ex) {
                         response.sendRedirect("register.jsp");
                     }
+                    break;
+                case "showReport":
+                 session.setAttribute("reportedId",request.getParameter("reportedId"));
+                    System.out.println("id is " + request.getParameter("reportedId"));
+                    response.sendRedirect("report.jsp");
+                    break;
+                case "send_report":
+                  sendReport(request, response);
+                    dest = "chatbox.jsp";
+                    response.sendRedirect(dest);
                     break;
             }
         }
@@ -296,9 +298,10 @@ public class Controller extends HttpServlet {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -412,30 +415,32 @@ public class Controller extends HttpServlet {
                 if (uploadState) {
                     messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
                 }
-            } else {
+            } /*else {
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            }
+            }*/
             // get the other person's InboxParticipant
             InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             //update unseen messages for the other user
             ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
         } else {
-            //if it's an image or video
+            //if it's an image
             if (checkImage(extension)) {
                 boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
                 if (uploadState) {
                     //send message
                     messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
                 }
-            } else if (checkVideo(extension)) {
+            } //if it's a video
+            else if (checkVideo(extension)) {
                 boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
                 if (uploadState) {
                     messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
                 }
-            } else {
+            }
+            /*else {
                 //send message
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            }
+            }*/
             ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
             //add unseenMessages for all users in the groupChat
             for (InboxParticipants Ibps : allIbps) {
@@ -477,6 +482,15 @@ public class Controller extends HttpServlet {
             return false;
         }
         return true;
+    }
+
+    public void sendReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int reportedId =Integer.parseInt((String)session.getAttribute("reportedId"));
+        String reportReason=request.getParameter("reportReason");
+        ReportsDao reportsDao=new ReportsDao("gossip");
+        reportsDao.addReport(user.getUserId(),reportedId,reportReason,LocalDateTime.now(),1);
     }
 
 }
