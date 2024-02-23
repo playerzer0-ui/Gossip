@@ -467,7 +467,7 @@
 
 
     /*async*/
-    function sendMessage() {
+    async function sendMessage() {
         var file = document.getElementById("msgFile");
         if (file.value != "") {
             var formData = new FormData();
@@ -477,7 +477,7 @@
             formData.append("extension", extension);
             formData.append("inboxId", mainInboxId);
 
-            fetch('controller', {
+            await fetch('controller', {
                 method: "POST",
                 body: formData
             });

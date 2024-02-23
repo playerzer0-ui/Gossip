@@ -422,10 +422,16 @@ public class Controller extends HttpServlet {
         } else {
             //if it's an image or video
             if (checkImage(extension)) {
-                //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+                boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                if (uploadState) {
+                    //send message
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+                }
             } else if (checkVideo(extension)) {
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+                boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                if (uploadState) {
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+                }
             } else {
                 //send message
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
