@@ -104,7 +104,7 @@ body {
     padding: 0 15px;
 }
 
-.chat-hide {
+#chat-hide {
     visibility: hidden;
 }
 

@@ -273,7 +273,7 @@
 
 
     <div class="right">
-        <div class="header chat-hide">
+        <div class="header" id="chat-hide">
             <div class="imgtext" id="imgtext">
             </div>
             <ul class="nav-icons">
@@ -335,7 +335,7 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    setInterval(refreshMessages, 2000);
+    //setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
@@ -365,9 +365,13 @@
                 type: 'post',
                 data: {action: "getMessagesHeader", "inboxId": inboxId},
                 success: function (data) {
-                    var header = document.getElementById("imgtext");
-                    var dropMenuChat = document.getElementById("drop-menu-chat");
-                    header.innerHTML = data;
+                    var header = document.getElementById("chat-hide");
+                    var imgtext = document.getElementById("imgtext");
+                    var str = data.split("%%%");
+
+                    imgtext.innerHTML = str[0];
+                    header.innerHTML += str[1];
+
                 },
                 error: function () {
                     alert("Error with ajax");
