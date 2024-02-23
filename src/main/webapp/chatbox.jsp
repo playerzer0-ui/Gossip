@@ -273,7 +273,7 @@
 
 
     <div class="right">
-        <div class="header">
+        <div class="header chat-hide">
             <div class="imgtext" id="imgtext">
             </div>
             <ul class="nav-icons">
@@ -324,9 +324,8 @@
         <!-- chat input -->
         <div class="chatbox-input">
             <ion-icon name="happy-outline"></ion-icon>
-            <ion-icon name="attach-outline">
-            </ion-icon>
-            <input type="file" id="msgFile">
+            <ion-icon name="attach-outline" class="custom-file-icon" onclick="openFileInput()"></ion-icon>
+            <input type="file" id="msgFile" onchange="sendFile(this)" accept="image/*,video/*,audio/*">
             <input type="text" placeholder="type a message" id="messageEntered">
             <ion-icon name="send" onclick="sendMessage()"></ion-icon>
         </div>
@@ -336,13 +335,26 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    //setInterval(refreshMessages, 2000);
+    setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
         if (mainInboxId !== 0) {
             // alert("in");
             getMessages(mainInboxId);
+        }
+    }
+
+    function sendFile(input) {
+        // Check if a file is selected
+        if (input.files && input.files[0]) {
+            // You can perform additional checks or validations here if needed
+
+            // Call your sendMessage function
+            sendMessage(input.files[0]);
+
+            // Reset the file input
+            input.value = null;
         }
     }
 
@@ -378,6 +390,8 @@
                     var chatBox = document.getElementById("chatbox");
                     chatBox.innerHTML = "";
                     for (var i = 0; i < allMessages.length; i++) {
+                        console.log("Message Type:", allMessages[i][4]); // Log message type
+                        console.log("File Name:", allMessages[i][3]);
                         if (parseInt(allMessages[i][2]) ===<%=user.getUserId()%>) {
                             if (parseInt(allMessages[i][4]) === 1) {
                                 chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
@@ -462,24 +476,14 @@
             formData.append("file", file.files[0]);
             formData.append("extension", extension);
             formData.append("inboxId", mainInboxId);
-            /* var xhr = new XMLHttpRequest();
-             xhr.open('POST', 'controller', true);
-             xhr.onload = function() {
-                 if (xhr.status === 200) {
-                     console.log('Image uploaded successfully');
-                 } else {
-                     console.error('Error uploading image');
-                 }
-             };
-             xhr.send(formData);*/
-            /*await*/
+
             fetch('controller', {
                 method: "POST",
                 body: formData
             });
         } else {
-            var msg = document.getElementById("messageEntered").value;
-            if (msg !== null) {
+            var msg = document.getElementById("messageEntered").value.trim();
+            if (msg !== "" && msg !== null) {
 
                 //if it's the first time sending the user a message
                 if (mainInboxId === 0 && otherUserId !== 0) {

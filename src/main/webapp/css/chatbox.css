@@ -104,6 +104,10 @@ body {
     padding: 0 15px;
 }
 
+.chat-hide {
+    visibility: hidden;
+}
+
 .header-menu:hover {
     background-color: #3C0753;
     border-radius: 50%;
@@ -393,6 +397,7 @@ body {
     height: calc(100% - 120px);
     padding: 50px;
     overflow-y: auto;
+    visibility: hidden;
 }
 
 .message {
@@ -509,12 +514,17 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    visibility: hidden;
 }
 
 .chatbox-input ion-icon {
     cursor: pointer;
     font-size: 1.8em;
     color: #FFEEAA;
+}
+
+#msgFile {
+    display: none;
 }
 
 .chatbox-input ion-icon:nth-child(1){
