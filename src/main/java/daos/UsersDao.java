@@ -458,39 +458,121 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         return isPresent;
     }
 
+    /**
+     * updateUser method allow user and admin to update their detail.
+     * userID will not be able to change.
+     *
+     * @param u is the user's detail that able to change.
+     * @return an int after update else return 0 when no rows are affected by the update.
+     */
     @Override
-    public int updateSuspend(String username, int suspendedStatus) {
+    public int updateUser(Users u) {
         Connection con = null;
         PreparedStatement ps = null;
-        int suspended = 0;
+        ResultSet rs = null;
+        int rowsAffected = 0;
         try {
-            con = this.getConnection();
+            con = getConnection();
 
-            String query = "UPDATE USERS SET suspended = ? WHERE userName = ?";
-            ps = con.prepareStatement(query);
-            ps.setInt(1, suspendedStatus);
-            ps.setString(2, username);
+            String hashPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
 
-            suspended = ps.executeUpdate();
-        }
-        catch (SQLException e){
-            System.out.println("An error occurred in the updateSuspend() method: " + e.getMessage());
-        }
-        finally{
-            try{
-                if (ps != null){
+            String command = "UPDATE users SET email=? and userName=? and profilePicture=? and password=? and dateOfBirth=? and userType=? and suspended=? and bio=? and online=? WHERE userID=?";
+            ps = con.prepareStatement(command);
+            ps.setString(1, u.getEmail());
+            ps.setString(2, u.getUserName());
+            ps.setString(3, u.getProfilePicture());
+            ps.setString(4, hashPassword);
+            ps.setDate(5, Date.valueOf(u.getDateOfBirth()));
+            ps.setInt(6, u.getUserType());
+            ps.setInt(7, u.getSuspended());
+            ps.setString(8, u.getBio());
+            ps.setInt(9, u.getOnline());
+
+            rowsAffected = ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("An error occurred in the updateUser() method: " + e.getMessage());
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null){
+                if (con != null) {
                     freeConnection(con);
                 }
-            }
-            catch (SQLException e){
-                System.out.println("An error occurred when shutting down the updateSuspend() method: " + e.getMessage());
+            } catch (SQLException e) {
+                System.out.println("An error occurred when shutting down the updateUser() method: " + e.getMessage());
             }
         }
-        return suspended;
+        return rowsAffected;
     }
 
+    /**
+     * getOnlineUsers method able to list out all online user to admin.
+     *
+     * @return a list of online user
+     */
+    @Override
+    public List<Users> getOnlineUsers() {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Users> users = new ArrayList<Users>();
+
+        try
+        {
+            con = this.getConnection();
+
+            String query = "SELECT COUNT(*) FROM users WHERE online = 1";
+            ps = con.prepareStatement(query);
+
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int userId = rs.getInt("userID");
+                String email = rs.getString("email");
+                String username = rs.getString("userName");
+                String profilePicture = rs.getString("profilePicture");
+                String password = rs.getString("password");
+                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+                int userType = rs.getInt("userType");
+                int suspended = rs.getInt("suspended");
+                String bio = rs.getString("bio");
+                int online = rs.getInt("online");
+                Users u = new Users(userId, email, username, profilePicture, password,dateOfBirth,userType,suspended,bio,online);
+                users.add(u);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the getOnlineUsers() method: " + e.getMessage());
+        }
+        finally
+        {
+            try
+            {
+                if (rs != null)
+                {
+                    rs.close();
+                }
+                if (ps != null)
+                {
+                    ps.close();
+                }
+                if (con != null)
+                {
+                    freeConnection("");
+                }
+            }
+            catch (SQLException e)
+            {
+                System.out.println("An error occurred when shutting down the getOnlineUsers() method: " + e.getMessage());
+            }
+        }
+        return users;
+    }
 
 }

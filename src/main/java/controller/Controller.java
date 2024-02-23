@@ -16,7 +16,10 @@ import business.InboxParticipants;
 import business.Message;
 import business.Users;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import daos.*;
+import daos.InboxDao;
+import daos.InboxParticipantsDao;
+import daos.MessageDao;
+import daos.UsersDao;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -296,7 +299,6 @@ public class Controller extends HttpServlet {
         if (inbox.getInboxType() == 1) {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
-
             if (otherUser.getOnline() == 1) {
                 header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
