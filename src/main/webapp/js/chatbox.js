@@ -10,6 +10,11 @@ function seeChatList(){
     $( ".right" ).css( "z-index", "2" );
 }
 
+function openFileInput() {
+    // Trigger a click on the hidden file input
+    document.getElementById('msgFile').click();
+}
+
 /**
  * see the menu in the header (the triple dots on the left)
  */
@@ -72,6 +77,10 @@ function seeMessage(){
     $( ".left" ).css( "z-index", "2" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "3" );
+
+    $(".chat-hide").css("visibility", "visible");
+    $(".chatbox").css("visibility", "visible");
+    $(".chatbox-input").css("visibility", "visible");
 }
 
 function checkImage(clickedDiv) {
