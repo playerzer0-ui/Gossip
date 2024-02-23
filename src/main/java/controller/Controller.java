@@ -415,24 +415,32 @@ public class Controller extends HttpServlet {
                 if (uploadState) {
                     messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
                 }
-            } else {
+            } /*else {
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            }
+            }*/
             // get the other person's InboxParticipant
             InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             //update unseen messages for the other user
             ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
         } else {
-            //if it's an image or video
+            //if it's an image
             if (checkImage(extension)) {
-                //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
-            } else if (checkVideo(extension)) {
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            } else {
-                //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+                boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                if (uploadState) {
+                    //send message
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+                }
+            } //if it's a video
+            else if (checkVideo(extension)) {
+                boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                if (uploadState) {
+                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+                }
             }
+            /*else {
+                //send message
+                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
+            }*/
             ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
             //add unseenMessages for all users in the groupChat
             for (InboxParticipants Ibps : allIbps) {
@@ -461,8 +469,8 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-            // FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
-             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\d00243400\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+             //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\d00243400\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {

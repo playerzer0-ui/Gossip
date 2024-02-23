@@ -46,7 +46,7 @@ public class InboxDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "update inbox set inboxType=?,adminId=?,groupName=?,groupProfilePicture=? where inboxId=?";
+            String command = "update inbox set inboxType=? ,adminId=?, groupName=?, groupProfilePicture=? where inboxId=?";
             ps = con.prepareStatement(command);
             ps.setInt(1, inbox.getInboxType());
             ps.setInt(2, inbox.getAdminId());
@@ -102,12 +102,12 @@ public class InboxDao extends Dao {
             ps.setInt(1, inboxId);
             rs = ps.executeQuery();
             if (rs.next()) {
-                String adminId = null;
-                adminId = rs.getInt("adminId") + "";
-                if (adminId != null) {
+                //String adminId = null;
+                int adminId = rs.getInt("adminId") ;
+                if (adminId != 0) {
                     inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), rs.getInt("adminId"), rs.getString("groupName"),rs.getString("groupProfilePicture"));
                 } else {
-                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), -1, rs.getString("groupName"));
+                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"));
                 }
             }
 
