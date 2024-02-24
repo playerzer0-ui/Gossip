@@ -335,7 +335,7 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    //setInterval(refreshMessages, 2000);
+    setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
@@ -366,12 +366,27 @@
                 data: {action: "getMessagesHeader", "inboxId": inboxId},
                 success: function (data) {
                     var header = document.getElementById("chat-hide");
-                    var imgtext = document.getElementById("imgtext");
                     var str = data.split("%%%");
+                    if(str.length > 1){
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>' + str[1];
+                    }
+                    else{
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>';
+                    }
+
+                    var imgtext = document.getElementById("imgtext");
 
                     imgtext.innerHTML = str[0];
-                    header.innerHTML += str[1];
-
                 },
                 error: function () {
                     alert("Error with ajax");

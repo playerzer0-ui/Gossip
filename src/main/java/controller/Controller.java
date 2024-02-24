@@ -470,11 +470,12 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\jerik\\Documents\\codes\\JAVAAAAAAAAAAAAAAA\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
-
+            FileOutputStream targetStream = new FileOutputStream("C:\\Users\\jerik\\Documents\\codes\\JAVAAAAAAAAAAAAAAA\\Gossip\\target\\Gossip-1.0-SNAPSHOT\\" + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
