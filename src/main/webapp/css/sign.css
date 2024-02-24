@@ -22,8 +22,8 @@ body {
 .left {
     position: relative;
     display: flex;
-    flex: 40%;
-    background: rgba(255, 255, 255, 0.28);
+    flex: 50%;
+    background: rgba(255, 255, 255, 0.7);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     backdrop-filter: blur(9.9px);
     -webkit-backdrop-filter: blur(9.9px);
@@ -37,7 +37,12 @@ body {
 
 .right {
     position: relative;
-    flex: 60%;
+    flex: 50%;
+}
+
+.form-control {
+    width: 80%;
+    height: auto;
 }
 
 @media only screen and (max-width: 840px) {
