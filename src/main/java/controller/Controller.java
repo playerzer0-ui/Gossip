@@ -20,6 +20,8 @@ import daos.*;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import miscellaneous.Aes;
+import miscellaneous.Miscellaneous;
 
 import javax.imageio.ImageIO;
 
@@ -102,12 +104,21 @@ public class Controller extends HttpServlet {
                     }
                     break;
                 case "showReport":
-                 session.setAttribute("reportedId",request.getParameter("reportedId"));
+                    session.setAttribute("reportedId", request.getParameter("reportedId"));
                     System.out.println("id is " + request.getParameter("reportedId"));
                     response.sendRedirect("report.jsp");
                     break;
                 case "send_report":
-                  sendReport(request, response);
+                    sendReport(request, response);
+                    dest = "chatbox.jsp";
+                    response.sendRedirect(dest);
+                    break;
+                case "changeProfilePic":
+                    try {
+                        changeProfilePicture(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("register.jsp");
+                    }
                     dest = "chatbox.jsp";
                     response.sendRedirect(dest);
                     break;
@@ -173,6 +184,7 @@ public class Controller extends HttpServlet {
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        Aes aes= new Aes();
         //set unseenMessages to 0
         ibpsDao.resetUnSeenMessages(inboxId, user.getUserId());
         //set open state to true
@@ -182,13 +194,18 @@ public class Controller extends HttpServlet {
         ObjectMapper objectMapper = new ObjectMapper();
         for (Message m : allMessages) {
             String[] messageArray = new String[7];
-            messageArray[0] = m.getMessageId() + "";
-            messageArray[1] = m.getInboxId() + "";
-            messageArray[2] = m.getSenderId() + "";
-            messageArray[3] = m.getMessage();
-            messageArray[4] = m.getMessageType() + "";
-            messageArray[5] = m.getTimeSent().toString();
-            messageArray[6] = m.getDeletedState() + "";
+            try {
+                String message = aes.decrypt(m.getMessage(), m.getMessageKey());
+                messageArray[0] = m.getMessageId() + "";
+                messageArray[1] = m.getInboxId() + "";
+                messageArray[2] = m.getSenderId() + "";
+                messageArray[3] = message;
+                messageArray[4] = m.getMessageType() + "";
+                messageArray[5] = m.getTimeSent().toString();
+                messageArray[6] = m.getDeletedState() + "";
+            }catch(Exception ex){
+                System.out.println("error occurred while getting messages" + ex.getMessage());
+            }
             messagesList.add(messageArray);
 
             //if it's the user that send the message
@@ -263,25 +280,34 @@ public class Controller extends HttpServlet {
         MessageDao messageDao = new MessageDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
-        //if it's a normal chat
-        if (inbox.getInboxType() == 1) {
-            //send message
-            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
-            // get the other person's InboxParticipant
-            InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
-            //update unseen messages for the other user
-            ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
-        } else {
-            //send message
-            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
-            ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
-            //add unseenMessages for all users in the groupChat
-            for (InboxParticipants Ibps : allIbps) {
-                if (Ibps.getUserId() != user.getUserId()) {
-                    ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+        Aes aes = new Aes();
+        int key = aes.generateKey();
+        try {
+            message = aes.encrypt(message, key);
+            //if it's a normal chat
+            if (inbox.getInboxType() == 1) {
+                //send message
+                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
+                // get the other person's InboxParticipant
+                InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+                //update unseen messages for the other user
+                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+            } else {
+                //send message
+                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
+                ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
+                //add unseenMessages for all users in the groupChat
+                for (InboxParticipants Ibps : allIbps) {
+                    if (Ibps.getUserId() != user.getUserId()) {
+                        ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                    }
                 }
             }
+        } catch (Exception ex) {
+            System.out.println("error occurred when sending message" + ex.getMessage());
+            response.sendRedirect("Sorry error occurred while sending message");
         }
+
     }
 
     public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -291,19 +317,20 @@ public class Controller extends HttpServlet {
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
+        Miscellaneous miscellaneous = new Miscellaneous();
         String header = "";
         Inbox inbox = inboxDao.getInbox(inboxId);
         if (inbox.getInboxType() == 1) {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
         }
         response.getWriter().write(header);
     }
@@ -325,6 +352,7 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         //gets all the inboxParticipants for that particular user
         ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+        Aes aes= new Aes();
         String chatlist = "";
         //loop through inboxparticipants
         for (InboxParticipants ibps : Ibps) {
@@ -342,16 +370,22 @@ public class Controller extends HttpServlet {
                 if (messages.size() > 0) {
                     //get the last message
                     m = messages.get(messages.size() - 1);
+                    try {
+                        m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
+                    }
+                    catch(Exception ex){
+                        System.out.println("error occurred when getting last message" + ex.getMessage());
+                    }
                     //if there are unseenMessages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
 
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> </div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }
@@ -364,15 +398,21 @@ public class Controller extends HttpServlet {
                 if (messages.size() > 0) {
                     //get the last message
                     m = messages.get(messages.size() - 1);
+                    try {
+                        m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
+                    }
+                    catch(Exception ex){
+                        System.out.println("error occurred when getting last message" + ex.getMessage());
+                    }
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='img/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }
@@ -387,67 +427,80 @@ public class Controller extends HttpServlet {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         String extension = request.getParameter("extension");
         Part file = request.getPart("file");
-        String currentTime = LocalDateTime.now().toString() + user.getUserId();
-        String filteredFileName = "";
-        for (int i = 0; i < currentTime.length(); i++) {
+        //String currentTime = LocalDateTime.now().toString() + user.getUserId();
+        String filteredFileName = generateFileName(user.getUserId(), extension);
+       /* for (int i = 0; i < currentTime.length(); i++) {
             if (!(currentTime.charAt(i) + "").equalsIgnoreCase(":")) {
                 filteredFileName = filteredFileName + currentTime.charAt(i);
             }
-        }
-        filteredFileName = filteredFileName + "." + extension;
+        }*/
+
+        //filteredFileName = filteredFileName + "." + extension;
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
         MessageDao messageDao = new MessageDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
+        Aes aes = new Aes();
+        int key = aes.generateKey();
         //if it's a normal chat
-        if (inbox.getInboxType() == 1) {
-            //if it's an image or video
-            if (checkImage(extension)) {
-                boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
-                if (uploadState) {
-                    //send message
-                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
-                }
-            } else if (checkVideo(extension)) {
-                boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
-                if (uploadState) {
-                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-                }
-            } /*else {
+        try {
+            if (inbox.getInboxType() == 1) {
+                //if it's an image or video
+                if (checkImage(extension)) {
+                    boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        //send message
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key);
+                    }
+                } else if (checkVideo(extension)) {
+                    boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key);
+                    }
+                } /*else {
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
             }*/
-            // get the other person's InboxParticipant
-            InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
-            //update unseen messages for the other user
-            ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
-        } else {
-            //if it's an image
-            if (checkImage(extension)) {
-                boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
-                if (uploadState) {
-                    //send message
-                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2);
+                // get the other person's InboxParticipant
+                InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+                //update unseen messages for the other user
+                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+            } else {
+                //if it's an image
+                if (checkImage(extension)) {
+                    boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        //send message
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key);
+                    }
+                } //if it's a video
+                else if (checkVideo(extension)) {
+                    boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key);
+                    }
                 }
-            } //if it's a video
-            else if (checkVideo(extension)) {
-                boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
-                if (uploadState) {
-                    messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-                }
-            }
             /*else {
                 //send message
                 messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
             }*/
-            ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
-            //add unseenMessages for all users in the groupChat
-            for (InboxParticipants Ibps : allIbps) {
-                if (Ibps.getUserId() != user.getUserId()) {
-                    ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
+                //add unseenMessages for all users in the groupChat
+                for (InboxParticipants Ibps : allIbps) {
+                    if (Ibps.getUserId() != user.getUserId()) {
+                        ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                    }
                 }
             }
+        } catch (Exception ex) {
+            System.out.println("error occurred when sending file" + ex.getMessage());
+            response.sendRedirect("Sorry error occurred while sending file");
         }
+
     }
 
     /**
@@ -469,7 +522,7 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
-             //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\d00243400\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+            //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\d00243400\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -486,10 +539,74 @@ public class Controller extends HttpServlet {
     public void sendReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
-        int reportedId =Integer.parseInt((String)session.getAttribute("reportedId"));
-        String reportReason=request.getParameter("reportReason");
-        ReportsDao reportsDao=new ReportsDao("gossip");
-        reportsDao.addReport(user.getUserId(),reportedId,reportReason,LocalDateTime.now(),1);
+        int reportedId = Integer.parseInt((String) session.getAttribute("reportedId"));
+        String reportReason = request.getParameter("reportReason");
+        ReportsDao reportsDao = new ReportsDao("gossip");
+        reportsDao.addReport(user.getUserId(), reportedId, reportReason, LocalDateTime.now(), 1);
     }
 
+    public String generateFileName(int id, String extension) {
+        String currentTime = LocalDateTime.now().toString() + id;
+        String filteredFileName = "";
+        for (int i = 0; i < currentTime.length(); i++) {
+            if (!(currentTime.charAt(i) + "").equalsIgnoreCase(":")) {
+                filteredFileName = filteredFileName + currentTime.charAt(i);
+            }
+        }
+        return filteredFileName + "." + extension;
+    }
+
+    public void changeProfilePicture(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        UsersDao usersDao = new UsersDao("gossip");
+        Users user = (Users) session.getAttribute("user");
+        String extension = request.getParameter("extension");
+        Part file = request.getPart("file");
+        if (user.getProfilePicture().equalsIgnoreCase("default.png")) {
+            String filteredFileName = generateFileName(user.getUserId(), extension);
+            boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
+            if (uploadState == true) {
+                setProfilePicture(user, filteredFileName);
+                session.setAttribute("user", user);
+            }
+        } else {
+            //then delete previous picture
+            boolean deleteState = deleteImage("profilePictures\\", user.getProfilePicture());
+            if (deleteState == true) {
+                String filteredFileName = generateFileName(user.getUserId(), extension);
+                boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
+                if (uploadState == true) {
+                    setProfilePicture(user, filteredFileName);
+                    session.setAttribute("user", user);
+                }
+            }
+        }
+    }
+
+    /**
+     * updates the profile picture of the user that is signed in
+     **/
+    public void setProfilePicture(Users u, String imageName) {
+        UsersDao usersDao = new UsersDao("gossip");
+        u.setProfilePicture(imageName);
+        usersDao.updateUser(u);
+    }
+
+    /**
+     * deletes a profile picture or file
+     **/
+    public boolean deleteImage(String folder, String image) {
+        File temp_file = new File(
+                "C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + folder + image
+        ); // Object of file class
+        if (temp_file.delete()) {
+            System.out.println(temp_file.getName() + " is successfully deleted");
+            return true;
+        } else {
+            System.out.println("Failed to delete " + temp_file.getName() + " file");
+
+        }
+        return false;
+    }
 }
+

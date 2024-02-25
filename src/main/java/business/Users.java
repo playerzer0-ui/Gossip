@@ -174,4 +174,16 @@ public class Users {
                 ", online=" + online +
                 '}';
     }
+
+    /*public void updateUsers(String email, String userName, String profilePicture, String password, LocalDate dateOfBirth, int userType, int suspended, String bio, int online) {
+        this.email = email;
+        this.userName = userName;
+        this.profilePicture = profilePicture;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.userType = userType;
+        this.suspended = suspended;
+        this.bio = bio;
+        this.online = online;
+    }*/
 }

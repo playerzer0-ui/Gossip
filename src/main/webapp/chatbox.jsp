@@ -7,7 +7,8 @@
 <%@ page import="business.Inbox" %>
 <%@ page import="business.Message" %>
 <%@ page import="daos.UsersDao" %>
-
+<%@ page import="miscellaneous.Miscellaneous" %>
+<%@ page import="miscellaneous.Aes" %>
 <%Users user = (Users) session.getAttribute("user");%>
 
 <!DOCTYPE html>
@@ -37,7 +38,7 @@
         <!-- header -->
         <div class="header">
             <div class="userimg" onclick="seeProfile()">
-                <img src="img/<%=user.getProfilePicture()%>" alt="profile" class="cover">
+                <img src="profilePictures/<%=user.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
                 <li>
@@ -76,6 +77,7 @@
                 InboxDao inboxDao = new InboxDao("gossip");
                 MessageDao messageDao = new MessageDao("gossip");
                 UsersDao usersDao = new UsersDao("gossip");
+                Aes aes = new Aes();
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
                 //loop through inboxparticipants
@@ -94,12 +96,17 @@
                         if (messages.size() > 0) {
                             //get the last message
                             m = messages.get(messages.size() - 1);
+                            try {
+                                m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
+                            } catch (Exception ex) {
+                                System.out.println("error occurred when getting last message" + ex.getMessage());
+                            }
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
             <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
+                    <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -122,7 +129,7 @@
             %>
             <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
+                    <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -145,7 +152,7 @@
             %>
             <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
+                    <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -174,12 +181,17 @@
                 if (messages.size() > 0) {
                     //get the last message
                     m = messages.get(messages.size() - 1);
+                    try {
+                        m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
+                    } catch (Exception ex) {
+                        System.out.println("error occurred when getting last message" + ex.getMessage());
+                    }
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
             <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -202,7 +214,7 @@
             %>
             <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -224,7 +236,7 @@
             %>
             <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
-                    <img src="img/profile.jpg" alt="" class="cover">
+                    <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
                 <div class="details">
                     <div class="listhead">
@@ -260,7 +272,11 @@
         </div>
         <div class="profile-details">
             <div class="profile-img">
-                <img src="img/<%=user.getProfilePicture()%>" class="cover" alt="">
+
+                <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
+
+                /<%=user.getProfilePicture()%>" class="cover" alt="">
+
             </div>
             <h2><%=user.getUserName()%>
             </h2>
@@ -268,6 +284,9 @@
             </p>
             <p><%=user.getBio()%>
             </p>
+            <label>Update profile picture</label>
+            <input id="newProfilePic" type="file" accept="image/png, image/jpeg, image/jpg">
+            <button onclick="changeProfilePic()">upload</button>
         </div>
     </div>
 
@@ -429,22 +448,22 @@
         });
     }
 
-   /* function seeReport() {
-        $(document).ready(function () {
-            $.ajax({
-                url: "controller",
-                type: 'post',
-                data: {action: "showReport","inboxId": mainInboxId},
-                success: function (data) {
-                   /* var chatList = document.getElementById("chatlist");
-                    chatList.innerHTML = data;
-                },
-                error: function () {
-                    alert("Error with ajax");
-                }
-            });
-        });
-    }*/
+    /* function seeReport() {
+         $(document).ready(function () {
+             $.ajax({
+                 url: "controller",
+                 type: 'post',
+                 data: {action: "showReport","inboxId": mainInboxId},
+                 success: function (data) {
+                    /* var chatList = document.getElementById("chatlist");
+                     chatList.innerHTML = data;
+                 },
+                 error: function () {
+                     alert("Error with ajax");
+                 }
+             });
+         });
+     }*/
 
     function getChatList() {
         $(document).ready(function () {
@@ -481,6 +500,7 @@
                 method: "POST",
                 body: formData
             });
+            file.value = "";
         } else {
             var msg = document.getElementById("messageEntered").value.trim();
             if (msg !== "" && msg !== null) {
@@ -519,6 +539,22 @@
                 alert("please enter a message");
             }
             document.getElementById("messageEntered").value = "";
+        }
+    }
+
+    function changeProfilePic() {
+        var file = document.getElementById("newProfilePic");
+        if (file.value != "") {
+            var formData = new FormData();
+            var extension = file.value.split(".").pop();
+            formData.append("action", "changeProfilePic");
+            formData.append("file", file.files[0]);
+            formData.append("extension", extension);
+            fetch('controller', {
+                method: "POST",
+                body: formData
+            });
+            file.value = "";
         }
     }
 

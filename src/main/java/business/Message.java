@@ -11,7 +11,7 @@ private String message;
 private int messageType;
 private LocalDateTime timeSent;
 private int deletedState;
-
+private int messageKey;
 public Message() {
 
 }
@@ -24,6 +24,17 @@ public Message() {
         this.messageType = messageType;
         this.timeSent = timeSent;
         this.deletedState = deletedState;
+    }
+
+    public Message(int messageId, int inboxId, int senderId, String message, int messageType, LocalDateTime timeSent, int deletedState, int messageKey) {
+        this.messageId = messageId;
+        this.inboxId = inboxId;
+        this.senderId = senderId;
+        this.message = message;
+        this.messageType = messageType;
+        this.timeSent = timeSent;
+        this.deletedState = deletedState;
+        this.messageKey = messageKey;
     }
 
     public int getMessageId() {
@@ -82,6 +93,14 @@ public Message() {
         this.deletedState = deletedState;
     }
 
+    public int getMessageKey() {
+        return messageKey;
+    }
+
+    public void setMessageKey(int messageKey) {
+        this.messageKey = messageKey;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -105,6 +124,7 @@ public Message() {
                 ", messageType=" + messageType +
                 ", timeSent=" + timeSent +
                 ", deletedState=" + deletedState +
+                ", messageKey=" + messageKey +
                 '}';
     }
 }

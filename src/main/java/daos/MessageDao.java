@@ -82,6 +82,41 @@ public class MessageDao extends Dao {
     }
 
     /**
+     * sends a message to a person or group, depending on the inboxId
+     * @param inboxId the inboxId
+     * @param senderId the sender based by ID
+     * @param message the message written
+     * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
+     * @return true or false, depends on if the message is sent or not
+     */
+    public boolean sendMessage(int inboxId, int senderId, String message, int messageType,int messageKey) {
+        int rowsAffected;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "insert into messages (inboxId,senderId,message,messageType,messageKey) values (?,?,?,?,?)";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, senderId);
+            ps.setString(3, message);
+            ps.setInt(4, messageType);
+            ps.setInt(5, messageKey);
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
+        }
+        return state;
+    }
+
+    /**
      * get all messages that are not deleted, from a certain inbox
      * @param inboxId the inboxId
      * @return all messages on the inbox
@@ -98,7 +133,7 @@ public class MessageDao extends Dao {
 
             while (rs.next()) {
                 LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
-                Message m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"));
+                Message m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"),rs.getInt("messageKey"));
 
                 messages.add(m);
             }

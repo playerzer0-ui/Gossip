@@ -476,7 +476,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
             String hashPassword = BCrypt.hashpw(u.getPassword(), BCrypt.gensalt());
 
-            String command = "UPDATE users SET email=? and userName=? and profilePicture=? and password=? and dateOfBirth=? and userType=? and suspended=? and bio=? and online=? WHERE userID=?";
+            String command = "UPDATE users SET email=? ,userName=? , profilePicture=? , password=? , dateOfBirth=? , userType=? , suspended=? , bio=? , online=? WHERE userID=?";
             ps = con.prepareStatement(command);
             ps.setString(1, u.getEmail());
             ps.setString(2, u.getUserName());
@@ -487,6 +487,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             ps.setInt(7, u.getSuspended());
             ps.setString(8, u.getBio());
             ps.setInt(9, u.getOnline());
+            ps.setInt(10, u.getUserId());
 
             rowsAffected = ps.executeUpdate();
 
