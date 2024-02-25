@@ -292,7 +292,7 @@
 
 
     <div class="right">
-        <div class="header chat-hide">
+        <div class="header" id="chat-hide">
             <div class="imgtext" id="imgtext">
             </div>
             <ul class="nav-icons">
@@ -384,9 +384,28 @@
                 type: 'post',
                 data: {action: "getMessagesHeader", "inboxId": inboxId},
                 success: function (data) {
-                    var header = document.getElementById("imgtext");
-                    var dropMenuChat = document.getElementById("drop-menu-chat");
-                    header.innerHTML = data;
+                    var header = document.getElementById("chat-hide");
+                    var str = data.split("%%%");
+                    if(str.length > 1){
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>' + str[1];
+                    }
+                    else{
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>';
+                    }
+
+                    var imgtext = document.getElementById("imgtext");
+
+                    imgtext.innerHTML = str[0];
                 },
                 error: function () {
                     alert("Error with ajax");
@@ -486,7 +505,7 @@
 
 
     /*async*/
-    function sendMessage() {
+    async function sendMessage() {
         var file = document.getElementById("msgFile");
         if (file.value != "") {
             var formData = new FormData();
@@ -496,7 +515,7 @@
             formData.append("extension", extension);
             formData.append("inboxId", mainInboxId);
 
-            fetch('controller', {
+            await fetch('controller', {
                 method: "POST",
                 body: formData
             });

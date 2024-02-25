@@ -53,6 +53,9 @@ public class Controller extends HttpServlet {
         if (action != null) {
             switch (action) {
                 case "index":
+                    String x = getServletContext().getRealPath("/");
+                    getServletContext().log("sdasdadsadsadssd");
+                    response.sendRedirect(dest);
                     break;
 
                 case "logout":
@@ -518,15 +521,20 @@ public class Controller extends HttpServlet {
     }
 
     public boolean uploadFile(Part file, String fileName, String directory) {
+        String fullPath = getServletContext().getRealPath("/");
+        int index = fullPath.indexOf("target");
+        String resultPath = fullPath.substring(0, index);
+
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
-            //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\d00243400\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + directory + fileName))) {
+             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp" + directory + fileName)) {
+            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {

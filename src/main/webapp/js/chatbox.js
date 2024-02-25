@@ -78,7 +78,7 @@ function seeMessage(){
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "3" );
 
-    $(".chat-hide").css("visibility", "visible");
+    $("#chat-hide").css("visibility", "visible");
     $(".chatbox").css("visibility", "visible");
     $(".chatbox-input").css("visibility", "visible");
 }
