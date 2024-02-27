@@ -51,6 +51,7 @@ class BlockedusersDaoTest {
     void deleteBlockUser_byBlockedId() {
         BlockedusersDao blockedusersDao = new BlockedusersDao("gossiptest");
         System.out.println("deleteBlockUser_byBlockedId");
+        blockedusersDao.addBlockUser(4,2);
 
         Blockedusers b = new Blockedusers(4,2);
         int id = b.getBlockedId();

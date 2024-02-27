@@ -125,6 +125,16 @@ public class Controller extends HttpServlet {
                     dest = "chatbox.jsp";
                     response.sendRedirect(dest);
                     break;
+
+                case "show_admin":
+                    dest = "admin.jsp";
+                    response.sendRedirect(dest);
+                    break;
+
+                case "show_admin_report":
+                    dest = "reportPage.jsp";
+                    response.sendRedirect(dest);
+                    break;
             }
         }
 

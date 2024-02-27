@@ -76,6 +76,9 @@ class UsersDaoTest {
         LocalDate dOfBirth = LocalDate.of(1992,8,11);
 
         int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        usersDao.deleteUserById(6);
+        usersDao.updateIncrement("users", 6);
+
         assertTrue((result > 0));
     }
 
@@ -92,6 +95,7 @@ class UsersDaoTest {
         LocalDate dOfBirth = LocalDate.of(1992,8,11);
 
         int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        usersDao.updateIncrement("users", 6);
         assertTrue((result == -1));
     }
 
@@ -108,6 +112,7 @@ class UsersDaoTest {
         LocalDate dOfBirth = LocalDate.of(1999,7,5);
 
         int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
+        usersDao.updateIncrement("users", 6);
         assertTrue((result == -1));
     }
 
@@ -131,6 +136,9 @@ class UsersDaoTest {
         Users u = new Users(email,userName,pPicture,password,dOfBirth,userType,susp,bio,online);
 
         int result = usersDao.Register(u);
+        usersDao.deleteUserById(6);
+        usersDao.updateIncrement("users", 6);
+
         assertTrue((result > 0));
 
     }

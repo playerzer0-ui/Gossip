@@ -439,6 +439,29 @@ body {
     display: block;
 }
 
+.chat-bubble .file-details {
+    position: relative;
+    width: 100%;
+    height: auto;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.chat-bubble .file-details div:nth-child(1){
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-bubble .iconbx {
+    font-size: 2.5em;
+    transition: 0.2s;
+}
+
+.chat-bubble .iconbx:hover {
+    color: green;
+}
+
 .message p {
     position: relative;
     right: 0;
