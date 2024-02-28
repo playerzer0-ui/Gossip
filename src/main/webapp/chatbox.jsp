@@ -501,7 +501,7 @@
         });
     }
 
-    //I need to add another function to set otherUserId
+    //I need to add another function to set otherUserId when searching for a user
 
 
     /*async*/
