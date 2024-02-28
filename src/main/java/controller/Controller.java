@@ -135,6 +135,11 @@ public class Controller extends HttpServlet {
                     dest = "reportPage.jsp";
                     response.sendRedirect(dest);
                     break;
+
+                case "show_editProfile":
+                    dest = "editProfile.jsp";
+                    response.sendRedirect(dest);
+                    break;
             }
         }
 
