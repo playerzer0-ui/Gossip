@@ -308,34 +308,28 @@
 
         <!-- chatbox -->
         <div class="chatbox" id="chatbox">
-            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
-                <img src="img/pattern.jpg" alt="User Image">
-                <span>12:45 AM</span>
-            </div>
-            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
-                <img src="img/phones.png" alt="User Image">
-                <span>12:45 AM</span>
-            </div>
-            <div class="chat-bubble my-message-file" onclick="checkImage(this)">
-                <img src="img/wallpaper.jpg" alt="User Image">
-                <span>12:45 AM</span>
-            </div>
-            <div class="chat-bubble frnd-message-file" onclick="checkImage(this)">
-                <img src="img/picture2.jpg" alt="User Image">
+            <div class="chat-bubble frnd-message-file">
+                <div class="file-details">
+                    <div>
+                        <p>this_is_a_file.docx</p>
+                        <span>12 MB</span>
+                    </div>
+                    <div class="iconbx">
+                        <ion-icon name="arrow-down-circle-outline"></ion-icon>
+                    </div>
+                </div>
                 <span>12:45 AM</span>
             </div>
             <div class="chat-bubble my-message-file">
-                <video controls>
-                    <source src="video/2023-09-30 16-22-05.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <span>12:45 AM</span>
-            </div>
-            <div class="chat-bubble frnd-message-file">
-                <video controls>
-                    <source src="video/Screenrecorder.mp4" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
+                <div class="file-details">
+                    <div>
+                        <p>this_is_a_file.docx</p>
+                        <span>12 MB</span>
+                    </div>
+                    <div class="iconbx">
+                        <ion-icon name="arrow-down-circle-outline"></ion-icon>
+                    </div>
+                </div>
                 <span>12:45 AM</span>
             </div>
 
