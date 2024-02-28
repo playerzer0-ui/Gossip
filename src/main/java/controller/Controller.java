@@ -125,6 +125,16 @@ public class Controller extends HttpServlet {
                     dest = "chatbox.jsp";
                     response.sendRedirect(dest);
                     break;
+
+                case "show_admin":
+                    dest = "admin.jsp";
+                    response.sendRedirect(dest);
+                    break;
+
+                case "show_admin_report":
+                    dest = "reportPage.jsp";
+                    response.sendRedirect(dest);
+                    break;
             }
         }
 
@@ -604,8 +614,12 @@ public class Controller extends HttpServlet {
      * deletes a profile picture or file
      **/
     public boolean deleteImage(String folder, String image) {
+        String fullPath = getServletContext().getRealPath("/");
+        int index = fullPath.indexOf("target");
+        String resultPath = fullPath.substring(0, index);
+
         File temp_file = new File(
-                "C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + folder + image
+                resultPath + "src\\main\\webapp\\" + folder + image
         ); // Object of file class
         if (temp_file.delete()) {
             System.out.println(temp_file.getName() + " is successfully deleted");
