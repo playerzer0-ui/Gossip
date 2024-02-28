@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2024 at 04:17 PM
+-- Generation Time: Feb 28, 2024 at 06:45 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.28
 
@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `timeSent` datetime NOT NULL DEFAULT current_timestamp(),
   `deletedState` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'FALSE(0) for not deleted and TRUE for deleted',
   `messageKey` int(3) NOT NULL DEFAULT 128,
+  `originalFileName` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`messageId`),
   KEY `senderId` (`senderId`),
   KEY `inboxId` (`inboxId`)
@@ -119,12 +120,12 @@ CREATE TABLE IF NOT EXISTS `messages` (
 -- Dumping data for table `messages`
 --
 
-INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageType`, `timeSent`, `deletedState`, `messageKey`) VALUES
-(1, 1, 1, 'hello', 1, '2024-01-31 21:57:14', 0, 128),
-(2, 1, 2, 'hi', 1, '2024-01-31 21:58:28', 0, 128),
-(3, 2, 2, 'hello', 1, '2024-01-31 22:12:59', 0, 128),
-(4, 2, 3, 'how is everyone doing', 1, '2024-01-31 22:14:00', 0, 128),
-(5, 2, 1, 'we are fine', 1, '2024-01-31 22:14:32', 0, 128);
+INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageType`, `timeSent`, `deletedState`, `messageKey`, `originalFileName`) VALUES
+(1, 1, 1, 'hello', 1, '2024-01-31 21:57:14', 0, 128, NULL),
+(2, 1, 2, 'hi', 1, '2024-01-31 21:58:28', 0, 128, NULL),
+(3, 2, 2, 'hello', 1, '2024-01-31 22:12:59', 0, 128, NULL),
+(4, 2, 3, 'how is everyone doing', 1, '2024-01-31 22:14:00', 0, 128, NULL),
+(5, 2, 1, 'we are fine', 1, '2024-01-31 22:14:32', 0, 128, NULL);
 
 -- --------------------------------------------------------
 

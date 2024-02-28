@@ -12,6 +12,7 @@ private int messageType;
 private LocalDateTime timeSent;
 private int deletedState;
 private int messageKey;
+private String originalFileName;
 public Message() {
 
 }
@@ -35,6 +36,18 @@ public Message() {
         this.timeSent = timeSent;
         this.deletedState = deletedState;
         this.messageKey = messageKey;
+    }
+
+    public Message(int messageId, int inboxId, int senderId, String message, int messageType, LocalDateTime timeSent, int deletedState, int messageKey, String originalFileName) {
+        this.messageId = messageId;
+        this.inboxId = inboxId;
+        this.senderId = senderId;
+        this.message = message;
+        this.messageType = messageType;
+        this.timeSent = timeSent;
+        this.deletedState = deletedState;
+        this.messageKey = messageKey;
+        this.originalFileName = originalFileName;
     }
 
     public int getMessageId() {
@@ -101,6 +114,14 @@ public Message() {
         this.messageKey = messageKey;
     }
 
+    public String getOriginalFileName() {
+        return originalFileName;
+    }
+
+    public void setOriginalFileName(String originalFileName) {
+        this.originalFileName = originalFileName;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -125,6 +146,7 @@ public Message() {
                 ", timeSent=" + timeSent +
                 ", deletedState=" + deletedState +
                 ", messageKey=" + messageKey +
+                ", originalFileName='" + originalFileName + '\'' +
                 '}';
     }
 }

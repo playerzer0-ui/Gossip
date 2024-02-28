@@ -206,7 +206,7 @@ public class Controller extends HttpServlet {
         ArrayList<String[]> messagesList = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
         for (Message m : allMessages) {
-            String[] messageArray = new String[7];
+            String[] messageArray = new String[8];
             try {
                 String message = aes.decrypt(m.getMessage(), m.getMessageKey());
                 messageArray[0] = m.getMessageId() + "";
@@ -216,6 +216,9 @@ public class Controller extends HttpServlet {
                 messageArray[4] = m.getMessageType() + "";
                 messageArray[5] = m.getTimeSent().toString();
                 messageArray[6] = m.getDeletedState() + "";
+                if (m.getOriginalFileName()!=null){
+                    messageArray[7] = aes.decrypt(m.getOriginalFileName(), m.getMessageKey());
+            }
             }catch(Exception ex){
                 System.out.println("error occurred while getting messages" + ex.getMessage());
             }
@@ -387,7 +390,7 @@ public class Controller extends HttpServlet {
                         m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
                     }
                     catch(Exception ex){
-                        System.out.println("error occurred when getting last message" + ex.getMessage());
+                        System.out.println("error occurred when getting last message " + ex.getMessage());
                     }
                     //if there are unseenMessages
                     if (ibps.getUnseenMessages() > 0) {
@@ -440,6 +443,7 @@ public class Controller extends HttpServlet {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         String extension = request.getParameter("extension");
         Part file = request.getPart("file");
+        String originalFileName=file.getSubmittedFileName();
         //String currentTime = LocalDateTime.now().toString() + user.getUserId();
         String filteredFileName = generateFileName(user.getUserId(), extension);
        /* for (int i = 0; i < currentTime.length(); i++) {
@@ -459,53 +463,73 @@ public class Controller extends HttpServlet {
         //if it's a normal chat
         try {
             if (inbox.getInboxType() == 1) {
+                boolean uploadState=false;
                 //if it's an image or video
                 if (checkImage(extension)) {
-                    boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                    uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key,originalFileName);
                     }
                 } else if (checkVideo(extension)) {
-                    boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                     uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key,originalFileName);
                     }
-                } /*else {
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            }*/
-                // get the other person's InboxParticipant
-                InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
-                //update unseen messages for the other user
-                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+                } else {
+                    uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
+                        //send message
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4,key,originalFileName);
+                    }
+            }
+                if(uploadState==true) {
+                    // get the other person's InboxParticipant
+                    InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
+                    //update unseen messages for the other user
+                    ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+                }
             } else {
+                boolean uploadState = false;
                 //if it's an image
                 if (checkImage(extension)) {
-                    boolean uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
+                    uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key,originalFileName);
                     }
                 } //if it's a video
                 else if (checkVideo(extension)) {
-                    boolean uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                    uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key,originalFileName);
+                    }
+                } else {
+                    uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
+                    if (uploadState) {
+                        filteredFileName = aes.encrypt(filteredFileName, key);
+                        originalFileName = aes.encrypt(originalFileName, key);
+                        //send message
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4,key,originalFileName);
                     }
                 }
-            /*else {
-                //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3);
-            }*/
-                ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
-                //add unseenMessages for all users in the groupChat
-                for (InboxParticipants Ibps : allIbps) {
-                    if (Ibps.getUserId() != user.getUserId()) {
-                        ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                if (uploadState==true) {
+                    ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
+                    //add unseenMessages for all users in the groupChat
+                    for (InboxParticipants Ibps : allIbps) {
+                        if (Ibps.getUserId() != user.getUserId()) {
+                            ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                        }
                     }
                 }
             }
@@ -539,12 +563,12 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
+           // FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                targetStream.write(buffer, 0, bytesRead);
+            //    targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {

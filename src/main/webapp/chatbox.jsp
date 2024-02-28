@@ -344,7 +344,7 @@
         <div class="chatbox-input">
             <ion-icon name="happy-outline"></ion-icon>
             <ion-icon name="attach-outline" class="custom-file-icon" onclick="openFileInput()"></ion-icon>
-            <input type="file" id="msgFile" onchange="sendFile(this)" accept="image/*,video/*,audio/*">
+            <input type="file" id="msgFile" onchange="sendFile(this)">
             <input type="text" placeholder="type a message" id="messageEntered">
             <ion-icon name="send" onclick="sendMessage()"></ion-icon>
         </div>
@@ -386,15 +386,14 @@
                 success: function (data) {
                     var header = document.getElementById("chat-hide");
                     var str = data.split("%%%");
-                    if(str.length > 1){
+                    if (str.length > 1) {
                         header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
                             '</div> ' +
                             '<ul class="nav-icons"> ' +
                             '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
                             '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
                             ' </ul>' + str[1];
-                    }
-                    else{
+                    } else {
                         header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
                             '</div> ' +
                             '<ul class="nav-icons"> ' +
@@ -437,6 +436,9 @@
                                 chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
                                 chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                            } else if (parseInt(allMessages[i][4]) === 4) {
+                                chatBox.innerHTML += "<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
+                                //"<div><embed src='fileMessages/"+allMessages[i][3]+"' type='application/pdf' >"+allMessages[i][7]+"</div>";
                             }
                         } else {
                             if (parseInt(allMessages[i][4]) === 1) {
@@ -445,6 +447,9 @@
                                 chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
                                 chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                            } else if (parseInt(allMessages[i][4]) === 4) {
+                                chatBox.innerHTML += "<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
+                                   
                             }
                         }
                     }

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 25, 2024 at 04:16 PM
+-- Generation Time: Feb 28, 2024 at 06:45 PM
 -- Server version: 10.4.22-MariaDB
 -- PHP Version: 7.4.28
 
@@ -91,10 +91,10 @@ CREATE TABLE IF NOT EXISTS `inboxparticipants` (
 
 INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMessages`, `isOpen`, `timeSent`) VALUES
 (1, 1, 0, 0, 1, '2024-02-16 11:43:05.519809'),
-(2, 1, 0, 5, 0, '2024-02-16 08:31:25.080636'),
+(2, 1, 0, 13, 0, '2024-02-16 08:31:25.080636'),
 (1, 2, 0, 0, 1, '2024-02-16 08:30:38.153926'),
-(2, 2, 0, 2, 0, '2024-02-16 08:29:24.000000'),
-(3, 2, 0, 2, 0, '2024-02-11 08:29:27.000000');
+(2, 2, 0, 3, 0, '2024-02-16 08:29:24.000000'),
+(3, 2, 0, 3, 0, '2024-02-11 08:29:27.000000');
 
 -- --------------------------------------------------------
 
@@ -111,27 +111,29 @@ CREATE TABLE IF NOT EXISTS `messages` (
   `timeSent` datetime NOT NULL DEFAULT current_timestamp(),
   `deletedState` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'FALSE(0) for not deleted and TRUE for deleted',
   `messageKey` int(3) NOT NULL DEFAULT 128,
+  `originalFileName` varchar(80) DEFAULT NULL,
   PRIMARY KEY (`messageId`),
   KEY `senderId` (`senderId`),
   KEY `inboxId` (`inboxId`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `messages`
 --
 
-INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageType`, `timeSent`, `deletedState`, `messageKey`) VALUES
-(1, 1, 1, '4K74EZMs/V3Utrfkwp+KeA==', 1, '2024-01-31 21:57:14', 0, 128),
-(2, 1, 2, 'RJN3ZSrU+U00N7fEJYGXvw==', 1, '2024-01-31 21:58:28', 0, 128),
-(3, 2, 2, '4K74EZMs/V3Utrfkwp+KeA==', 1, '2024-01-31 22:12:59', 0, 128),
-(4, 2, 3, '+RbaEUk/+QFTdCUjcDCBkCDdUrD05oHod8n8Jdt8NT4=', 1, '2024-01-31 22:14:00', 0, 128),
-(5, 2, 1, 'zh9DG5mhldvl9Lr0PXpvqQ==', 1, '2024-01-31 22:14:32', 0, 128),
-(6, 1, 1, 'P/hBC52RONpsOBoWkfRMwA==', 1, '2024-02-16 08:31:17', 0, 128),
-(7, 1, 1, 'Rkl4zoxOtqinD8jhcU08cQ==', 1, '2024-02-16 08:31:25', 0, 128),
-(8, 1, 1, '7NBf3INMrJK9hvkHEDL2toGnt7wM9p+sguuPpDk/FTnRruBSKcmNqeWiEHWLycP2', 2, '2024-02-25 14:29:05', 0, 128),
-(9, 1, 1, 'dR4pq0cTTN8TzyeKsic02ghMNCKPgNeoJxRpZ/IUfJ+jPeuJOMWHSzTPRfqZWDTI', 3, '2024-02-25 14:29:37', 0, 128),
-(10, 1, 1, 'AZ2ml8vXlWvsOdLfcuzsig==', 1, '2024-02-25 14:40:09', 0, 192),
-(11, 2, 1, 'r+nUKEMUsXj/yvjAwPjrLMx/oNNZqi3mfAERFNtf85h/wwMkuVSectG+D6SuTU3G', 2, '2024-02-25 15:12:37', 0, 256);
+INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageType`, `timeSent`, `deletedState`, `messageKey`, `originalFileName`) VALUES
+(1, 1, 1, '4K74EZMs/V3Utrfkwp+KeA==', 1, '2024-01-31 21:57:14', 0, 128, NULL),
+(2, 1, 2, 'RJN3ZSrU+U00N7fEJYGXvw==', 1, '2024-01-31 21:58:28', 0, 128, NULL),
+(3, 2, 2, '4K74EZMs/V3Utrfkwp+KeA==', 1, '2024-01-31 22:12:59', 0, 128, NULL),
+(4, 2, 3, '+RbaEUk/+QFTdCUjcDCBkCDdUrD05oHod8n8Jdt8NT4=', 1, '2024-01-31 22:14:00', 0, 128, NULL),
+(5, 2, 1, 'zh9DG5mhldvl9Lr0PXpvqQ==', 1, '2024-01-31 22:14:32', 0, 128, NULL),
+(6, 1, 1, 'P/hBC52RONpsOBoWkfRMwA==', 1, '2024-02-16 08:31:17', 0, 128, NULL),
+(7, 1, 1, 'Rkl4zoxOtqinD8jhcU08cQ==', 1, '2024-02-16 08:31:25', 0, 128, NULL),
+(8, 1, 1, '7NBf3INMrJK9hvkHEDL2toGnt7wM9p+sguuPpDk/FTnRruBSKcmNqeWiEHWLycP2', 2, '2024-02-25 14:29:05', 0, 128, NULL),
+(9, 1, 1, 'dR4pq0cTTN8TzyeKsic02ghMNCKPgNeoJxRpZ/IUfJ+jPeuJOMWHSzTPRfqZWDTI', 3, '2024-02-25 14:29:37', 0, 128, NULL),
+(10, 1, 1, 'AZ2ml8vXlWvsOdLfcuzsig==', 1, '2024-02-25 14:40:09', 0, 192, NULL),
+(11, 2, 1, 'r+nUKEMUsXj/yvjAwPjrLMx/oNNZqi3mfAERFNtf85h/wwMkuVSectG+D6SuTU3G', 2, '2024-02-25 15:12:37', 0, 256, NULL),
+(12, 1, 1, 'KYuumKT0NqyQR7pCFWFkitj2Nvy01tQj06IXClQck+vx5As4For8EOPmMNTut4m0', 2, '2024-02-27 22:05:07', 0, 256, NULL);
 
 -- --------------------------------------------------------
 
