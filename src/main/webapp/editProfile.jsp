@@ -278,15 +278,29 @@
                 /<%=user.getProfilePicture()%>" class="cover" alt="">
 
             </div>
-            <h2><%=user.getUserName()%>
-            </h2>
-            <p><%=user.getEmail()%>
-            </p>
-            <p><%=user.getBio()%>
-            </p>
-            <label>Update profile picture</label>
-            <input id="newProfilePic" type="file" accept="image/png, image/jpeg, image/jpg">
-            <button onclick="changeProfilePic()">upload</button>
+            <div class="edit-profile">
+                <form action="controller" method="post">
+                    <h3>Update my profile</h3>
+                    <label class="form-label">Username</label> <br/>
+                    <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
+
+                    <label class="form-label">Password</label> <br/>
+                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password" required/> <br/>
+
+                    <label class="form-label">Email</label> <br/>
+                    <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
+
+                    <label class="form-label">Date of birth</label> <br/>
+                    <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
+
+                    <label class="form-label">Bio</label> <br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
+
+                    <input type="submit" value="Update" class="btn btn-success"/>
+                    <!-- Include a hidden field to identify what the user wants to do -->
+                    <input type="hidden" name ="action" value="editProfile" />
+                </form>
+            </div>
         </div>
     </div>
 
@@ -443,7 +457,7 @@
                                 chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
                                 chatBox.innerHTML += "<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
-
+                                   
                             }
                         }
                     }

@@ -17,10 +17,9 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
     }
 
     /**
-     * addStory method able to add a new story.
+     * addStory(with storyId) method able to add a new story.
      * storyId will increase automatic.
      *
-     * @param storyId is story's id
      * @param userId is user's id
      * @param story is the story's file name
      * @param storyType is story's type - 1 is picture and 2 is video
@@ -30,20 +29,19 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
      * @return int of story id if added else added fail will return -1
      */
     @Override
-    public int addStory(int storyId, int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription) {
+    public int addStory(int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription) {
         int rowsAffected = -1;
 
         try{
             con = getConnection();
 
-            String query = "INSERT INTO stories (storyId, userId, story, storyType, dateTime, storyDescription) VALUES (?, ?, ?, ?, ?，?)";
+            String query = "INSERT INTO stories (userId, story, storyType, dateTime, storyDescription) VALUES (?, ?, ?, ?，?)";
             ps = con.prepareStatement(query);
-            ps.setInt(1, storyId);
-            ps.setInt(2, userId);
-            ps.setString(3,story);
-            ps.setInt(4,storyType);
-            ps.setTimestamp(5, Timestamp.valueOf(dateTime));
-            ps.setString(6, storyDescription);
+            ps.setInt(1, userId);
+            ps.setString(2,story);
+            ps.setInt(3,storyType);
+            ps.setTimestamp(4, Timestamp.valueOf(dateTime));
+            ps.setString(5, storyDescription);
 
             rowsAffected = ps.executeUpdate();
         }

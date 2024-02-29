@@ -1,16 +1,16 @@
 package daos;
 
 import business.Stories;
+import business.Users;
 
 import java.time.LocalDateTime;
 
 public interface StoriesDaoInterface {
 
     /**
-     * addStory method able to add a new story.
+     * addStory(with storyId) method able to add a new story.
      * storyId will increase automatic.
      *
-     * @param storyId is story's id
      * @param userId is user's id
      * @param story is the story's file name
      * @param storyType is story's type - 1 is picture and 2 is video
@@ -19,7 +19,7 @@ public interface StoriesDaoInterface {
 
      * @return int of story id if added else added fail will return -1
      */
-    public int addStory(int storyId, int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription);
+    public int addStory(int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription);
 
     /**
      * deleteStory method able to delete story by story's id .
