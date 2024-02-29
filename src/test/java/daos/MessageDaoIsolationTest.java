@@ -11,7 +11,8 @@ import java.util.ArrayList;
 
 import static org.mockito.Mockito.*;
 
-class MessageDaoIsolationTest {
+class
+MessageDaoIsolationTest {
 
     private Message msg1 = new Message(1, 1, 1, "hello", 1,LocalDateTime.of(2024, 1, 31, 21, 57, 14), 0);
 

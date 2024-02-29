@@ -1,0 +1,7 @@
+package daos;
+
+ class InboxDaoIsolationTest {
+
+
+
+}
