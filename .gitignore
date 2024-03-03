@@ -36,3 +36,5 @@ build/
 
 ### Mac OS ###
 .DS_Store
+/src/main/webapp/profilePictures/2024-03-03T085847.9896609001.png
+/.idea/sqldialects.xml

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 class
 MessageDaoIsolationTest {
 
-    private Message msg1 = new Message(1, 1, 1, "hello", 1,LocalDateTime.of(2024, 1, 31, 21, 57, 14), 0);
+    private Message msg1 = new Message(1, 1, 1, "hello", 1,LocalDateTime.of(2024, 1, 31, 21, 57, 14), 0, 0, null);
 
     /**
      * getMessage, normal scenario
@@ -39,6 +39,8 @@ MessageDaoIsolationTest {
         when(rs.getInt("messageType")).thenReturn(msg1.getMessageType());
         when(rs.getTimestamp("timeSent")).thenReturn(Timestamp.valueOf(msg1.getTimeSent()));
         when(rs.getInt("deletedState")).thenReturn(msg1.getDeletedState());
+        when(rs.getInt("messageKey")).thenReturn(msg1.getMessageKey());
+        when(rs.getString("originalFileName")).thenReturn(msg1.getOriginalFileName());
 
         MessageDao messageDao = new MessageDao(dbConn);
         Message result = messageDao.getMessage(1);
@@ -150,6 +152,8 @@ MessageDaoIsolationTest {
         when(rs.getInt("messageType")).thenReturn(msg1.getMessageType(), exp1.getMessageType());
         when(rs.getTimestamp("timeSent")).thenReturn(Timestamp.valueOf(msg1.getTimeSent()), Timestamp.valueOf(exp1.getTimeSent()));
         when(rs.getInt("deletedState")).thenReturn(msg1.getDeletedState(), exp1.getDeletedState());
+        when(rs.getInt("messageKey")).thenReturn(msg1.getMessageKey());
+        when(rs.getString("originalFileName")).thenReturn(msg1.getOriginalFileName());
 
         MessageDao messageDao = new MessageDao(dbConn);
         ArrayList<Message> result = messageDao.getMessages(1);
@@ -223,5 +227,45 @@ MessageDaoIsolationTest {
         verify(ps).setInt(1, 60);
 
         assertEquals(0, result);
+    }
+
+    /**
+     * getDailyMessageCount, there is one new message in the day
+     */
+    @Test
+    void getDailyMessageCount_normal() throws SQLException {
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+
+        when(dbConn.prepareStatement("SELECT count(*) FROM messages where DATE(timeSent) = CURDATE()")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt("count(*)")).thenReturn(1);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        int act = messageDao.getDailyMessageCount();
+
+        assertEquals(1, act);
+    }
+
+    /**
+     * getTotalMessageCount, normal scenario
+     */
+    @Test
+    void getTotalMessageCount_normal() throws SQLException {
+        Connection dbConn = mock(Connection.class);
+        PreparedStatement ps = mock(PreparedStatement.class);
+        ResultSet rs = mock(ResultSet.class);
+
+        when(dbConn.prepareStatement("SELECT count(*) FROM messages")).thenReturn(ps);
+        when(ps.executeQuery()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt("count(*)")).thenReturn(1);
+
+        MessageDao messageDao = new MessageDao(dbConn);
+        int act = messageDao.getTotalMessageCount();
+
+        assertEquals(1, act);
     }
 }

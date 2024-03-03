@@ -189,4 +189,56 @@ public class MessageDao extends Dao {
     public int deleteMessages(int messageId){
         return deleteItem(messageId, "messages", "messageId");
     }
+
+
+    /**
+     * get the amount of messages on a daily
+     * @return daily messages count
+     */
+    public int getDailyMessageCount(){
+        int count = 0;
+
+        try{
+            con = getConnection();
+            String query = "SELECT count(*) FROM messages where DATE(timeSent) = CURDATE()";
+
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                count = rs.getInt("count(*)");
+            }
+        }catch (SQLException e) {
+            System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
+        }
+        return count;
+    }
+
+
+    /**
+     * get the total amount of messages
+     * @return the total messages of all time
+     */
+    public int getTotalMessageCount(){
+        int count = 0;
+
+        try{
+            con = getConnection();
+            String query = "SELECT count(*) FROM messages";
+
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                count = rs.getInt("count(*)");
+            }
+        }catch (SQLException e) {
+            System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
+        }
+        return count;
+    }
 }

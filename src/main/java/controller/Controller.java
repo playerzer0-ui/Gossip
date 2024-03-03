@@ -1,11 +1,6 @@
 package controller;
 
-import java.awt.image.BufferedImage;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.sql.Date;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -51,8 +46,6 @@ public class Controller extends HttpServlet {
         if (action != null) {
             switch (action) {
                 case "index":
-                    String x = getServletContext().getRealPath("/");
-                    getServletContext().log("sdasdadsadsadssd");
                     response.sendRedirect(dest);
                     break;
 
@@ -150,6 +143,12 @@ public class Controller extends HttpServlet {
     public void destroy() {
     }
 
+    /**
+     * login command
+     * @param request request
+     * @param response response
+     * @return login page name
+     */
     public String Login(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         String email = request.getParameter("email");
@@ -169,6 +168,12 @@ public class Controller extends HttpServlet {
         }
     }
 
+    /**
+     * register command
+     * @param request request
+     * @param response response
+     * @return login page name
+     */
     public String Register(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         String username = request.getParameter("username");
@@ -176,7 +181,7 @@ public class Controller extends HttpServlet {
         String password = request.getParameter("password");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
 
-        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && dateOfBirth != null) {
+        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty()) {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
@@ -195,6 +200,11 @@ public class Controller extends HttpServlet {
         return "register.jsp";
     }
 
+    /**
+     * getMessages command, it takes a list of messages and decrypts them
+     * @param request request
+     * @param response response
+     */
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         HttpSession session = request.getSession(true);
@@ -247,7 +257,12 @@ public class Controller extends HttpServlet {
         //session.setAttribute("allMessages",messagesList);
     }
 
-    public void firstMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /**
+     * firstMessage command, this allows creating an inbox to open a new chat
+     * @param request request
+     * @param response response
+     */
+    public void firstMessage(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int otherUserId = Integer.parseInt(request.getParameter("userId"));
@@ -292,6 +307,11 @@ public class Controller extends HttpServlet {
 
     }
 
+    /**
+     * sendMessage command, this allows sending a message to the database
+     * @param request request
+     * @param response response
+     */
     public void sendMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
@@ -332,6 +352,11 @@ public class Controller extends HttpServlet {
 
     }
 
+    /**
+     * getMessagesHeader command, shows the header in the chatbox
+     * @param request request
+     * @param response response
+     */
     public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
@@ -339,17 +364,17 @@ public class Controller extends HttpServlet {
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
-        Miscellaneous miscellaneous = new Miscellaneous();
-        String header = "";
+//        Miscellaneous miscellaneous = new Miscellaneous();
+        String header;
         Inbox inbox = inboxDao.getInbox(inboxId);
         if (inbox.getInboxType() == 1) {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>   <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -357,6 +382,11 @@ public class Controller extends HttpServlet {
         response.getWriter().write(header);
     }
 
+    /**
+     * getChatList command, retrieve a bunch of people connected to the user
+     * @param request request
+     * @param response response
+     */
     public void getChatList(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
@@ -387,9 +417,9 @@ public class Controller extends HttpServlet {
                 Users otherUser = usersDao.getUserById(otherIbp.getUserId());
                 //get all the messages
                 ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
-                Message m = null;
+                Message m;
                 //if there are messages
-                if (messages.size() > 0) {
+                if (!messages.isEmpty()) {
                     //get the last message
                     m = messages.get(messages.size() - 1);
                     try {
@@ -416,7 +446,7 @@ public class Controller extends HttpServlet {
                 ArrayList<Message> messages = messageDao.getMessages(myInbox.getInboxId());
                 Message m = null;
                 //if there are messages
-                if (messages.size() > 0) {
+                if (!messages.isEmpty()) {
                     //get the last message
                     m = messages.get(messages.size() - 1);
                     try {
@@ -441,6 +471,11 @@ public class Controller extends HttpServlet {
         response.getWriter().write(chatlist);
     }
 
+    /**
+     * sendFile command, sends a file, be it an image, video or file
+     * @param request request
+     * @param response response
+     */
     public void sendFile(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
@@ -492,8 +527,8 @@ public class Controller extends HttpServlet {
                         //send message
                         messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
-                }
-                if (uploadState == true) {
+            }
+                if(uploadState) {
                     // get the other person's InboxParticipant
                     InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                     //update unseen messages for the other user
@@ -527,7 +562,7 @@ public class Controller extends HttpServlet {
                         messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
                 }
-                if (uploadState == true) {
+                if (uploadState) {
                     ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
                     //add unseenMessages for all users in the groupChat
                     for (InboxParticipants Ibps : allIbps) {
@@ -558,6 +593,14 @@ public class Controller extends HttpServlet {
         return extension.equalsIgnoreCase("mp4") || extension.equalsIgnoreCase("avi");
     }
 
+
+    /**
+     * uploads file to the folder and target folder
+     * @param file the file path
+     * @param fileName the name of the file
+     * @param directory the folder name
+     * @return true or false
+     */
     public boolean uploadFile(Part file, String fileName, String directory) {
         String fullPath = getServletContext().getRealPath("/");
         int index = fullPath.indexOf("target");
@@ -567,7 +610,7 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -582,7 +625,12 @@ public class Controller extends HttpServlet {
         return true;
     }
 
-    public void sendReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    /**
+     * sendReport command, sends a report to the admin
+     * @param request request
+     * @param response response
+     */
+    public void sendReport(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int reportedId = Integer.parseInt((String) session.getAttribute("reportedId"));
@@ -591,6 +639,12 @@ public class Controller extends HttpServlet {
         reportsDao.addReport(user.getUserId(), reportedId, reportReason, LocalDateTime.now(), 1);
     }
 
+    /**
+     * create a file name
+     * @param id the id
+     * @param extension the extension name
+     * @return the filename
+     */
     public String generateFileName(int id, String extension) {
         String currentTime = LocalDateTime.now().toString() + id;
         String filteredFileName = "";
@@ -602,6 +656,11 @@ public class Controller extends HttpServlet {
         return filteredFileName + "." + extension;
     }
 
+    /**
+     * changeProfilePicture command, changes profile picture
+     * @param request request
+     * @param response response
+     */
     public void changeProfilePicture(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
@@ -611,17 +670,18 @@ public class Controller extends HttpServlet {
         if (user.getProfilePicture().equalsIgnoreCase("default.png")) {
             String filteredFileName = generateFileName(user.getUserId(), extension);
             boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
-            if (uploadState == true) {
+            if (uploadState) {
                 setProfilePicture(user, filteredFileName);
+                user.setProfilePicture(filteredFileName);
                 session.setAttribute("user", user);
             }
         } else {
             //then delete previous picture
             boolean deleteState = deleteImage("profilePictures\\", user.getProfilePicture());
-            if (deleteState == true) {
+            if (deleteState) {
                 String filteredFileName = generateFileName(user.getUserId(), extension);
                 boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
-                if (uploadState == true) {
+                if (uploadState) {
                     setProfilePicture(user, filteredFileName);
                     session.setAttribute("user", user);
                 }
@@ -649,8 +709,10 @@ public class Controller extends HttpServlet {
         File temp_file = new File(
                 resultPath + "src\\main\\webapp\\" + folder + image
         ); // Object of file class
+        File target_file = new File(fullPath + folder + image);
         if (temp_file.delete()) {
             System.out.println(temp_file.getName() + " is successfully deleted");
+            target_file.delete();
             return true;
         } else {
             System.out.println("Failed to delete " + temp_file.getName() + " file");

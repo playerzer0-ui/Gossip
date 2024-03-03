@@ -1,11 +1,20 @@
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
+    $( ".leftUpdate" ).css( "z-index", "1" );
     $( ".leftSide" ).css( "z-index", "3" );
     $( ".right" ).css( "z-index", "2" );
 }
 
 function seeChatList(){
     $( ".left" ).css( "z-index", "3" );
+    $( ".leftUpdate" ).css( "z-index", "1" );
+    $( ".leftSide" ).css( "z-index", "1" );
+    $( ".right" ).css( "z-index", "2" );
+}
+
+function seeProfileUpdate(){
+    $( ".left" ).css( "z-index", "1" );
+    $( ".leftUpdate" ).css( "z-index", "3" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
 }
@@ -13,6 +22,10 @@ function seeChatList(){
 function openFileInput() {
     // Trigger a click on the hidden file input
     document.getElementById('msgFile').click();
+}
+
+function openProfileInput(){
+    document.getElementById('newProfilePic').click();
 }
 
 /**

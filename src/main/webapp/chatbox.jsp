@@ -53,9 +53,7 @@
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <a href="controller?action=show_update">
-                        <li>update profile</li>
-                    </a>
+                    <li onclick="seeProfileUpdate()">update profile</li>
                     <a href="controller?action=logout">
                         <li>logout</li>
                     </a>
@@ -274,12 +272,12 @@
             <h4>profile</h4>
         </div>
         <div class="profile-details">
-            <div class="profile-img">
-
+            <div class="profile-img" onclick="openProfileInput()">
+                <div class="camera-logo">
+                    <ion-icon name="camera"></ion-icon>
+                    <p>CHANGE PROFILE PHOTO</p>
+                </div>
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
-
-                /<%=user.getProfilePicture()%>" class="cover" alt="">
-
             </div>
             <h2><%=user.getUserName()%>
             </h2>
@@ -287,9 +285,47 @@
             </p>
             <p><%=user.getBio()%>
             </p>
-            <label>Update profile picture</label>
-            <input id="newProfilePic" type="file" accept="image/png, image/jpeg, image/jpg">
-            <button onclick="changeProfilePic()">upload</button>
+            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()" accept="image/png, image/jpeg, image/jpg">
+<%--            <button onclick="changeProfilePic()">upload</button>--%>
+        </div>
+    </div>
+
+    <div class="leftUpdate">
+        <div class="profile-header">
+            <ion-icon name="arrow-back-outline" onclick="seeChatList()"></ion-icon>
+            <h4>profile</h4>
+        </div>
+        <div class="profile-details">
+            <div class="profile-img">
+
+                <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
+
+<%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
+
+            </div>
+            <div class="edit-profile">
+                <form action="controller?action" method="post">
+                    <h3>Update my profile</h3>
+                    <label class="form-label">Username</label> <br/>
+                    <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
+
+                    <label class="form-label">Password</label> <br/>
+                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password" required/> <br/>
+
+                    <label class="form-label">Email</label> <br/>
+                    <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
+
+                    <label class="form-label">Date of birth</label> <br/>
+                    <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
+
+                    <label class="form-label">Bio</label> <br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
+
+                    <input type="submit" value="Update" class="btn btn-success"/>
+                    <!-- Include a hidden field to identify what the user wants to do -->
+                    <input type="hidden" name ="action" value="editProfile" />
+                </form>
+            </div>
         </div>
     </div>
 
@@ -566,19 +602,20 @@
         }
     }
 
-    function changeProfilePic() {
+    async function changeProfilePic() {
         var file = document.getElementById("newProfilePic");
-        if (file.value != "") {
+        if (file.value !== "") {
             var formData = new FormData();
             var extension = file.value.split(".").pop();
             formData.append("action", "changeProfilePic");
             formData.append("file", file.files[0]);
             formData.append("extension", extension);
-            fetch('controller', {
+            await fetch('controller', {
                 method: "POST",
                 body: formData
             });
             file.value = "";
+            location.reload();
         }
     }
 

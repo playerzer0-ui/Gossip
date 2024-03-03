@@ -1,3 +1,10 @@
+<%@page import="daos.MessageDao" %>
+<%
+    MessageDao messageDao = new MessageDao("gossip");
+    int daily = messageDao.getDailyMessageCount();
+    int total = messageDao.getTotalMessageCount();
+%>
+
 <!DOCTYPE html>
 
 <html>
@@ -58,7 +65,7 @@
         </div>
         <div class="card">
             <div>
-                <div class="numbers">1212</div>
+                <div class="numbers"><%=daily%></div>
                 <div class="cardName">Daily Messages</div>
             </div>
             <div class="iconBx">
@@ -67,7 +74,7 @@
         </div>
         <div class="card">
             <div>
-                <div class="numbers">10212</div>
+                <div class="numbers"><%=total%></div>
                 <div class="cardName">Total Messages</div>
             </div>
             <div class="iconBx">
