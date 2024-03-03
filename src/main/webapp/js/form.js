@@ -5,7 +5,7 @@ var warn1 = warning[0];
 var warn2 = warning[1];
 
 //password input
-var input_list = document.querySelectorAll(".form-control");
+var input_list = document.querySelectorAll("input");
 
 
 //check password if match
