@@ -5,11 +5,12 @@ function seeProfile(){
     $( ".right" ).css( "z-index", "2" );
 }
 
-function seeChatList(){
+function seeChatList(test){
     $( ".left" ).css( "z-index", "3" );
     $( ".leftUpdate" ).css( "z-index", "1" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
+    console.log(test);
 }
 
 function seeProfileUpdate(){

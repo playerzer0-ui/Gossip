@@ -105,7 +105,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -128,7 +128,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -151,7 +151,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -190,7 +190,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -213,7 +213,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -235,7 +235,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -450,7 +450,8 @@
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
-        alert("inside");
+        seeMessage();
+        // alert("inside");
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
@@ -623,7 +624,7 @@
     var timeOutId = null;
     entry.addEventListener('input', function search() {
             const searchInput = entry.value.trim();
-            if (searchInput != null && searchInput != "") {
+            if (searchInput != null && searchInput !== "") {
                 clearTimeout(timeOutId);
                 timeOutId = setTimeout(function () {
                     //alert("hey");
@@ -636,16 +637,18 @@
                             var suggestions = document.getElementById("suggestions");
                             suggestions.innerHTML = "";
                             for (var i = 0; i < allSuggestions.length; i++) {
+                                let idx = allSuggestions[i][2] + allSuggestions[i][3];
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
-                                suggestions.innerHTML += "<div id='" + allSuggestions[i][2] + allSuggestions[i][3] + "' class=suggestion>" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+
                             }
-                            var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
-                            // elements.forEach(function(element) {
-                            allSuggestion.forEach(function (element) {
-                                element.addEventListener('click', handleSearch
-                                );
-                                // return " ";
-                            });
+                            // var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
+                            // // elements.forEach(function(element) {
+                            // allSuggestion.forEach(function (element) {
+                            //     element.addEventListener('click', handleSearch
+                            //     );
+                            //     // return " ";
+                            // });
 
                         },
                         error: function () {
@@ -658,7 +661,8 @@
     );
 
     function handleSearch(event) {
-        var identifier = event.target.id;
+        console.log(event);
+        var identifier = event;
         var searchId = parseInt(identifier.substring(0, identifier.length - 1));
         var searchCategory = identifier.substring(identifier.length - 1);
 
