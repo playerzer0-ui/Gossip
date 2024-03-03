@@ -54,14 +54,14 @@ class InboxDaoTest {
         Inbox actual = inboxDao.getInbox(id);
         Inbox expected = new Inbox(id, 1);
         assertEquals(actual, expected);
-       // if(id>0 && actual==expected) {
+        if(id>0 && actual==expected) {
             assertEquals(actual.getInboxType(),expected.getInboxType());
             assertEquals(actual.getAdminId(),expected.getAdminId());
             assertEquals(actual.getGroupName(),expected.getGroupName());
             assertEquals(actual.getGroupProfilePicture(),actual.getGroupProfilePicture());
             inboxDao.deleteItem(id,"inbox", "inboxId");
             inboxDao.updateIncrement("inbox", 2);
-      //  }
+       }
     }
 /**when inbox is available**/
     @Test

@@ -65,8 +65,11 @@
         <!-- search -->
         <div class="search-chat">
             <div>
-                <input type="text" placeholder="search or start new chat">
+                <input type="text" placeholder="search or start new chat" id="search">
                 <ion-icon name="search-outline"></ion-icon>
+                <div id="suggestions" style="z-index: 5; background-color: white;">
+
+                </div>
             </div>
         </div>
         <!-- chat-list -->
@@ -411,6 +414,7 @@
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
+        alert("inside");
         $(document).ready(function () {
             $.ajax({
                 url: "controller",
@@ -431,7 +435,8 @@
                             } else if (parseInt(allMessages[i][4]) === 3) {
                                 chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
                                 //"<div><embed src='fileMessages/"+allMessages[i][3]+"' type='application/pdf' >"+allMessages[i][7]+"</div>";
                             }
                         } else {
@@ -442,7 +447,8 @@
                             } else if (parseInt(allMessages[i][4]) === 3) {
                                 chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
 
                             }
                         }
@@ -574,6 +580,62 @@
             });
             file.value = "";
         }
+    }
+
+    const entry = document.getElementById("search");
+    var timeOutId = null;
+    entry.addEventListener('input', function search() {
+            const searchInput = entry.value.trim();
+            if (searchInput != null && searchInput != "") {
+                clearTimeout(timeOutId);
+                timeOutId = setTimeout(function () {
+                    //alert("hey");
+                    $.ajax({
+                        url: "controller",
+                        type: 'post',
+                        data: {action: "search", "search": searchInput},
+                        success: function (data) {
+                            var allSuggestions = JSON.parse(data);
+                            var suggestions = document.getElementById("suggestions");
+                            suggestions.innerHTML = "";
+                            for (var i = 0; i < allSuggestions.length; i++) {
+                                // profile picture is == allSuggestions[i][0] generate based on category u or c ;
+                                suggestions.innerHTML += "<div id='" + allSuggestions[i][2] + allSuggestions[i][3] + "' class=suggestion>" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+                            }
+                            var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
+                            // elements.forEach(function(element) {
+                            allSuggestion.forEach(function (element) {
+                                element.addEventListener('click', handleSearch
+                                );
+                                // return " ";
+                            });
+
+                        },
+                        error: function () {
+                            alert("Error with ajax");
+                        }
+                    });
+                }, 500);
+            }
+        }
+    );
+
+    function handleSearch(event) {
+        var identifier = event.target.id;
+        var searchId = parseInt(identifier.substring(0, identifier.length - 1));
+        var searchCategory = identifier.substring(identifier.length - 1);
+
+        if (searchCategory === "g") {
+            getMessages(searchId);
+            //return "";
+            // allSuggestions="";
+            //break;
+        } else {
+
+        }
+        //event.target.removeEventListener("click",function() {});
+        //suggestions.innerHTML = "";
+        // alert(identifier);
     }
 
     document.addEventListener('keydown', function (event) {

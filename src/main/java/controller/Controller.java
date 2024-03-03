@@ -9,12 +9,10 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
-import business.Inbox;
-import business.InboxParticipants;
-import business.Message;
-import business.Users;
+import business.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import daos.*;
 import jakarta.servlet.ServletException;
@@ -140,6 +138,9 @@ public class Controller extends HttpServlet {
                     dest = "editProfile.jsp";
                     response.sendRedirect(dest);
                     break;
+                 case "search":
+                     search(request, response);
+                break;
             }
         }
 
@@ -202,7 +203,7 @@ public class Controller extends HttpServlet {
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
-        Aes aes= new Aes();
+        Aes aes = new Aes();
         //set unseenMessages to 0
         ibpsDao.resetUnSeenMessages(inboxId, user.getUserId());
         //set open state to true
@@ -221,10 +222,10 @@ public class Controller extends HttpServlet {
                 messageArray[4] = m.getMessageType() + "";
                 messageArray[5] = m.getTimeSent().toString();
                 messageArray[6] = m.getDeletedState() + "";
-                if (m.getOriginalFileName()!=null){
+                if (m.getOriginalFileName() != null) {
                     messageArray[7] = aes.decrypt(m.getOriginalFileName(), m.getMessageKey());
-            }
-            }catch(Exception ex){
+                }
+            } catch (Exception ex) {
                 System.out.println("error occurred while getting messages" + ex.getMessage());
             }
             messagesList.add(messageArray);
@@ -373,7 +374,7 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         //gets all the inboxParticipants for that particular user
         ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
-        Aes aes= new Aes();
+        Aes aes = new Aes();
         String chatlist = "";
         //loop through inboxparticipants
         for (InboxParticipants ibps : Ibps) {
@@ -393,8 +394,7 @@ public class Controller extends HttpServlet {
                     m = messages.get(messages.size() - 1);
                     try {
                         m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
-                    }
-                    catch(Exception ex){
+                    } catch (Exception ex) {
                         System.out.println("error occurred when getting last message " + ex.getMessage());
                     }
                     //if there are unseenMessages
@@ -421,8 +421,7 @@ public class Controller extends HttpServlet {
                     m = messages.get(messages.size() - 1);
                     try {
                         m.setMessage(aes.decrypt(m.getMessage(), m.getMessageKey()));
-                    }
-                    catch(Exception ex){
+                    } catch (Exception ex) {
                         System.out.println("error occurred when getting last message" + ex.getMessage());
                     }
                     //if there are unseen messages
@@ -448,7 +447,7 @@ public class Controller extends HttpServlet {
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         String extension = request.getParameter("extension");
         Part file = request.getPart("file");
-        String originalFileName=file.getSubmittedFileName();
+        String originalFileName = file.getSubmittedFileName();
         //String currentTime = LocalDateTime.now().toString() + user.getUserId();
         String filteredFileName = generateFileName(user.getUserId(), extension);
        /* for (int i = 0; i < currentTime.length(); i++) {
@@ -468,7 +467,7 @@ public class Controller extends HttpServlet {
         //if it's a normal chat
         try {
             if (inbox.getInboxType() == 1) {
-                boolean uploadState=false;
+                boolean uploadState = false;
                 //if it's an image or video
                 if (checkImage(extension)) {
                     uploadState = uploadFile(file, filteredFileName, "imageMessages\\");
@@ -476,14 +475,14 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
                     }
                 } else if (checkVideo(extension)) {
-                     uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
+                    uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
                     }
                 } else {
                     uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
@@ -491,10 +490,10 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4,key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
-            }
-                if(uploadState==true) {
+                }
+                if (uploadState == true) {
                     // get the other person's InboxParticipant
                     InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                     //update unseen messages for the other user
@@ -509,7 +508,7 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
                     }
                 } //if it's a video
                 else if (checkVideo(extension)) {
@@ -517,7 +516,7 @@ public class Controller extends HttpServlet {
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
                     }
                 } else {
                     uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
@@ -525,10 +524,10 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4,key,originalFileName);
+                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
                 }
-                if (uploadState==true) {
+                if (uploadState == true) {
                     ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
                     //add unseenMessages for all users in the groupChat
                     for (InboxParticipants Ibps : allIbps) {
@@ -568,12 +567,12 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                 targetStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
@@ -659,5 +658,36 @@ public class Controller extends HttpServlet {
         }
         return false;
     }
+
+    public void search(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        String search = request.getParameter("search");
+        UsersDao usersDao = new UsersDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        List<Search> searchs = usersDao.generalSearch(search,user);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ArrayList<String[]> replies = new ArrayList();
+        for (Search s : searchs) {
+            String[] reply = new String[4];
+            if (s.getCategory().equalsIgnoreCase("u")) {
+                Users u = usersDao.getUserById(s.getId());
+                reply[0] = u.getProfilePicture();
+                reply[1] = u.getUserName();
+                reply[2] = u.getUserId() + "";
+                reply[3] = "u";
+            } else if (s.getCategory().equalsIgnoreCase("g")) {
+                Inbox ib = inboxDao.getInbox(s.getId());
+                reply[0] = ib.getGroupProfilePicture();
+                reply[1] = ib.getGroupName();
+                reply[2] = ib.getInboxId() + "";
+                reply[3] = "g";
+            }
+            replies.add(reply);
+        }
+       String jsonString = objectMapper.writeValueAsString(replies);
+        response.getWriter().write(jsonString);
+    }
+
 }
 

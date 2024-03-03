@@ -1,6 +1,7 @@
 package daos;
 
 import business.Message;
+import business.Search;
 import business.Users;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -148,7 +149,8 @@ public class UsersDao extends Dao implements UsersDaoInterface{
                 int suspended = rs.getInt("suspended");
                 String bio = rs.getString("bio");
                 int online = rs.getInt("online");
-                u = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended,bio,online);
+                String category = rs.getString("searchCategory");
+                u = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended,bio,online,category);
             }
         }
         catch (SQLException e)
@@ -302,9 +304,9 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
             con = this.getConnection();
 
-            String query = "SELECT * FROM USERS WHERE userName LIKE ?";
+            String query = "SELECT * FROM USERS WHERE userName LIKE ? LIMIT 10";
             ps = con.prepareStatement(query);
-            ps.setString(1, "%"+username+"%");
+            ps.setString(1, username+"%");
 
             rs = ps.executeQuery();
             while (rs.next()){
@@ -574,6 +576,41 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             }
         }
         return users;
+    }
+
+    public List<Search> generalSearch(String word,Users u) {
+        /*Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;*/
+        List<Search> searchs = new ArrayList<>();
+
+        try{
+
+            con = getConnection();
+
+            String query = "select inbox.inboxId, inbox.groupName, inbox.searchCategory from inbox,inboxparticipants where groupName like ? and inboxparticipants.userId=? and inboxparticipants.inboxId=inbox.inboxId UNION select users.userId, users.userName, users.searchCategory from users WHERE userName like ? and users.userType=1 and userId!=? LIMIT 10";
+            //"select inbox.inboxId, inbox.groupName, searchCategory from inbox,inboxparticipants where groupName like ? and inboxparticipants.userId=? and inboxparticipants.inboxId=inbox.inboxId UNION select users.userId, users.userName, searchCategory from users WHERE userName like  ? and users.userType=!2 LIMIT 10";
+            ps = con.prepareStatement(query);
+            ps.setString(1, word+"%");
+            ps.setInt(2,u.getUserId());
+            ps.setString(3, word+"%");
+            ps.setInt(4,u.getUserId());
+            rs = ps.executeQuery();
+            while (rs.next()){
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String category = rs.getString(3);
+                Search s = new Search(id,name,category);
+                searchs.add(s);
+            }
+        }
+        catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("A problem occurred during the generalSearch() method: " +  e.getMessage());
+        } finally {
+            freeConnection("An error occurred when shutting down the generalSearch() method: ");
+        }
+        return searchs;
     }
 
 }

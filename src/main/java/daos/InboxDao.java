@@ -20,15 +20,15 @@ public class InboxDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "insert into inbox (inboxType,adminId,groupName) values (?,?,?) ";
+            String command = "insert into inbox (inboxType,adminId,groupName) values (?,?,?)";
             ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, 2);
             ps.setInt(2, adminId);
             ps.setString(3, groupName);
-            rowsAffected = ps.executeUpdate();
-            ResultSet res = ps.getGeneratedKeys();
-            if (res.next()) {
-                id = Integer.parseInt(res.getString(1));
+            /*rowsAffected =*/ ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
             }
 
 
@@ -68,7 +68,7 @@ public class InboxDao extends Dao {
     }
 
     public int createNormalInbox() {
-        int rowsAffected = 0;
+        //int rowsAffected = 0;
         int id = 0;
         try {
 
@@ -77,10 +77,11 @@ public class InboxDao extends Dao {
             ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, 1);
             ps.setString(2, "");
-            rowsAffected = ps.executeUpdate();
-            ResultSet res = ps.getGeneratedKeys();
-            if (res.next()) {
-                id = Integer.parseInt(res.getString(1));
+           /*rowsAffected = */ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            //ResultSet res = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
             }
 
 

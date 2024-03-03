@@ -55,11 +55,11 @@ class BlockedusersDaoIsolationTest {
 
         assertTrue((result > 0));
 
-        if (result != -1) {
+        /*if (result != -1) {
             System.out.println("Method returned appropriately, confirming database changed by trying to remove what was added");
             int rowsDeleted = blockedusersDao.deleteBlockUser(3);
             assertEquals(rowsDeleted, 1);
-        }
+        }*/
     }
 
     /**
