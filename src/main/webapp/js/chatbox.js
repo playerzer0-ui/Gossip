@@ -15,6 +15,10 @@ function openFileInput() {
     document.getElementById('msgFile').click();
 }
 
+function openProfileInput(){
+    document.getElementById('newProfilePic').click();
+}
+
 /**
  * see the menu in the header (the triple dots on the left)
  */

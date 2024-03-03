@@ -605,12 +605,12 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-           // FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-            //    targetStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
@@ -667,6 +667,7 @@ public class Controller extends HttpServlet {
             boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
             if (uploadState) {
                 setProfilePicture(user, filteredFileName);
+                user.setProfilePicture(filteredFileName);
                 session.setAttribute("user", user);
             }
         } else {
@@ -703,8 +704,10 @@ public class Controller extends HttpServlet {
         File temp_file = new File(
                 resultPath + "src\\main\\webapp\\" + folder + image
         ); // Object of file class
+        File target_file = new File(fullPath + folder + image);
         if (temp_file.delete()) {
             System.out.println(temp_file.getName() + " is successfully deleted");
+            target_file.delete();
             return true;
         } else {
             System.out.println("Failed to delete " + temp_file.getName() + " file");

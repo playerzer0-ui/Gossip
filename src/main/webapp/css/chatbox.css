@@ -206,6 +206,23 @@ body {
     border-radius: 50%;
     cursor: pointer;
     margin: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.profile-img ion-icon {
+    color: white;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    z-index: 0;
+    transition: 0.2s;
+}
+
+.profile-img:hover ion-icon {
+    z-index: 1;
+    background-color: rgba(255, 238, 170, 0.5);
 }
 
 .userimg {

@@ -271,12 +271,9 @@
             <h4>profile</h4>
         </div>
         <div class="profile-details">
-            <div class="profile-img">
-
+            <div class="profile-img" onclick="openProfileInput()">
+                <ion-icon name="add-circle-outline"></ion-icon>
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
-
-                /<%=user.getProfilePicture()%>" class="cover" alt="">
-
             </div>
             <h2><%=user.getUserName()%>
             </h2>
@@ -284,9 +281,8 @@
             </p>
             <p><%=user.getBio()%>
             </p>
-            <label>Update profile picture</label>
-            <input id="newProfilePic" type="file" accept="image/png, image/jpeg, image/jpg">
-            <button onclick="changeProfilePic()">upload</button>
+            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()" accept="image/png, image/jpeg, image/jpg">
+<%--            <button onclick="changeProfilePic()">upload</button>--%>
         </div>
     </div>
 
@@ -560,19 +556,20 @@
         }
     }
 
-    function changeProfilePic() {
+    async function changeProfilePic() {
         var file = document.getElementById("newProfilePic");
-        if (file.value != "") {
+        if (file.value !== "") {
             var formData = new FormData();
             var extension = file.value.split(".").pop();
             formData.append("action", "changeProfilePic");
             formData.append("file", file.files[0]);
             formData.append("extension", extension);
-            fetch('controller', {
+            await fetch('controller', {
                 method: "POST",
                 body: formData
             });
             file.value = "";
+            location.reload();
         }
     }
 
