@@ -65,9 +65,12 @@
             <div>
                 <input type="text" placeholder="search or start new chat" id="search">
                 <ion-icon name="search-outline"></ion-icon>
-                <div id="suggestions" style="z-index: 5; background-color: white;">
-
-                </div>
+            </div>
+            <div id="suggestions">
+<%--                <div id="2" class="suggestion">--%>
+<%--                    <img src="img/default.png" alt="user-image">--%>
+<%--                    <p>default user</p>--%>
+<%--                </div>--%>
             </div>
         </div>
         <!-- chat-list -->
@@ -285,9 +288,8 @@
             </p>
             <p><%=user.getBio()%>
             </p>
-            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()"
-                   accept="image/png, image/jpeg, image/jpg">
-            <%--            <button onclick="changeProfilePic()">upload</button>--%>
+            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()" accept="image/png, image/jpeg, image/jpg">
+<%--            <button onclick="changeProfilePic()">upload</button>--%>
         </div>
     </div>
 
@@ -301,7 +303,7 @@
 
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
 
-                <%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
+<%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
 
             </div>
             <div class="edit-profile">
@@ -311,8 +313,7 @@
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
                     <label class="form-label">Password</label> <br/>
-                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password"
-                           required/> <br/>
+                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password" required/> <br/>
 
                     <label class="form-label">Email</label> <br/>
                     <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
@@ -321,11 +322,11 @@
                     <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
 
                     <label class="form-label">Bio</label> <br/>
-                    <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name="action" value="editProfile"/>
+                    <input type="hidden" name ="action" value="editProfile" />
                 </form>
             </div>
         </div>
@@ -389,7 +390,7 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    setInterval(refreshMessages, 3000);
+    setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
@@ -640,8 +641,13 @@
                             suggestions.innerHTML = "";
                             for (var i = 0; i < allSuggestions.length; i++) {
                                 let idx = allSuggestions[i][2] + allSuggestions[i][3];
+                                let imgName = allSuggestions[i][0];
+                                if(imgName === null || imgName === "null"){
+                                    imgName = "profile.jpg";
+                                }
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
-                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('" + idx + "')" + ">" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" +
+                                    "<img src='profilePictures/"+imgName+"' alt='user-image'><p>"+allSuggestions[i][1]+"</p></div>";
 
                             }
                             // var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
