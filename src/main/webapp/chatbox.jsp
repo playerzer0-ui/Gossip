@@ -285,8 +285,9 @@
             </p>
             <p><%=user.getBio()%>
             </p>
-            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()" accept="image/png, image/jpeg, image/jpg">
-<%--            <button onclick="changeProfilePic()">upload</button>--%>
+            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()"
+                   accept="image/png, image/jpeg, image/jpg">
+            <%--            <button onclick="changeProfilePic()">upload</button>--%>
         </div>
     </div>
 
@@ -300,7 +301,7 @@
 
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
 
-<%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
+                <%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
 
             </div>
             <div class="edit-profile">
@@ -310,7 +311,8 @@
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
                     <label class="form-label">Password</label> <br/>
-                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password" required/> <br/>
+                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password"
+                           required/> <br/>
 
                     <label class="form-label">Email</label> <br/>
                     <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
@@ -319,11 +321,11 @@
                     <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
 
                     <label class="form-label">Bio</label> <br/>
-                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name ="action" value="editProfile" />
+                    <input type="hidden" name="action" value="editProfile"/>
                 </form>
             </div>
         </div>
@@ -387,7 +389,7 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    setInterval(refreshMessages, 2000);
+    setInterval(refreshMessages, 3000);
     setInterval(getChatList, 2000);
 
     function refreshMessages() {
@@ -639,7 +641,7 @@
                             for (var i = 0; i < allSuggestions.length; i++) {
                                 let idx = allSuggestions[i][2] + allSuggestions[i][3];
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
-                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('" + idx + "')" + ">" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
 
                             }
                             // var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
@@ -660,9 +662,12 @@
         }
     );
 
-    function handleSearch(event) {
-        console.log(event);
-        var identifier = event;
+    function handleSearch(cat) {
+        var suggestions = document.getElementById("suggestions");
+        suggestions.innerHTML = "";
+        console.log(cat);
+        //alert(cat);
+        var identifier = cat;
         var searchId = parseInt(identifier.substring(0, identifier.length - 1));
         var searchCategory = identifier.substring(identifier.length - 1);
 
@@ -672,12 +677,145 @@
             // allSuggestions="";
             //break;
         } else {
+            getLinkingInboxId(searchId);
+            /*if(mainInboxId>0){
+                getMessages(mainInboxId)
+                alert("wronf one");
+            }
+            else if((mainInboxId===0)) {
+                alert("in kckkc");
+                getMessagesHeaderByUserId(searchId);
+                var chatBox = document.getElementById("chatbox");
+                chatBox.innerHTML = " ";
+            }*/
+            /*otherUserId=searchId;
+            mainInboxId=0;*/
+            //getMessagesHeaderByUserId(searchId);
+
+            /*$(document).ready(function () {
+                $.ajax({
+                    url: "controller",
+                    type: 'post',
+                    data: {action: "getMessagesByUserId", "userId": searchId},
+                    success: function (data) {
+                        var chatBox = document.getElementById("chatbox");
+                        if (data!=="noMessages"){
+                            var allMessages = JSON.parse(data);
+                            alert(allMessages.length);
+                        if (allMessages.length > 0) {
+                            for (var i = 0; i < allMessages.length; i++) {
+                                console.log("Message Type:", allMessages[i][4]); // Log message type
+                                console.log("File Name:", allMessages[i][3]);
+                                if (parseInt(allMessages[i][2]) ===
+            <%=user.getUserId()%>) {
+                                    if (parseInt(allMessages[i][4]) === 1) {
+                                        chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                    } else if (parseInt(allMessages[i][4]) === 2) {
+                                        chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                    } else if (parseInt(allMessages[i][4]) === 3) {
+                                        chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                    } else if (parseInt(allMessages[i][4]) === 4) {
+                                        chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                        //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
+                                        //"<div><embed src='fileMessages/"+allMessages[i][3]+"' type='application/pdf' >"+allMessages[i][7]+"</div>";
+                                    }
+                                } else {
+                                    if (parseInt(allMessages[i][4]) === 1) {
+                                        chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                    } else if (parseInt(allMessages[i][4]) === 2) {
+                                        chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                    } else if (parseInt(allMessages[i][4]) === 3) {
+                                        chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                    } else if (parseInt(allMessages[i][4]) === 4) {
+                                        chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                        //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
+
+                                    }
+                                }
+                            }
+                        }
+                    }
+                        else{
+                            chatBox.innerHTML = " ";
+                        }
+                    },
+                    error: function () {
+                        alert("Error with ajax");
+                    }
+                });
+            });*/
 
         }
-        //event.target.removeEventListener("click",function() {});
-        //suggestions.innerHTML = "";
-        // alert(identifier);
+
     }
+
+    function getLinkingInboxId(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "getLinkingId", "userId": userId},
+                success: function (data) {
+                    //alert(data);
+                    var id = parseInt(data);
+                    alert(id);
+                    if (id > 0) {
+                        mainInboxId = id;
+                        otherUserId = 0;
+                        getMessages(id);
+                    } else {
+                        otherUserId = userId;
+                        mainInboxId = 0;
+                        getMessagesHeaderByUserId(userId);
+                        var chatBox = document.getElementById("chatbox");
+                        chatBox.innerHTML = " ";
+                        chatBox.innerHTML = " ";
+                    }
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
+    function getMessagesHeaderByUserId(userId) {
+        //alert("innn");
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "getMessagesHeaderByUserId", "userId": userId},
+                success: function (data) {
+                    var header = document.getElementById("chat-hide");
+                    var str = data.split("%%%");
+                    if (str.length > 1) {
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>' + str[1];
+                    } else {
+                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                            '</div> ' +
+                            '<ul class="nav-icons"> ' +
+                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                            ' </ul>';
+                    }
+
+                    var imgtext = document.getElementById("imgtext");
+
+                    imgtext.innerHTML = str[0];
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
 
     document.addEventListener('keydown', function (event) {
         if (event.key === "Enter") {

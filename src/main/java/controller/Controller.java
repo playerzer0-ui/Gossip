@@ -131,9 +131,18 @@ public class Controller extends HttpServlet {
                     dest = "editProfile.jsp";
                     response.sendRedirect(dest);
                     break;
-                 case "search":
-                     search(request, response);
-                break;
+                case "search":
+                    search(request, response);
+                    break;
+               /* case "getMessagesByUserId":
+                    getMessagesByUserId(request, response);
+                    break;*/
+                case "getMessagesHeaderByUserId":
+                    getMessagesHeaderByUserId(request, response);
+                    break;
+                case "getLinkingId":
+                    getLinkingId(request, response);
+                    break;
             }
         }
 
@@ -145,7 +154,8 @@ public class Controller extends HttpServlet {
 
     /**
      * login command
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      * @return login page name
      */
@@ -170,7 +180,8 @@ public class Controller extends HttpServlet {
 
     /**
      * register command
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      * @return login page name
      */
@@ -202,7 +213,8 @@ public class Controller extends HttpServlet {
 
     /**
      * getMessages command, it takes a list of messages and decrypts them
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void getMessages(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -259,7 +271,8 @@ public class Controller extends HttpServlet {
 
     /**
      * firstMessage command, this allows creating an inbox to open a new chat
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void firstMessage(HttpServletRequest request, HttpServletResponse response) {
@@ -309,7 +322,8 @@ public class Controller extends HttpServlet {
 
     /**
      * sendMessage command, this allows sending a message to the database
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void sendMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -354,7 +368,8 @@ public class Controller extends HttpServlet {
 
     /**
      * getMessagesHeader command, shows the header in the chatbox
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void getMessagesHeader(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -371,10 +386,10 @@ public class Controller extends HttpServlet {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId="+otherUser.getUserId()+"' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -384,7 +399,8 @@ public class Controller extends HttpServlet {
 
     /**
      * getChatList command, retrieve a bunch of people connected to the user
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void getChatList(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -473,7 +489,8 @@ public class Controller extends HttpServlet {
 
     /**
      * sendFile command, sends a file, be it an image, video or file
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void sendFile(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -527,8 +544,8 @@ public class Controller extends HttpServlet {
                         //send message
                         messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
-            }
-                if(uploadState) {
+                }
+                if (uploadState) {
                     // get the other person's InboxParticipant
                     InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                     //update unseen messages for the other user
@@ -596,8 +613,9 @@ public class Controller extends HttpServlet {
 
     /**
      * uploads file to the folder and target folder
-     * @param file the file path
-     * @param fileName the name of the file
+     *
+     * @param file      the file path
+     * @param fileName  the name of the file
      * @param directory the folder name
      * @return true or false
      */
@@ -610,7 +628,7 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-            FileOutputStream targetStream = new FileOutputStream( fullPath + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName);
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -627,7 +645,8 @@ public class Controller extends HttpServlet {
 
     /**
      * sendReport command, sends a report to the admin
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void sendReport(HttpServletRequest request, HttpServletResponse response) {
@@ -641,7 +660,8 @@ public class Controller extends HttpServlet {
 
     /**
      * create a file name
-     * @param id the id
+     *
+     * @param id        the id
      * @param extension the extension name
      * @return the filename
      */
@@ -658,7 +678,8 @@ public class Controller extends HttpServlet {
 
     /**
      * changeProfilePicture command, changes profile picture
-     * @param request request
+     *
+     * @param request  request
      * @param response response
      */
     public void changeProfilePicture(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
@@ -727,7 +748,7 @@ public class Controller extends HttpServlet {
         String search = request.getParameter("search");
         UsersDao usersDao = new UsersDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
-        List<Search> searchs = usersDao.generalSearch(search,user);
+        List<Search> searchs = usersDao.generalSearch(search, user);
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<String[]> replies = new ArrayList();
         for (Search s : searchs) {
@@ -747,9 +768,142 @@ public class Controller extends HttpServlet {
             }
             replies.add(reply);
         }
-       String jsonString = objectMapper.writeValueAsString(replies);
+        String jsonString = objectMapper.writeValueAsString(replies);
         response.getWriter().write(jsonString);
     }
 
+    /*public void getMessagesByUserId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int otherUserId = Integer.parseInt(request.getParameter("userId"));
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        ArrayList<InboxParticipants> myIbps = ibpDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> otherIbps = ibpDao.getAllInbox(otherUserId);
+        Inbox inbox = null;
+
+        //inbox.setInboxId(-1);
+        for (InboxParticipants myibps : myIbps) {
+            Inbox currentib = inboxDao.getInbox(myibps.getInboxId());
+            if (currentib.getInboxType() == 1) {
+                for (InboxParticipants otheribps : otherIbps) {
+                    Inbox currentIb = inboxDao.getInbox(otheribps.getInboxId());
+                    if (currentIb.getInboxType() == 1) {
+                        if (currentib.equals(currentIb)) {
+                            inbox = currentIb;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+        if (inbox != null) {
+            MessageDao messageDao = new MessageDao("gossip");
+            ArrayList<Message> allMessages = messageDao.getMessages(inbox.getInboxId());
+            InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+            Aes aes = new Aes();
+            //set unseenMessages to 0
+            ibpsDao.resetUnSeenMessages(inbox.getInboxId(), user.getUserId());
+            //set open state to true
+            ibpsDao.openInbox(inbox.getInboxId(), user.getUserId(), 1);
+            String messages = "";
+            ArrayList<String[]> messagesList = new ArrayList<>();
+            ObjectMapper objectMapper = new ObjectMapper();
+            for (Message m : allMessages) {
+                String[] messageArray = new String[8];
+                try {
+                    String message = aes.decrypt(m.getMessage(), m.getMessageKey());
+                    messageArray[0] = m.getMessageId() + "";
+                    messageArray[1] = m.getInboxId() + "";
+                    messageArray[2] = m.getSenderId() + "";
+                    messageArray[3] = message;
+                    messageArray[4] = m.getMessageType() + "";
+                    messageArray[5] = m.getTimeSent().toString();
+                    messageArray[6] = m.getDeletedState() + "";
+                    if (m.getOriginalFileName() != null) {
+                        messageArray[7] = aes.decrypt(m.getOriginalFileName(), m.getMessageKey());
+                    }
+                } catch (Exception ex) {
+                    System.out.println("error occurred while getting messages" + ex.getMessage());
+                }
+                messagesList.add(messageArray);
+
+                //if it's the user that send the message
+           /* if (user.getUserId() == m.getSenderId()) {
+                if (m.getMessageType() == 1) {
+                    messages += "<div class='message my-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
+                }
+            } else if (user.getUserId() != m.getSenderId()) {
+                if (m.getMessageType() == 1) {
+                    messages += "<div class='message frnd-message'><p>" + m.getMessage() + "<br><span>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</span></p></div>";
+                }
+            }*/
+           /* }
+            String jsonString = objectMapper.writeValueAsString(messagesList);
+            response.getWriter().write(jsonString);
+            System.out.println("there are messages");
+        } else {
+            response.getWriter().write("noMessages");
+            System.out.println("no messages");
+        }
+    }*/
+
+    /**
+     * getMessagesHeader command, shows the header in the chatbox
+     *
+     * @param request  request
+     * @param response response
+     */
+    public void getMessagesHeaderByUserId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        UsersDao usersDao = new UsersDao("gossip");
+//        Miscellaneous miscellaneous = new Miscellaneous();
+        String header;
+            Users otherUser = usersDao.getUserById(userId);
+            if (otherUser.getOnline() == 1) {
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+
+            } else {
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            }
+
+        response.getWriter().write(header);
+    }
+
+    public void getLinkingId(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int otherUserId = Integer.parseInt(request.getParameter("userId"));
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        ArrayList<InboxParticipants> myIbps = ibpDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> otherIbps = ibpDao.getAllInbox(otherUserId);
+        Inbox inbox = null;
+        label:
+        //inbox.setInboxId(-1);
+        for (InboxParticipants myibps : myIbps) {
+            Inbox currentib = inboxDao.getInbox(myibps.getInboxId());
+            if (currentib.getInboxType() == 1) {
+                for (InboxParticipants otheribps : otherIbps) {
+                    Inbox currentIb = inboxDao.getInbox(otheribps.getInboxId());
+                    if (currentIb.getInboxType() == 1) {
+                        if (currentib.equals(currentIb)) {
+                            inbox = currentIb;
+                            break label;
+                        }
+                    }
+                }
+            }
+        }
+        if (inbox != null) {
+            response.getWriter().write(inbox.getInboxId()+"");
+            System.out.println("inbox found");
+        }
+        else{
+            response.getWriter().write("-1");
+            System.out.println("no ib found");
+        }
+    }
 }
 
