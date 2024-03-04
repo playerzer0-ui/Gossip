@@ -321,6 +321,35 @@ body {
     font-size: 1.2em;
 }
 
+#suggestions {
+    z-index: 5;
+    background-color: white;
+    position: absolute;
+    bottom: -80px;
+}
+
+.suggestion {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 20px;
+}
+
+.suggestion:hover {
+    background-color: grey;
+}
+
+.suggestion img {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
 .chatlist {
     position: relative;
     height: calc(100% - 110px);

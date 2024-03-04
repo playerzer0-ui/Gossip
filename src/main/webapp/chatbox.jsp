@@ -65,9 +65,12 @@
             <div>
                 <input type="text" placeholder="search or start new chat" id="search">
                 <ion-icon name="search-outline"></ion-icon>
-                <div id="suggestions" style="z-index: 5; background-color: white;">
-
-                </div>
+            </div>
+            <div id="suggestions">
+<%--                <div id="2" class="suggestion">--%>
+<%--                    <img src="img/default.png" alt="user-image">--%>
+<%--                    <p>default user</p>--%>
+<%--                </div>--%>
             </div>
         </div>
         <!-- chat-list -->
@@ -638,8 +641,13 @@
                             suggestions.innerHTML = "";
                             for (var i = 0; i < allSuggestions.length; i++) {
                                 let idx = allSuggestions[i][2] + allSuggestions[i][3];
+                                let imgName = allSuggestions[i][0];
+                                if(imgName === null || imgName === "null"){
+                                    imgName = "profile.jpg";
+                                }
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
-                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" + allSuggestions[i][1] + " " + allSuggestions[i][0] + "</div>";
+                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" +
+                                    "<img src='profilePictures/"+imgName+"' alt='user-image'><p>"+allSuggestions[i][1]+"</p></div>";
 
                             }
                             // var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
