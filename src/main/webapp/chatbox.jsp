@@ -454,6 +454,7 @@
     function getMessages(inboxId) {
         if(counter>0 && mainInboxId!==0 ){
           previousInboxId=mainInboxId;
+            closePreviousInbox();
         }
         mainInboxId = inboxId;
         otherUserId = 0;
@@ -516,7 +517,6 @@
                 }
             });
         });
-        closePreviousInbox();
     }
 
     /* function seeReport() {
@@ -783,6 +783,8 @@
                         var chatBox = document.getElementById("chatbox");
                         chatBox.innerHTML = " ";
                         closePreviousInbox();
+                        counter=0;
+                        previousInboxId=0;
                     }
                 },
                 error: function () {
