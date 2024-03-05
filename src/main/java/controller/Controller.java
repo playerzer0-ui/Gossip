@@ -143,6 +143,9 @@ public class Controller extends HttpServlet {
                 case "getLinkingId":
                     getLinkingId(request, response);
                     break;
+                case "closePreviousInbox":
+                    closePreviousInbox(request, response);
+                    break;
             }
         }
 
@@ -904,6 +907,13 @@ public class Controller extends HttpServlet {
             response.getWriter().write("-1");
             System.out.println("no ib found");
         }
+    }
+    public void closePreviousInbox(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        ibpsDao.openInbox(inboxId,user.getUserId(),0);
     }
 }
 

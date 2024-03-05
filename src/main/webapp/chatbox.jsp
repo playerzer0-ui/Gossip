@@ -390,6 +390,8 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
+    var previousInboxId=0;
+    var counter=0;
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
@@ -450,6 +452,9 @@
     }
 
     function getMessages(inboxId) {
+        if(counter>0 && mainInboxId!==0 ){
+          previousInboxId=mainInboxId;
+        }
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
@@ -461,6 +466,7 @@
                 type: 'post',
                 data: {action: "getMessages", "inboxId": inboxId},
                 success: function (data) {
+                    counter++;
                     var allMessages = JSON.parse(data);
                     var chatBox = document.getElementById("chatbox");
                     chatBox.innerHTML = "";
@@ -510,6 +516,7 @@
                 }
             });
         });
+        closePreviousInbox();
     }
 
     /* function seeReport() {
@@ -775,7 +782,7 @@
                         getMessagesHeaderByUserId(userId);
                         var chatBox = document.getElementById("chatbox");
                         chatBox.innerHTML = " ";
-                        chatBox.innerHTML = " ";
+                        closePreviousInbox();
                     }
                 },
                 error: function () {
@@ -783,6 +790,24 @@
                 }
             });
         });
+    }
+
+    function closePreviousInbox(){
+        if(counter>0 && previousInboxId!=0) {
+            $(document).ready(function () {
+                $.ajax({
+                    url: "controller",
+                    type: 'post',
+                    data: {action: "closePreviousInbox", "inboxId": previousInboxId},
+                    success: function (data) {
+
+                    },
+                    error: function () {
+                        alert("Error with ajax");
+                    }
+                });
+            });
+        }
     }
 
     function getMessagesHeaderByUserId(userId) {
