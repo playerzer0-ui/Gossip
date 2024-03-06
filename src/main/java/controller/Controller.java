@@ -1,6 +1,10 @@
 package controller;
 
 import java.io.*;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -16,6 +20,9 @@ import jakarta.servlet.annotation.*;
 import miscellaneous.Aes;
 import miscellaneous.Miscellaneous;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.imageio.ImageIO;
 
 //@RestController
@@ -50,6 +57,7 @@ public class Controller extends HttpServlet {
                     break;
 
                 case "logout":
+                    destroy(request, response);
                     response.sendRedirect(dest);
                     break;
 
@@ -152,7 +160,12 @@ public class Controller extends HttpServlet {
 
     }
 
-    public void destroy() {
+    public void destroy(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+       int inboxId = (Integer)session.getAttribute("previousInboxId");
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        ibpsDao.openInbox(inboxId,user.getUserId(),0);
     }
 
     /**
@@ -173,6 +186,7 @@ public class Controller extends HttpServlet {
         if (user != null) {
             user.setPassword(password);
             session.setAttribute("user", user);
+            session.setAttribute("previousInboxId",0);
             return "chatbox.jsp";
         } else {
             String msg = "Wrong password or email";
@@ -225,6 +239,7 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         session.setAttribute("activeInboxId", inboxId);
+        session.setAttribute("previousInboxId",inboxId);
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -278,7 +293,7 @@ public class Controller extends HttpServlet {
      * @param request  request
      * @param response response
      */
-    public void firstMessage(HttpServletRequest request, HttpServletResponse response) {
+    public void firstMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int otherUserId = Integer.parseInt(request.getParameter("userId"));
@@ -289,36 +304,45 @@ public class Controller extends HttpServlet {
         ArrayList<InboxParticipants> myIbps = ibpsDao.getAllInbox(user.getUserId());
         ArrayList<InboxParticipants> otherIbps = ibpsDao.getAllInbox(otherUserId);
         Inbox matchingInbox = null;
-        //checking if there is any Inbox that links the 2 users
-        label:
-        for (InboxParticipants Myibps : myIbps) {
-            for (InboxParticipants Otheribps : otherIbps) {
-                if (Myibps.getInboxId() == Otheribps.getInboxId()) {
-                    Inbox inbox = inboxDao.getInbox(Myibps.getInboxId());
-                    if (inbox.getInboxType() == 1) {
-                        matchingInbox = inbox;
-                        break label;
+        Aes aes = new Aes();
+        try {
+            int key = aes.generateKey();
+            message = aes.encrypt(message, key);
+            //checking if there is any Inbox that links the 2 users
+            label:
+            for (InboxParticipants Myibps : myIbps) {
+                for (InboxParticipants Otheribps : otherIbps) {
+                    if (Myibps.getInboxId() == Otheribps.getInboxId()) {
+                        Inbox inbox = inboxDao.getInbox(Myibps.getInboxId());
+                        if (inbox.getInboxType() == 1) {
+                            matchingInbox = inbox;
+                            break label;
+                        }
                     }
                 }
             }
+            //if a matching inbox was found
+            if (matchingInbox != null) {
+                //send message
+                messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1,key);
+                //update unseen messages for the other user
+                ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
+                //set openState to true
+                ibpsDao.openInbox(matchingInbox.getInboxId(), user.getUserId(), 1);
+            } else {
+                // create a new inbox for them
+                int inboxId = inboxDao.createNormalInbox();
+                //insert the current user
+                ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
+                //insert the other user
+                ibpsDao.insertInboxParticipant(inboxId, otherUserId);
+                messageDao.sendMessage(inboxId, user.getUserId(), message, 1,key);
+                ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
+            }
         }
-        //if a matching inbox was found
-        if (matchingInbox != null) {
-            //send message
-            messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1);
-            //update unseen messages for the other user
-            ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
-            //set openState to true
-            ibpsDao.openInbox(matchingInbox.getInboxId(), user.getUserId(), 1);
-        } else {
-            // create a new inbox for them
-            int inboxId = inboxDao.createNormalInbox();
-            //insert the current user
-            ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
-            //insert the other user
-            ibpsDao.insertInboxParticipant(inboxId, otherUserId);
-            messageDao.sendMessage(inboxId, user.getUserId(), message, 1);
-            ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
+        catch (Exception ex) {
+            System.out.println("error occurred when sending message" + ex.getMessage());
+            response.getWriter().write("Sorry error occurred while sending message");
         }
 
     }
@@ -364,7 +388,7 @@ public class Controller extends HttpServlet {
             }
         } catch (Exception ex) {
             System.out.println("error occurred when sending message" + ex.getMessage());
-            response.sendRedirect("Sorry error occurred while sending message");
+            response.getWriter().write("Sorry error occurred while sending message");
         }
 
     }
@@ -594,7 +618,7 @@ public class Controller extends HttpServlet {
             }
         } catch (Exception ex) {
             System.out.println("error occurred when sending file" + ex.getMessage());
-            response.sendRedirect("Sorry error occurred while sending file");
+            response.getWriter().write("Sorry error occurred while sending file");
         }
 
     }
@@ -912,8 +936,10 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        session.setAttribute("previousInboxId",0);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         ibpsDao.openInbox(inboxId,user.getUserId(),0);
+        System.out.println("just closed inbox " +  inboxId);
     }
 }
 
