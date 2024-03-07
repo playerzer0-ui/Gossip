@@ -400,6 +400,9 @@
             // alert("in");
             updateMessages(mainInboxId);
         }
+        else if ( otherUserId!== 0){
+            getLinkingInboxId(otherUserId);
+        }
     }
 
     function sendFile(input) {
@@ -835,7 +838,7 @@
                 success: function (data) {
                     //alert(data);
                     var id = parseInt(data);
-                    alert(id);
+                    //alert(id);
                     if (id > 0) {
                         otherUserId = 0;
                         getMessages(id);
