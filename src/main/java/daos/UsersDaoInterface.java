@@ -116,5 +116,5 @@ public interface UsersDaoInterface {
      * getOnlineUsers method able to list out all online user to admin.
      * @return a list of online user
      */
-    public List<Users> getOnlineUsers();
+    public int getOnlineUsers();
 }

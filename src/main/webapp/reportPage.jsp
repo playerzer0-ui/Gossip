@@ -1,3 +1,15 @@
+<%--commend out because not fully working yet--%>
+<%--<%@page import="daos.ReportsDao" %>--%>
+<%--<%@ page import="business.Reports" %>--%>
+<%--<%@ page import="java.util.List" %>--%>
+
+<%--<%Reports reports = (Reports) session.getAttribute("report");%>--%>
+
+<%--<%--%>
+<%--    ReportsDao reportsDao = new ReportsDao("gossip");--%>
+<%--    List<Reports> r = reportsDao.getAllReports();--%>
+<%--%>--%>
+
 <!DOCTYPE html>
 
 <html>
@@ -37,22 +49,22 @@
     </div>
 
     <div class="report-list">
-        <div class="report">
-            <div class="report-header">
-                <div>
-                    <div class="reportID"><ion-icon name="document"></ion-icon>reportID: 212121</div>
-                    <div class="name"><ion-icon name="person"></ion-icon>saaamm</div>
-                    <div class="report-date"><ion-icon name="time"></ion-icon>12-12-2000 07:00:00</div>
-                </div>
-                <div class="choices">
-                    <ion-icon name="close-outline"></ion-icon>
-                    <ion-icon name="person-remove"></ion-icon>
-                </div>
-            </div>
-            <div class="description">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Tempore ex maiores minus rerum alias perferendis recusandae id beatae error fugit? Minus cupiditate dolor sint quo totam. Necessitatibus accusamus obcaecati possimus.
-            </div>
-        </div>
+<%--        <div class="report">--%>
+<%--            <div class="report-header">--%>
+<%--                <div>--%>
+<%--                    <div class="reportID"><ion-icon name="document"></ion-icon>reportID: <%=reports.getReportId()%></div>--%>
+<%--                    <div class="name"><ion-icon name="person"></ion-icon>reporterID: <%=reports.getReporterId()%></div>--%>
+<%--                    <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>--%>
+<%--                </div>--%>
+<%--                <div class="choices">--%>
+<%--                    <ion-icon name="close-outline"></ion-icon>--%>
+<%--                    <ion-icon name="person-remove"></ion-icon>--%>
+<%--                </div>--%>
+<%--            </div>--%>
+<%--            <div class="description">--%>
+<%--                Report reason: <%=reports.getReportReason()%>--%>
+<%--            </div>--%>
+<%--        </div>--%>
         <div class="report">
             <div class="report-header">
                 <div>

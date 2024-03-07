@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Feb 28, 2024 at 06:45 PM
--- Server version: 10.4.22-MariaDB
--- PHP Version: 7.4.28
+-- Generation Time: Mar 07, 2024 at 11:18 AM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `blockedusers` (
   `blockedId` int(11) NOT NULL COMMENT 'the user that was blocked',
   KEY `userId` (`userId`),
   KEY `blockedId` (`blockedId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `blockedusers`
@@ -56,17 +56,19 @@ CREATE TABLE IF NOT EXISTS `inbox` (
   `adminId` int(11) DEFAULT NULL,
   `groupName` varchar(15) DEFAULT NULL,
   `groupProfilePicture` varchar(80) DEFAULT NULL,
+  `searchCategory` varchar(1) NOT NULL DEFAULT 'g',
   PRIMARY KEY (`inboxId`),
   KEY `adminId` (`adminId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inbox`
 --
 
-INSERT INTO `inbox` (`inboxId`, `inboxType`, `adminId`, `groupName`, `groupProfilePicture`) VALUES
-(1, 1, NULL, '', NULL),
-(2, 2, 1, 'Football chat', NULL);
+INSERT INTO `inbox` (`inboxId`, `inboxType`, `adminId`, `groupName`, `groupProfilePicture`, `searchCategory`) VALUES
+(1, 1, NULL, '', NULL, 'g'),
+(2, 2, 1, 'Football chat', NULL, 'g'),
+(3, 1, NULL, '', NULL, 'g');
 
 -- --------------------------------------------------------
 
@@ -83,18 +85,20 @@ CREATE TABLE IF NOT EXISTS `inboxparticipants` (
   `timeSent` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   KEY `userId` (`userId`),
   KEY `inboxId` (`inboxId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inboxparticipants`
 --
 
 INSERT INTO `inboxparticipants` (`userId`, `inboxId`, `deletedState`, `unseenMessages`, `isOpen`, `timeSent`) VALUES
-(1, 1, 0, 0, 1, '2024-02-16 11:43:05.519809'),
-(2, 1, 0, 13, 0, '2024-02-16 08:31:25.080636'),
-(1, 2, 0, 0, 1, '2024-02-16 08:30:38.153926'),
+(1, 1, 0, 0, 0, '2024-02-16 11:43:05.519809'),
+(2, 1, 0, 0, 1, '2024-02-16 08:31:25.080636'),
+(1, 2, 0, 0, 0, '2024-02-16 08:30:38.153926'),
 (2, 2, 0, 3, 0, '2024-02-16 08:29:24.000000'),
-(3, 2, 0, 3, 0, '2024-02-11 08:29:27.000000');
+(3, 2, 0, 3, 0, '2024-02-11 08:29:27.000000'),
+(1, 3, 0, 0, 0, '2024-03-07 09:51:44.382465'),
+(3, 3, 0, 2, 0, '2024-03-07 09:51:44.384762');
 
 -- --------------------------------------------------------
 
@@ -115,7 +119,7 @@ CREATE TABLE IF NOT EXISTS `messages` (
   PRIMARY KEY (`messageId`),
   KEY `senderId` (`senderId`),
   KEY `inboxId` (`inboxId`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `messages`
@@ -133,7 +137,12 @@ INSERT INTO `messages` (`messageId`, `inboxId`, `senderId`, `message`, `messageT
 (9, 1, 1, 'dR4pq0cTTN8TzyeKsic02ghMNCKPgNeoJxRpZ/IUfJ+jPeuJOMWHSzTPRfqZWDTI', 3, '2024-02-25 14:29:37', 0, 128, NULL),
 (10, 1, 1, 'AZ2ml8vXlWvsOdLfcuzsig==', 1, '2024-02-25 14:40:09', 0, 192, NULL),
 (11, 2, 1, 'r+nUKEMUsXj/yvjAwPjrLMx/oNNZqi3mfAERFNtf85h/wwMkuVSectG+D6SuTU3G', 2, '2024-02-25 15:12:37', 0, 256, NULL),
-(12, 1, 1, 'KYuumKT0NqyQR7pCFWFkitj2Nvy01tQj06IXClQck+vx5As4For8EOPmMNTut4m0', 2, '2024-02-27 22:05:07', 0, 256, NULL);
+(12, 1, 1, 'KYuumKT0NqyQR7pCFWFkitj2Nvy01tQj06IXClQck+vx5As4For8EOPmMNTut4m0', 2, '2024-02-27 22:05:07', 0, 256, NULL),
+(13, 1, 1, '9vDozu0tJhYc59Ja3LoY1xz9iOS1G1LyhroSKMyq9rx55cv/kzVXV5KLjQOrYYfx', 2, '2024-02-29 10:54:51', 0, 128, 'VZa+rCiAngSliVTFbqJqow=='),
+(14, 1, 1, 'GhYwqiyqwiI7rJll9zWf7dbYH4bF6AjmWm7ARsiCmnezZffgc+l9dptqabl8Ai0A', 4, '2024-02-29 10:56:45', 0, 192, '04XOExsLDvVTxPK9PXzXf2Iz+QosA8CtcruyJkWhykg='),
+(15, 1, 1, 'LAKVHy4IUONePuQcLPE/LaGcO2aZWtDW12yiUbX51BSGEajUa4OrsRvJuCWJcBIk', 4, '2024-02-29 10:57:52', 0, 256, '8n3gyCAPeMBIpMrlorUE7Y2nMQvib5JUcrZ5cDNwhVY='),
+(16, 3, 1, 'Wm/ccVH5Omezi6GXe0cDOg==', 1, '2024-03-07 09:51:44', 0, 256, NULL),
+(17, 3, 1, 'VHQL7uDAKC5FY7Qp1CpoHQ==', 1, '2024-03-07 09:52:33', 0, 128, NULL);
 
 -- --------------------------------------------------------
 
@@ -151,7 +160,7 @@ CREATE TABLE IF NOT EXISTS `reports` (
   PRIMARY KEY (`reportId`),
   KEY `reporterId` (`reporterId`),
   KEY `userReportedId` (`userReportedId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reports`
@@ -175,7 +184,7 @@ CREATE TABLE IF NOT EXISTS `stories` (
   `storyDescription` varchar(80) NOT NULL,
   PRIMARY KEY (`storyId`),
   KEY `userId` (`userId`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `stories`
@@ -196,7 +205,7 @@ CREATE TABLE IF NOT EXISTS `storyviewers` (
   `viewTime` datetime NOT NULL,
   KEY `storyId` (`storyId`),
   KEY `viewerId` (`viewerId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `storyviewers`
@@ -223,21 +232,22 @@ CREATE TABLE IF NOT EXISTS `users` (
   `suspended` tinyint(1) NOT NULL DEFAULT 0,
   `bio` varchar(25) DEFAULT NULL,
   `online` tinyint(1) NOT NULL DEFAULT 0,
+  `searchCategory` varchar(1) NOT NULL DEFAULT 'u',
   PRIMARY KEY (`userId`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `userName` (`userName`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`userId`, `email`, `userName`, `profilePicture`, `password`, `dateOfBirth`, `userType`, `suspended`, `bio`, `online`) VALUES
-(1, 'joe@gmail.com', 'joseph', '2024-02-25T151303.8813581001.jpg', '$2a$10$XGZhbTv7NCHf6AG/AF0k9uRht5vVWckZnM3hsYUxuc1y/3sVoZupa', '2000-08-02', 1, 0, '', 0),
-(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$z/vsk2OsTLeL2opWutyIxehqEHnoUb7qXaV2kI8PmkR4Q2AthyZJu', '2001-07-02', 1, 0, '', 0),
-(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$AGBePXjpT0OYza399OtQ/e6hor3KKv7qzdsekRPUKJKiVTnFwmh.6', '2006-09-02', 1, 0, '', 0),
-(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$2wrSV7XQavi8VSplujV7VOIWYUX8xqyrVdZ/dr.67Xb6jQt.Ollhy', '2005-08-02', 1, 0, '', 0),
-(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$mX.rCUPojcnX/rX3CaXN9.yUaEIC4rO7mtw.R.UQjXdtBlle9ktgK', '1990-08-02', 2, 0, '', 0);
+INSERT INTO `users` (`userId`, `email`, `userName`, `profilePicture`, `password`, `dateOfBirth`, `userType`, `suspended`, `bio`, `online`, `searchCategory`) VALUES
+(1, 'joe@gmail.com', 'joseph', '2024-02-25T151303.8813581001.jpg', '$2a$10$XGZhbTv7NCHf6AG/AF0k9uRht5vVWckZnM3hsYUxuc1y/3sVoZupa', '2000-08-02', 1, 0, '', 0, 'u'),
+(2, 'paul@gmail.com', 'paul', 'default.png', '$2a$10$z/vsk2OsTLeL2opWutyIxehqEHnoUb7qXaV2kI8PmkR4Q2AthyZJu', '2001-07-02', 1, 0, '', 0, 'u'),
+(3, 'jacob@gmail.com', 'jacob', 'default.png', '$2a$10$AGBePXjpT0OYza399OtQ/e6hor3KKv7qzdsekRPUKJKiVTnFwmh.6', '2006-09-02', 1, 0, '', 0, 'u'),
+(4, 'kelly@gmail.com', 'kelly', 'default.png', '$2a$10$2wrSV7XQavi8VSplujV7VOIWYUX8xqyrVdZ/dr.67Xb6jQt.Ollhy', '2005-08-02', 1, 0, '', 0, 'u'),
+(5, 'angel@gmail.com', 'angel', 'default.png', '$2a$10$mX.rCUPojcnX/rX3CaXN9.yUaEIC4rO7mtw.R.UQjXdtBlle9ktgK', '1990-08-02', 2, 0, '', 0, 'u');
 
 --
 -- Constraints for dumped tables

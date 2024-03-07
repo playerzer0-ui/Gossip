@@ -1,8 +1,13 @@
 <%@page import="daos.MessageDao" %>
+<%@page import="daos.UsersDao" %>
+
 <%
     MessageDao messageDao = new MessageDao("gossip");
     int daily = messageDao.getDailyMessageCount();
     int total = messageDao.getTotalMessageCount();
+
+    UsersDao usersDao = new UsersDao("gossip");
+    int dailyOnline = usersDao.getOnlineUsers();
 %>
 
 <!DOCTYPE html>
@@ -47,22 +52,22 @@
     <div class="cardBox">
         <div class="card">
             <div>
-                <div class="numbers">1212</div>
+                <div class="numbers"><%=dailyOnline%></div>
                 <div class="cardName">Daily Online</div>
             </div>
             <div class="iconBx">
                 <ion-icon name="eye-outline"></ion-icon>
             </div>
         </div>
-        <div class="card">
-            <div>
-                <div class="numbers">10002</div>
-                <div class="cardName">Total Online</div>
-            </div>
-            <div class="iconBx">
-                <ion-icon name="eye-outline"></ion-icon>
-            </div>
-        </div>
+<%--        <div class="card">--%>
+<%--            <div>--%>
+<%--                <div class="numbers">10002</div>--%>
+<%--                <div class="cardName">Total Online</div>--%>
+<%--            </div>--%>
+<%--            <div class="iconBx">--%>
+<%--                <ion-icon name="eye-outline"></ion-icon>--%>
+<%--            </div>--%>
+<%--        </div>--%>
         <div class="card">
             <div>
                 <div class="numbers"><%=daily%></div>

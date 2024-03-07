@@ -519,63 +519,102 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      * @return a list of online user
      */
     @Override
-    public List<Users> getOnlineUsers() {
+    public int getOnlineUsers() {
+
         Connection con = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        List<Users> users = new ArrayList<Users>();
+        int count = 0;
 
-        try
-        {
-            con = this.getConnection();
+        try {
+            con = getConnection();
 
-            String query = "SELECT COUNT(*) FROM users WHERE online = 1";
-            ps = con.prepareStatement(query);
+            String command = "SELECT COUNT(*) FROM users WHERE online = 1";
 
+            ps = con.prepareStatement(command);
             rs = ps.executeQuery();
-            while (rs.next())
-            {
-                int userId = rs.getInt("userID");
-                String email = rs.getString("email");
-                String username = rs.getString("userName");
-                String profilePicture = rs.getString("profilePicture");
-                String password = rs.getString("password");
-                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
-                int userType = rs.getInt("userType");
-                int suspended = rs.getInt("suspended");
-                String bio = rs.getString("bio");
-                int online = rs.getInt("online");
-                Users u = new Users(userId, email, username, profilePicture, password,dateOfBirth,userType,suspended,bio,online);
-                users.add(u);
+
+            if(rs.next()){
+                count = rs.getInt("count(*)");
             }
+
         }
         catch (SQLException e)
         {
             System.out.println("An error occurred in the getOnlineUsers() method: " + e.getMessage());
-        }
-        finally
-        {
-            try
-            {
-                if (rs != null)
-                {
+        } finally {
+            try {
+                if (rs != null) {
                     rs.close();
                 }
-                if (ps != null)
-                {
+                if (ps != null) {
                     ps.close();
                 }
-                if (con != null)
-                {
+                if (con != null) {
                     freeConnection("");
                 }
-            }
-            catch (SQLException e)
+            } catch (SQLException e)
             {
                 System.out.println("An error occurred when shutting down the getOnlineUsers() method: " + e.getMessage());
             }
         }
-        return users;
+        return count;
+
+//        Connection con = null;
+//        PreparedStatement ps = null;
+//        ResultSet rs = null;
+//
+//        try
+//        {
+//            con = this.getConnection();
+//
+//            String query = "SELECT COUNT(*) FROM users WHERE online = 1";
+//            ps = con.prepareStatement(query);
+//
+//            rs = ps.executeQuery();
+//            while (rs.next())
+//            {
+//                int userId = rs.getInt("userID");
+//                String email = rs.getString("email");
+//                String username = rs.getString("userName");
+//                String profilePicture = rs.getString("profilePicture");
+//                String password = rs.getString("password");
+//                LocalDate dateOfBirth = rs.getDate("dateOfBirth").toLocalDate();
+//                int userType = rs.getInt("userType");
+//                int suspended = rs.getInt("suspended");
+//                String bio = rs.getString("bio");
+//                int online = rs.getInt("online");
+//                Users u = new Users(userId, email, username, profilePicture, password,dateOfBirth,userType,suspended,bio,online);
+//                users.add(u);
+//            }
+//        }
+//        catch (SQLException e)
+//        {
+//            System.out.println("An error occurred in the getOnlineUsers() method: " + e.getMessage());
+//        }
+//        finally
+//        {
+//            try
+//            {
+//                if (rs != null)
+//                {
+//                    rs.close();
+//                }
+//                if (ps != null)
+//                {
+//                    ps.close();
+//                }
+//                if (con != null)
+//                {
+//                    freeConnection("");
+//                }
+//            }
+//            catch (SQLException e)
+//            {
+//                System.out.println("An error occurred when shutting down the getOnlineUsers() method: " + e.getMessage());
+//            }
+//        }
+//        return users;
     }
 
     public List<Search> generalSearch(String word,Users u) {
