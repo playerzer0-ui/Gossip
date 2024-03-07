@@ -1,12 +1,14 @@
 package daos;
 
 import business.Blockedusers;
+import business.InboxParticipants;
 import business.Reports;
 import business.Users;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -68,7 +70,11 @@ class ReportsDaoTest {
 
     @Test
     void getAllReports() {
+        ReportsDao reportsDao = new ReportsDao("gossiptest");
+        System.out.println("getAllReports");
 
+        ArrayList<Reports> result = (ArrayList<Reports>) reportsDao.getAllReports();
+        assertEquals(2, result.size());
     }
 
     @Test
