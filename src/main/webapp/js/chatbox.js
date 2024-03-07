@@ -10,7 +10,7 @@ function seeChatList(test){
     $( ".leftUpdate" ).css( "z-index", "1" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
-    console.log(test);
+    closeInbox();
 }
 
 function seeProfileUpdate(){

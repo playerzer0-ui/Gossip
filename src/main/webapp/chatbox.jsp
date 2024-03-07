@@ -886,14 +886,20 @@
                     type: 'post',
                     data: {action: "closePreviousInbox", "inboxId": mainInboxId},
                     success: function (data) {
+                        previousInboxId=mainInboxId;
+                        counter++;
+                        mainInboxId=0;
+                        var header = document.getElementById("chat-hide");
+                        var chatBox = document.getElementById("chatbox");
+                        chatBox.innerHTML = " ";
+                        header.innerHTML=" ";
                     },
                     error: function () {
                         alert("Error with ajax");
                     }
                 });
             });
-            previousInboxId=mainInboxId;
-             counter++;
+
     }
 
     function getMessagesHeaderByUserId(userId) {
