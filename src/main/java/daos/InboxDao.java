@@ -25,7 +25,7 @@ public class InboxDao extends Dao {
             ps.setInt(1, 2);
             ps.setInt(2, adminId);
             ps.setString(3, groupName);
-            /*rowsAffected =*/ ps.executeUpdate();
+            ps.executeUpdate();
             rs = ps.getGeneratedKeys();
             if (rs.next()) {
                 id = rs.getInt(1);
@@ -73,11 +73,11 @@ public class InboxDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "insert into inbox (inboxType,groupName) values (?,?) ";
+            String command = "insert into inbox (inboxType,groupName) values (?,?)";
             ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, 1);
             ps.setString(2, "");
-           /*rowsAffected = */ps.executeUpdate();
+            ps.executeUpdate();
             rs = ps.getGeneratedKeys();
             //ResultSet res = ps.getGeneratedKeys();
             if (rs.next()) {
