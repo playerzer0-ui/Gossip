@@ -400,6 +400,9 @@
             // alert("in");
             updateMessages(mainInboxId);
         }
+        else if ( otherUserId!== 0){
+            getLinkingInboxId(otherUserId);
+        }
     }
 
     function sendFile(input) {
@@ -524,7 +527,7 @@
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
-        seeMessage();
+        //seeMessage();
         // alert("inside");
         $(document).ready(function () {
             $.ajax({
@@ -836,7 +839,7 @@
                 success: function (data) {
                     //alert(data);
                     var id = parseInt(data);
-                    alert(id);
+                    //alert(id);
                     if (id > 0) {
                         otherUserId = 0;
                         getMessages(id);
