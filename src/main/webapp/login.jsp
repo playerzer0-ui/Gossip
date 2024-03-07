@@ -22,7 +22,7 @@
     <h1>Login</h1>
     <form action="controller" method="post">
         <label>email</label><br>
-        <input type="text" name="email" placeholder="enter email" required /><br>
+        <input type="email" name="email" placeholder="enter email" required /><br>
         <label>password</label><br>
         <input type="password" name="password" placeholder="enter password" required /><br>
 

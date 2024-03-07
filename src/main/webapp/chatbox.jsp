@@ -307,7 +307,7 @@
 
             </div>
             <div class="edit-profile">
-                <form action="controller?action" method="post">
+                <form action="controller" method="post">
                     <h3>Update my profile</h3>
                     <label class="form-label">Username</label> <br/>
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
@@ -889,17 +889,19 @@
                         previousInboxId=mainInboxId;
                         counter++;
                         mainInboxId=0;
-                        var header = document.getElementById("chat-hide");
-                        var chatBox = document.getElementById("chatbox");
-                        chatBox.innerHTML = " ";
-                        header.innerHTML=" ";
+                        hideMessage();
                     },
                     error: function () {
                         alert("Error with ajax");
                     }
                 });
             });
+    }
 
+    function hideMessage(){
+        $("#chat-hide").css("visibility", "hidden");
+        $(".chatbox").css("visibility", "hidden");
+        $(".chatbox-input").css("visibility", "hidden");
     }
 
     function getMessagesHeaderByUserId(userId) {

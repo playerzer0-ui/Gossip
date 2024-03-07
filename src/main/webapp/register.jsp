@@ -24,7 +24,7 @@
         <label>username</label> <br>
         <input type="text" name="username" placeholder="enter username" required /><br>
         <label>email</label><br>
-        <input type="text" name="email" placeholder="enter email" required /><br>
+        <input type="email" name="email" placeholder="enter email" required /><br>
         <label>password</label><br>
         <input type="password" name="password" placeholder="enter password" onchange="checkPassword();check_strength();" required /><br>
         <span class="info">at least 8 characters long, one number and symbol</span> <br>
