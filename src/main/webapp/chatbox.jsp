@@ -108,7 +108,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -131,7 +131,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -154,7 +154,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -193,7 +193,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -216,7 +216,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -238,7 +238,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -459,7 +459,6 @@
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
-        seeMessage();
         // alert("inside");
         $(document).ready(function () {
             $.ajax({
@@ -524,7 +523,6 @@
         mainInboxId = inboxId;
         otherUserId = 0;
         getMessagesHeader(inboxId);
-        seeMessage();
         // alert("inside");
         $(document).ready(function () {
             $.ajax({
@@ -743,6 +741,7 @@
         var suggestions = document.getElementById("suggestions");
         suggestions.innerHTML = "";
         console.log(cat);
+        seeMessage();
         //alert(cat);
         var identifier = cat;
         var searchId = parseInt(identifier.substring(0, identifier.length - 1));
