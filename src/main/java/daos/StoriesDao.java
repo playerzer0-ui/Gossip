@@ -35,7 +35,7 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
         try{
             con = getConnection();
 
-            String query = "INSERT INTO stories (userId, story, storyType, dateTime, storyDescription) VALUES (?, ?, ?, ?，?)";
+            String query = "INSERT INTO stories (userId, story, storyType, dateTime, storyDescription) VALUES (?, ?, ?, ?, ?)";
             ps = con.prepareStatement(query);
             ps.setInt(1, userId);
             ps.setString(2,story);

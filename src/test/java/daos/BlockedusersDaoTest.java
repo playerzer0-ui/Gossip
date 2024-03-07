@@ -21,6 +21,7 @@ class BlockedusersDaoTest {
         int blockedId = 1;
 
         int result = blockedusersDao.addBlockUser(userId,blockedId);
+        blockedusersDao.deleteBlockUser(1);
         assertTrue((result > 0));
     }
 
@@ -35,13 +36,10 @@ class BlockedusersDaoTest {
         int blockedId = 3;
 
         int result = blockedusersDao.addBlockUser(userId,blockedId);
-        assertTrue((result > 0));
+        int rowsDeleted = blockedusersDao.deleteBlockUser(3);
 
-        if (result != -1) {
-            System.out.println("Method returned appropriately, confirming database changed by trying to remove what was added");
-            int rowsDeleted = blockedusersDao.deleteBlockUser(3);
-            assertEquals(rowsDeleted, 1);
-        }
+        assertTrue((result > 0));
+        assertEquals(rowsDeleted, 1);
     }
 
     /**
@@ -59,13 +57,5 @@ class BlockedusersDaoTest {
 
         int result = blockedusersDao.deleteBlockUser(id);
         assertEquals(expResult, result);
-
-        if (result == 1) {
-            System.out.println("Method returned appropriately, confirming database "
-                    + "changed by trying to select what was deleted");
-
-                blockedusersDao.addBlockUser(4,2);
-
-        }
     }
 }
