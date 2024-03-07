@@ -136,7 +136,7 @@ public class Controller extends HttpServlet {
                     break;
 
                 case "show_editProfile":
-                    dest = "editProfile.jsp";
+                    dest = "editProfile .jsp";
                     response.sendRedirect(dest);
                     break;
                 case "search":

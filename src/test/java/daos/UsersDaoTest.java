@@ -170,4 +170,30 @@ class UsersDaoTest {
         assertEquals(expResult, result);
     }
 
+    /**
+     * Test of getOnlineUsers_Online method, of class UsersDao.
+     */
+    @Test
+    void getOnlineUsers_Online(){
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("getOnlineUsers_withNumber");
+
+        int onlineNum = usersDao.getOnlineUsers();
+
+        assertEquals(2, onlineNum);
+    }
+
+    /**
+     * Test of getOnlineUsers_Online method, of class UsersDao.
+     */
+    @Test
+    void getOnlineUsers_Offline(){
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("getOnlineUsers_Offline");
+
+        int onlineNum = usersDao.getOnlineUsers();
+
+        assertEquals(0, onlineNum);
+    }
+
 }
