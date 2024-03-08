@@ -112,6 +112,14 @@ function checkImage(clickedDiv) {
     document.querySelector('.zoom').style.display = 'flex';
 }
 
+function openForm(){
+    document.querySelector('.report-page').style.display = 'flex';
+}
+
+function closeReport() {
+    document.querySelector('.report-page').style.display = 'none';
+}
+
 function closeZoom() {
     document.querySelector('.zoom').style.display = 'none';
 }

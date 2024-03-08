@@ -34,6 +34,7 @@ import javax.imageio.ImageIO;
 )
 public class Controller extends HttpServlet {
 
+    public static int otherUserId;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -166,6 +167,7 @@ public class Controller extends HttpServlet {
        int inboxId = (Integer)session.getAttribute("previousInboxId");
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         ibpsDao.openInbox(inboxId,user.getUserId(),0);
+        session.invalidate();
     }
 
     /**
@@ -412,11 +414,13 @@ public class Controller extends HttpServlet {
         if (inbox.getInboxType() == 1) {
             InboxParticipants otherIbp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
             Users otherUser = usersDao.getUserById(otherIbp.getUserId());
+            otherUserId = otherUser.getUserId();
+
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -679,7 +683,7 @@ public class Controller extends HttpServlet {
     public void sendReport(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
-        int reportedId = Integer.parseInt((String) session.getAttribute("reportedId"));
+        int reportedId = otherUserId;
         String reportReason = request.getParameter("reportReason");
         ReportsDao reportsDao = new ReportsDao("gossip");
         reportsDao.addReport(user.getUserId(), reportedId, reportReason, LocalDateTime.now(), 1);
@@ -888,11 +892,12 @@ public class Controller extends HttpServlet {
 //        Miscellaneous miscellaneous = new Miscellaneous();
         String header;
             Users otherUser = usersDao.getUserById(userId);
+        otherUserId = otherUser.getUserId();
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a>  <a href='controller?action=showReport&reportedId=" + otherUser.getUserId() + "' > <li>report user</li>  </a><a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
 
         response.getWriter().write(header);

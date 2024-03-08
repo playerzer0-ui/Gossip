@@ -18,7 +18,7 @@ body {
     background: linear-gradient(137deg, rgba(195,7,83,1) 0%, rgba(114,4,85,1) 100%);
 }
 
-.zoom {
+.zoom, .report-page {
     position: absolute;
     display: none;
     justify-content: center;
@@ -27,7 +27,10 @@ body {
     height: 100vh;
     z-index: 4;
     background-color: rgba(87, 5, 65, 0.6);
+}
 
+.report-page {
+    background-color: rgba(87, 5, 5, 0.6);
 }
 
 .zoom img {
@@ -35,13 +38,41 @@ body {
     height: auto;
 }
 
-.zoom ion-icon {
+.zoom ion-icon, .report-page ion-icon {
     position: absolute;
     top: 0;
     right: 0;
     color: #FFEEAA;
     cursor: pointer;
     font-size: 3.5em;
+}
+
+.report-page .form-page {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 20px;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    width: 40%;
+    height: 30%;
+}
+
+.report-button {
+    position: relative;
+    bottom: -20px;
+    background: linear-gradient(127deg, rgba(195,7,83,1) 0%, rgb(250, 65, 65) 100%);
+    border-style: none;
+    padding: 5px 15px;
+    border-radius: 30px;
+    transition: 0.4s;
+    color: white;
+}
+
+.report-button:hover {
+    background-color: red;
+    border-radius: 0px;
 }
 
 .container {
