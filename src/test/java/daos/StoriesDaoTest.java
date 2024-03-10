@@ -21,6 +21,8 @@ class StoriesDaoTest {
         String storyDes ="Happy";
 
         int result = storiesDao.addStory(userId,story,storyType,dateTime,storyDes);
+        storiesDao.deleteStory(2);
+        storiesDao.updateIncrement("stories", 2);
         assertTrue((result > 0));
     }
 

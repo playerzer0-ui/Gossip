@@ -26,13 +26,11 @@ class ReportsDaoTest {
         int reportStatus = 1;
 
         int result = reportsDao.addReport(reporterId, userReportedId, reportReason, reportDate, reportStatus);
+        int rowsDeleted = reportsDao.deleteReport(2);
+        reportsDao.updateIncrement("reports", 2);
         assertTrue((result > 0));
 
-        if (result != -1) {
-            System.out.println("Method returned appropriately, confirming database changed by trying to remove what was added");
-            int rowsDeleted = reportsDao.deleteReport(2);
-            assertEquals(rowsDeleted, 1);
-        }
+        assertEquals(rowsDeleted, 1);
     }
 
     @Test
@@ -41,29 +39,23 @@ class ReportsDaoTest {
         System.out.println("deleteReport");
         reportsDao.addReport(2, 4, "I don't know him", LocalDateTime.now(), 1);
 
-        Reports r = new Reports(3,2, 4, "I don't know him", LocalDateTime.now(), 1);
+        Reports r = new Reports(2,2, 4, "I don't know him", LocalDateTime.now(), 1);
         int id = r.getReportId();
         int expResult = 1;
 
         int result = reportsDao.deleteReport(id);
+        reportsDao.updateIncrement("reports", 2);
         assertEquals(expResult, result);
-
-        if (result == 1) {
-            System.out.println("Method returned appropriately, confirming database "
-                    + "changed by trying to select what was deleted");
-
-            reportsDao.addReport(2, 4, "I don't know him", LocalDateTime.now(), 1);
-        }
     }
 
     @Test
     void getReportById() {
         ReportsDao reportsDao = new ReportsDao("gossiptest");
         System.out.println("getReportById");
-        int reportId = 4;
-        LocalDateTime reporteDate = LocalDateTime.of(2024,03,07,02,51,42);
+        int reportId = 1;
+        LocalDateTime reporteDate = LocalDateTime.of(2024,2,2,0,0,0);
 
-        Reports expResult = new Reports(reportId,2, 4, "I don't know him", reporteDate, 1);
+        Reports expResult = new Reports(reportId,4, 1, "I don't know him", reporteDate, 1);
         Reports result = reportsDao.getReportById(reportId);
         assertEquals(expResult, result);
     }
@@ -74,7 +66,7 @@ class ReportsDaoTest {
         System.out.println("getAllReports");
 
         ArrayList<Reports> result = (ArrayList<Reports>) reportsDao.getAllReports();
-        assertEquals(2, result.size());
+        assertEquals(1, result.size());
     }
 
     @Test

@@ -33,6 +33,20 @@
     <ion-icon name="close-outline" onclick="closeZoom()"></ion-icon>
     <img src="" alt="">
 </div>
+<div class="report-page">
+    <ion-icon name="close-outline" onclick="closeReport()"></ion-icon>
+    <div class="form-page">
+        <h1>Report User</h1>
+        <form action="controller" method="post">
+            <div class="mb-3">
+                <label class="form-label">enter reason: </label> <br>
+                <input type="text" name="reportReason"  class="form-control" />
+            </div>
+            <input type="hidden" name="action" value="send_report"/>
+            <button type="submit" class="report-button">Submit</button>
+        </form>
+    </div>
+</div>
 <div class="container">
     <div class="left">
         <!-- header -->
@@ -525,7 +539,7 @@
     function updateMessages(inboxId) {
         mainInboxId = inboxId;
         otherUserId = 0;
-        getMessagesHeader(inboxId);
+        // getMessagesHeader(inboxId);
         // alert("inside");
         $(document).ready(function () {
             $.ajax({
