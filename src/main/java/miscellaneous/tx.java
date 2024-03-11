@@ -32,13 +32,15 @@ public class tx {
         } else {
             System.out.println("Substring not found in the path.");
         }*/
-        UsersDao d= new UsersDao("gossip");
+       /* UsersDao d= new UsersDao("gossip");
         Users u = new Users();
         u.setUserId(1);
         List<Search> l=d.generalSearch("pau",u);
         for(Search s: l){
             System.out.println(s);
         }
-        System.out.println(d.getUserById(1));
+        System.out.println(d.getUserById(1));*/
+        System.out.println(Miscellaneous.checkEmail("sg@student.dkit.ie"));
+        System.out.println(Miscellaneous.checkPassword("br fdb /*K95"));
     }
 }
