@@ -20,7 +20,7 @@
                 </a>
             </li>
             <li>
-                <a href="">
+                <a href="controller?action=logout">
                     <span class="icon"><ion-icon name="log-out-outline"></ion-icon></span>
                     <span class="title">sign out</span>
                 </a>

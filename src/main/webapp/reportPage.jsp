@@ -2,9 +2,12 @@
 <%@page import="daos.ReportsDao" %>
 <%@ page import="business.Reports" %>
 <%@ page import="java.util.List" %>
+<%@ page import="daos.UsersDao" %>
+<%@ page import="business.Users" %>
 
 <%
     ReportsDao reportsDao = new ReportsDao("gossip");
+    UsersDao usersDao= new UsersDao("gossip");
     List<Reports> r = reportsDao.getAllReports();
 %>
 
@@ -47,8 +50,11 @@
     </div>
 
     <div class="report-list">
-        <%for (Reports reports : r) { %>
-            <div class="report">
+        <%for (Reports reports : r) {
+           Users user = usersDao.getUserById(reports.getUserReportedId());
+        %>
+        <%if(reports.getReportStatus() == 3) {%>
+            <div class="report bg-grey">
                 <div class="report-header">
                     <div>
                         <div class="reportID"><ion-icon name="document"></ion-icon>reportID: <%=reports.getReportId()%></div>
@@ -56,14 +62,44 @@
                         <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
                     </div>
                     <div class="choices">
-                        <ion-icon name="close-outline"></ion-icon>
-                        <ion-icon name="person-remove" ></ion-icon>
+                        <a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"><ion-icon name="close-outline"></ion-icon></a>
+
+                        <%if(user.getSuspended()==0){%>
+                        <a href="controller?action=suspendUser&userId=<%=reports.getUserReportedId()%>&suspendState=1"><ion-icon name="person-remove"></ion-icon></a>
+                        <%} else {%>
+                        <a href="controller?action=suspendUser&userId=<%=reports.getUserReportedId()%>&suspendState=0"><ion-icon name="person-add"></ion-icon></a>
+                        <% }%>
                     </div>
                 </div>
                 <div class="description">
                     Report reason: <%=reports.getReportReason()%>
                 </div>
             </div>
+        <% }
+        //when user has been suspended but when the report hasn't been solved
+        else if(reports.getReportStatus()==1) {%>
+        <div class="report">
+            <div class="report-header">
+                <div>
+                    <div class="reportID"><ion-icon name="document"></ion-icon>reportID: <%=reports.getReportId()%></div>
+                    <div class="name"><ion-icon name="person"></ion-icon>reporterID: <%=reports.getReporterId()%></div>
+                    <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
+                </div>
+                <div class="choices">
+                    <ion-icon name="close-outline"><a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"></a></ion-icon>
+
+                    <%if(user.getSuspended()==0){%>
+                    <a href="controller?action=suspendUser&userId=<%=reports.getUserReportedId()%>&suspendState=1"><ion-icon name="person-remove"></ion-icon></a>
+                    <%} else {%>
+                    <a href="controller?action=suspendUser&userId=<%=reports.getUserReportedId()%>&suspendState=0"><ion-icon name="person-add"></ion-icon></a>
+                    <% }%>
+                </div>
+            </div>
+            <div class="description">
+                Report reason: <%=reports.getReportReason()%>
+            </div>
+        </div>
+        <% }%>
         <% }%>
     </div>
 </main>

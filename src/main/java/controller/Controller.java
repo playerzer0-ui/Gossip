@@ -155,6 +155,14 @@ public class Controller extends HttpServlet {
                 case "closePreviousInbox":
                     closePreviousInbox(request, response);
                     break;
+                case "ignoreReport":
+                    ignoreReport(request, response);
+                    response.sendRedirect("reportPage.jsp");
+                    break;
+                case "suspendUser":
+                    suspendUser(request, response);
+                    response.sendRedirect("reportPage.jsp");
+                    break;
             }
         }
 
@@ -189,7 +197,15 @@ public class Controller extends HttpServlet {
             user.setPassword(password);
             session.setAttribute("user", user);
             session.setAttribute("previousInboxId",0);
-            return "chatbox.jsp";
+            if(user.getUserType()==1 && user.getSuspended()==0){
+                return "chatbox.jsp";
+            }
+            else if (user.getUserType() == 2) {
+                return "admin.jsp";
+            }
+            else{
+                return "login.jsp";
+            }
         } else {
             String msg = "Wrong password or email";
             session.setAttribute("msg", msg);
@@ -945,6 +961,30 @@ public class Controller extends HttpServlet {
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
         ibpsDao.openInbox(inboxId,user.getUserId(),0);
         System.out.println("just closed inbox " +  inboxId);
+    }
+
+    public void ignoreReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        ReportsDao reportsDao = new ReportsDao("gossip");
+        int reportId = Integer.parseInt(request.getParameter("reportId"));
+        int status = Integer.parseInt(request.getParameter("status"));
+
+        reportsDao.updateReport(reportId, status);
+    }
+    public void suspendUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UsersDao usersDao= new UsersDao("gossip");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        int suspendState = Integer.parseInt(request.getParameter("suspendState"));
+        Users u = usersDao.getUserById(userId);
+        if(suspendState==1) {
+            u.setSuspended(1);
+            usersDao.updateUser(u);
+        }
+        else if (suspendState==0){
+            u.setSuspended(0);
+            usersDao.updateUser(u);
+        }
+
+
     }
 }
 
