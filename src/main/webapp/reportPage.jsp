@@ -57,7 +57,7 @@
                     </div>
                     <div class="choices">
                         <ion-icon name="close-outline"></ion-icon>
-                        <ion-icon name="person-remove"></ion-icon>
+                        <ion-icon name="person-remove" ></ion-icon>
                     </div>
                 </div>
                 <div class="description">

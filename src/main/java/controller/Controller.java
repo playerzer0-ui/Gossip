@@ -34,7 +34,7 @@ import javax.imageio.ImageIO;
 )
 public class Controller extends HttpServlet {
 
-    public static int otherUserId;
+    private  static int otherUserId;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
