@@ -57,7 +57,7 @@
                         <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
                     </div>
                     <div class="choices">
-                        <a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"><ion-icon name="close-outline"></ion-icon></a>
+                        <ion-icon name="close-outline"><a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"></a></ion-icon>
                         <ion-icon name="person-remove"></ion-icon>
 <%--                        <ion-icon name="person-add"></ion-icon>--%>
                     </div>
@@ -75,7 +75,7 @@
                     <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
                 </div>
                 <div class="choices">
-                    <a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"><ion-icon name="close-outline"></ion-icon></a>
+                    <ion-icon name="close-outline"><a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"></a></ion-icon>
                     <ion-icon name="person-remove"></ion-icon>
                     <%--                        <ion-icon name="person-add"></ion-icon>--%>
                 </div>
