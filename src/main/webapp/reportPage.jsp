@@ -48,7 +48,8 @@
 
     <div class="report-list">
         <%for (Reports reports : r) { %>
-            <div class="report">
+        <%if(reports.getReportStatus() == 3) {%>
+            <div class="report bg-grey">
                 <div class="report-header">
                     <div>
                         <div class="reportID"><ion-icon name="document"></ion-icon>reportID: <%=reports.getReportId()%></div>
@@ -56,14 +57,34 @@
                         <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
                     </div>
                     <div class="choices">
-                        <ion-icon name="close-outline"></ion-icon>
+                        <a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"><ion-icon name="close-outline"></ion-icon></a>
                         <ion-icon name="person-remove"></ion-icon>
+<%--                        <ion-icon name="person-add"></ion-icon>--%>
                     </div>
                 </div>
                 <div class="description">
                     Report reason: <%=reports.getReportReason()%>
                 </div>
             </div>
+        <% } else {%>
+        <div class="report">
+            <div class="report-header">
+                <div>
+                    <div class="reportID"><ion-icon name="document"></ion-icon>reportID: <%=reports.getReportId()%></div>
+                    <div class="name"><ion-icon name="person"></ion-icon>reporterID: <%=reports.getReporterId()%></div>
+                    <div class="report-date"><ion-icon name="time"></ion-icon>report date: <%=reports.getReportDate()%></div>
+                </div>
+                <div class="choices">
+                    <a href="controller?action=ignoreReport&status=3&reportId=<%=reports.getReportId()%>"><ion-icon name="close-outline"></ion-icon></a>
+                    <ion-icon name="person-remove"></ion-icon>
+                    <%--                        <ion-icon name="person-add"></ion-icon>--%>
+                </div>
+            </div>
+            <div class="description">
+                Report reason: <%=reports.getReportReason()%>
+            </div>
+        </div>
+        <% }%>
         <% }%>
     </div>
 </main>
