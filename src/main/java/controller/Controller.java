@@ -159,6 +159,10 @@ public class Controller extends HttpServlet {
                     ignoreReport(request, response);
                     response.sendRedirect("reportPage.jsp");
                     break;
+                case "suspendUser":
+                    suspendUser(request, response);
+                    response.sendRedirect("reportPage.jsp");
+                    break;
             }
         }
 
@@ -965,6 +969,22 @@ public class Controller extends HttpServlet {
         int status = Integer.parseInt(request.getParameter("status"));
 
         reportsDao.updateReport(reportId, status);
+    }
+    public void suspendUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        UsersDao usersDao= new UsersDao("gossip");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        int suspendState = Integer.parseInt(request.getParameter("suspendState"));
+        Users u = usersDao.getUserById(userId);
+        if(suspendState==1) {
+            u.setSuspended(1);
+            usersDao.updateUser(u);
+        }
+        else if (suspendState==0){
+            u.setSuspended(0);
+            usersDao.updateUser(u);
+        }
+
+
     }
 }
 
