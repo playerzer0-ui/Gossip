@@ -14,6 +14,13 @@ public class InboxDao extends Dao {
         super(con);
     }
 
+    /**
+     * creates a group chat
+     *
+     * @param adminId,   the group admins id or the person that created the group's id
+     * @param groupName, the groups name
+     * @return the groups id
+     **/
     public int createGroupChat(int adminId, String groupName) {
         int rowsAffected = 0;
         int id = 0;
@@ -40,6 +47,12 @@ public class InboxDao extends Dao {
         return id;
     }
 
+    /**
+     * updates an inbox
+     *
+     * @param inbox, the inbox to be updated with the already updates details
+     * @return true if the update was successful and false if it didn't update
+     **/
     public Boolean updateInbox(Inbox inbox) {
         int rowsAffected = 0;
         Boolean state = false;
@@ -104,9 +117,9 @@ public class InboxDao extends Dao {
             rs = ps.executeQuery();
             if (rs.next()) {
                 //String adminId = null;
-                int adminId = rs.getInt("adminId") ;
+                int adminId = rs.getInt("adminId");
                 if (adminId != 0) {
-                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), rs.getInt("adminId"), rs.getString("groupName"),rs.getString("groupProfilePicture"));
+                    inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"), rs.getInt("adminId"), rs.getString("groupName"), rs.getString("groupProfilePicture"));
                 } else {
                     inbox = new Inbox(rs.getInt("inboxId"), rs.getInt("inboxType"));
                 }

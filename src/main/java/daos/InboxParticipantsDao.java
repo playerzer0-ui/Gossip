@@ -116,7 +116,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = " update inboxparticipants set isOpen=? where inboxId=? and userId=? ";
+            String command = "update inboxparticipants set isOpen=? where inboxId=? and userId=?";
             ps = con.prepareStatement(command);
             ps.setInt(1, openState);
             ps.setInt(2, inboxId);
@@ -141,7 +141,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = " update inboxparticipants set unseenMessages=unseenMessages+1 where inboxId=? and userId=? and isOpen=0";
+            String command = "update inboxparticipants set unseenMessages=unseenMessages+1 where inboxId=? and userId=? and isOpen=0";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, userId);
@@ -165,7 +165,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = " update inboxparticipants set unseenMessages=0 where inboxId=? and userId=?";
+            String command = "update inboxparticipants set unseenMessages=0 where inboxId=? and userId=?";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, userId);
@@ -189,7 +189,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = "insert into inboxparticipants (inboxId,userId,deletedState,unseenMessages,isOpen) values (?,?,?,?,?) ";
+            String command = "insert into inboxparticipants (inboxId,userId,deletedState,unseenMessages,isOpen) values (?,?,?,?,?)";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, userId);
@@ -216,7 +216,7 @@ public class InboxParticipantsDao extends Dao {
         try {
 
             con = getConnection();
-            String command = " delete from inboxparticipants where inboxId=? and userId=?";
+            String command = "delete from inboxparticipants where inboxId=? and userId=?";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, userId);

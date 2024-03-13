@@ -25,7 +25,7 @@ class InboxParticipantsDaoTest {
     }
 
     /**
-     * when there are InboxParticipants available
+     * when there are no InboxParticipants available
      **/
     @Test
     void getAllInbox_whenNoInboxParticipant() {
@@ -33,7 +33,9 @@ class InboxParticipantsDaoTest {
         ArrayList<InboxParticipants> actual = ibpDao.getAllInbox(5);
         assertEquals(actual, expected);
     }
-
+    /**
+     * when there are InboxParticipants available
+     **/
     @Test
     void getAllInboxParticipants() {
         ArrayList<InboxParticipants> actual = ibpDao.getAllInboxParticipants(1);
@@ -43,6 +45,15 @@ class InboxParticipantsDaoTest {
         InboxParticipants ibp2 = new InboxParticipants(2, 1, 0, 0, 0, timeSent);
         expected.add(ibp1);
         expected.add(ibp2);
+        assertEquals(actual, expected);
+    }
+    /**
+     * when other InboxParticipant is present
+     **/
+    @Test
+    void getAllInboxParticipants_WhenNoInboxParticipantIsPresent() {
+        ArrayList<InboxParticipants> actual = ibpDao.getAllInboxParticipants(4);
+        ArrayList<InboxParticipants> expected = new ArrayList<>();
         assertEquals(actual, expected);
     }
 
@@ -166,7 +177,7 @@ class InboxParticipantsDaoTest {
     }
 
     /**
-     * When insert is successful
+     * insert under normal scenario
      **/
     @Test
     void insertInboxParticipant() {
