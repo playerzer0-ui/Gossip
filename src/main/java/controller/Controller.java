@@ -771,7 +771,6 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
 
-        String profilePicture = request.getParameter("profilePiture");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -780,14 +779,14 @@ public class Controller extends HttpServlet {
 
         if (username != null && password != null && email != null && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
             Users tempUser = (Users)session.getAttribute("user");
+            String profilePicture = tempUser.getProfilePicture();
 
-            Users user = new Users(tempUser.getUserId(), username, profilePicture,password, email, dateOfBirth, 1,0,bio,0);
+            Users user = new Users(tempUser.getUserId(), email, username, profilePicture, password, dateOfBirth, 1, 0, bio, 0);
             int rowsAffected = usersDao.updateUser(user);
 
             if(rowsAffected != -1){
                 String msg = "profile updated successfully!";
-                Users updateuser = new Users(tempUser.getUserId(), username, profilePicture,password, email, dateOfBirth, 1,0,bio,0);
-                session.setAttribute("user", updateuser);
+                session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
             }
