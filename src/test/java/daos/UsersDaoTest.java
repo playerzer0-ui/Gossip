@@ -183,6 +183,39 @@ class UsersDaoTest {
         assertEquals(2, onlineNum);
     }
 
+    @Test
+    void updateUser(){
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("updateUser");
+
+        int userId = 1;
+        String userName = "joseph";
+        String email = "joe@gmail.com";
+        String password = "rippleMMW1$";
+        String profilePicture = "default.png";
+        LocalDate dOfBirth = LocalDate.of(2000,8,2);
+        int userType =1;
+        int suspended = 0;
+        String bio = "happy";
+        int online =1;
+        Users u = new Users(userId,email,userName,profilePicture,password,dOfBirth,userType,suspended,bio,online);
+
+        int expResult = 1;
+        int result = usersDao.updateUser(u);
+
+        assertEquals(expResult, result);
+
+        if (expResult == result) {
+
+            Users expectedUser = new Users(u.getUserId(), u.getUserName(), u.getEmail(),u.getPassword(),u.getProfilePicture(),u.getDateOfBirth(),u.getUserType(),u.getSuspended(),u.getBio(),u.getOnline());
+            Users resultUser = usersDao.getUserById(u.getUserId());
+            assertEquals(resultUser, expectedUser);
+
+            usersDao.updateUser(u);
+        }
+
+    }
+
 //    /**
 //     * Test of getOnlineUsers_Online method, of class UsersDao.
 //     */
