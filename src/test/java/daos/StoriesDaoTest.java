@@ -48,7 +48,7 @@ class StoriesDaoTest {
         int expResult = 1;
 
         int result = storiesDao.deleteStory(id);
-        storiesDao.updateIncrement("reports", 2);
+        storiesDao.updateIncrement("stories", 2);
         assertEquals(expResult, result);
     }
 

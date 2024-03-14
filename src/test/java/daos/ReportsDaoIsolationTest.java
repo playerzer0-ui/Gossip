@@ -163,13 +163,9 @@ class ReportsDaoIsolationTest {
         Reports r = new Reports(1,4, 1, "I don't know him", reportDate, 1);
         int expected= reportsDao.updateReport(1,3);
 
-        verify(ps).setInt(1,r.getReportId());
-        verify(ps).setInt(2,r.getReporterId());
-        verify(ps).setInt(3,r.getUserReportedId());
-        verify(ps).setString(4,r.getReportReason());
-        verify(ps).setTimestamp(5, Timestamp.valueOf(reportDate));
-        verify(ps).setInt(6,r.getReportStatus());
         assertEquals(expected,1);
+        verify(ps).setInt(1,3);
+        verify(ps).setInt(2,1);
 
     }
 
@@ -189,8 +185,8 @@ class ReportsDaoIsolationTest {
         int actual = reportsDao.updateReport(1, 3);
         int expected = 0;
         assertEquals(expected, actual);
-        verify(ps).setInt(1, 1);
-        verify(ps).setInt(2, 3);
+        verify(ps).setInt(1, 3);
+        verify(ps).setInt(2, 1);
 
 //        LocalDateTime reportDate = LocalDateTime.of(2024,1,10,19,8,36);
 //        Reports r = new Reports(1,4, 1, "I don't know him", reportDate, 1);
