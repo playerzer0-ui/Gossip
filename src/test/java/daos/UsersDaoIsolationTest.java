@@ -1,10 +1,13 @@
 package daos;
 
+import business.Stories;
 import business.Users;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -224,5 +227,35 @@ class UsersDaoIsolationTest {
 
     }
 
+//    @Test
+//    void getAllUsers() throws SQLException{
+//        Connection dbConn = mock(Connection.class);
+//        PreparedStatement ps = mock(PreparedStatement.class);
+//        ResultSet rs = mock(ResultSet.class);
+//
+//        LocalDate dateOfBirth = LocalDate.of(2000,8,2);
+//        Users u = new Users(1, "joe@gmail.com", "joseph", "default.png", "$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa", dateOfBirth, 1, 0, "", 0);
+//
+//
+//        when(dbConn.prepareStatement("SELECT * FROM USERS")).thenReturn(ps);
+//        when(ps.executeQuery()).thenReturn(rs);
+//
+//        when(rs.next()).thenReturn(true, true, false);
+//        when(rs.getString("email")).thenReturn(u.getEmail());
+//        when(rs.getString("userName")).thenReturn(u.getUserName());
+//        when(rs.getString("profilePicture")).thenReturn(u.getProfilePicture());
+//        when(rs.getString("password")).thenReturn(u.getPassword());
+//        when(rs.getDate("dateOfBirth")).thenReturn(Date.valueOf(dateOfBirth));
+//        when(rs.getInt("userType")).thenReturn(u.getUserType());
+//        when(rs.getInt("suspended")).thenReturn(u.getSuspended());
+//        when(rs.getString("bio")).thenReturn(u.getBio());
+//        when(rs.getInt("online")).thenReturn(u.getOnline());
+//
+//        UsersDao usersDao = new UsersDao(dbConn);
+//        ArrayList<Users> actual = (ArrayList<Users>) usersDao.getAllUsers();
+//        ArrayList<Users> expected = new ArrayList();
+//        expected.add(u);
+//        assertEquals(expected, actual);
+//    }
 
 }

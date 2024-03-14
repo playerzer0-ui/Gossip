@@ -4,6 +4,7 @@ import business.Users;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -170,6 +171,14 @@ class UsersDaoTest {
         assertEquals(expResult, result);
     }
 
+    @Test
+    void getAllUsers() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("getAllUsers");
+        ArrayList<Users> result = (ArrayList<Users>) usersDao.getAllUsers();
+        assertEquals(5, result.size());
+    }
+
     /**
      * Test of getOnlineUsers_Online method, of class UsersDao.
      */
@@ -213,20 +222,63 @@ class UsersDaoTest {
 
             usersDao.updateUser(u);
         }
+    }
+
+    @Test
+    void checkUsername_isPresent() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("checkUsername_isPresent");
+        String username = "joseph";
+        boolean expResult = true;
+        boolean result = usersDao.checkUsername(username);
+
+        assertEquals(expResult, result);
 
     }
 
-//    /**
-//     * Test of getOnlineUsers_Online method, of class UsersDao.
-//     */
-//    @Test
-//    void getOnlineUsers_Offline(){
-//        UsersDao usersDao = new UsersDao("gossiptest");
-//        System.out.println("getOnlineUsers_Offline");
-//
-//        int onlineNum = usersDao.getOnlineUsers();
-//
-//        assertEquals(0, onlineNum);
-//    }
+    /**
+     * Test of checkUsername_notPresent() method, of class UsersDao.
+     */
+    @Test
+    void checkUsername_notPresent() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("checkUsername_notPresent");
+        String username = "Henry";
+        boolean expResult = false;
+
+        boolean result = usersDao.checkUsername(username);
+
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of checkEmail_isPresent() method, of class UsersDao.
+     */
+    @Test
+    void checkEmail_isPresent() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("checkEmail_isPresent");
+        String email = "joe@gmail.com";
+        boolean expResult = true;
+
+        boolean result = usersDao.checkEmail(email);
+
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of checkEmail_notPresent() method, of class UsersDao.
+     */
+    @Test
+    void checkEmail_notPresent() {
+        UsersDao usersDao = new UsersDao("gossiptest");
+        System.out.println("checkEmail_notPresent");
+        String email = "Henry123@gmail.com";
+        boolean expResult = false;
+
+        boolean result = usersDao.checkEmail(email);
+
+        assertEquals(expResult, result);
+    }
 
 }
