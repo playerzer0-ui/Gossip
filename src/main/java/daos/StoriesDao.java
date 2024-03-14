@@ -1,11 +1,14 @@
 package daos;
 
+import business.Reports;
 import business.Stories;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StoriesDao extends Dao implements StoriesDaoInterface{
     public StoriesDao(String databaseName) {
@@ -104,4 +107,46 @@ public class StoriesDao extends Dao implements StoriesDaoInterface{
         }
         return s;
     }
+
+    /**
+     * getAllStories method able to list out all stories.
+     *
+     * @return a list of stories
+     */
+    @Override
+    public List<Stories> getAllStories() {
+        List<Stories> stories = new ArrayList();
+        try
+        {
+            con = this.getConnection();
+
+            String query = "SELECT * FROM stories";
+            ps = con.prepareStatement(query);
+
+            rs = ps.executeQuery();
+            while (rs.next())
+            {
+                int storyId = rs.getInt("storyId");
+                int userId = rs.getInt("userID");
+                String story = rs.getString("story");
+                int storyType = rs.getInt("storyType");
+                LocalDateTime dateTime = rs.getTimestamp("dateTime").toLocalDateTime();
+                String storyDescription = rs.getString("storyDescription");
+
+                Stories s = new Stories(storyId, userId, story, storyType, dateTime, storyDescription);
+                stories.add(s);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("An error occurred in the getAllStories() method: " + e.getMessage());
+        }
+        finally
+        {
+            freeConnection("An error occurred when shutting down the getAllStories() method:");
+        }
+        return stories;
+    }
+
 }
+
