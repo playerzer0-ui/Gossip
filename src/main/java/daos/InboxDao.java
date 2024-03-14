@@ -80,6 +80,11 @@ public class InboxDao extends Dao {
         return state;
     }
 
+    /**
+     * creates a normal Inbox
+     *
+     * @return the inboxId of the inbox that was created
+     **/
     public int createNormalInbox() {
         //int rowsAffected = 0;
         int id = 0;
@@ -106,6 +111,11 @@ public class InboxDao extends Dao {
         return id;
     }
 
+    /***
+     * gets an Inbox
+     * @param inboxId, the inboxId
+     * @return an Inbox
+     * */
     public Inbox getInbox(int inboxId) {
         Inbox inbox = null;
         try {

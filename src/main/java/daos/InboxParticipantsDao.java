@@ -17,6 +17,12 @@ public class InboxParticipantsDao extends Dao {
         super(con);
     }
 
+    /**
+     * gets all InboxParticipant for a particular user
+     *
+     * @param userId, takes in the userId
+     * @return an arrayList of InboxParticipant
+     **/
     public ArrayList<InboxParticipants> getAllInbox(int userId) {
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
         try {
@@ -28,7 +34,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
+                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"), rs.getTimestamp("timeSent").toLocalDateTime());
                 inboxParticipants.add(ibp);
             }
 
@@ -40,6 +46,12 @@ public class InboxParticipantsDao extends Dao {
         return inboxParticipants;
     }
 
+    /**
+     * gets all InboxParticipant by InboxId
+     *
+     * @param inboxId, the inboxId
+     * @return an arrayList of InboxParticipants
+     **/
     public ArrayList<InboxParticipants> getAllInboxParticipants(int inboxId) {
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
         try {
@@ -51,7 +63,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
+                InboxParticipants ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"), rs.getTimestamp("timeSent").toLocalDateTime());
                 inboxParticipants.add(ibp);
             }
 
@@ -63,6 +75,12 @@ public class InboxParticipantsDao extends Dao {
         return inboxParticipants;
     }
 
+    /***
+     * gets the other InboxParticipant for a particular user
+     * @param inboxId, the inbox's Id
+     * @param userId, the userId
+     * @return an InboxParticipant
+     * **/
     public InboxParticipants getOtherInboxParticipant(int inboxId, int userId) {
         InboxParticipants ibp = null;
         try {
@@ -75,7 +93,7 @@ public class InboxParticipantsDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),rs.getTimestamp("timeSent").toLocalDateTime());
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"), rs.getTimestamp("timeSent").toLocalDateTime());
             }
 
         } catch (SQLException e) {
@@ -86,6 +104,12 @@ public class InboxParticipantsDao extends Dao {
         return ibp;
     }
 
+    /**
+     * gets an InboxParticipant By userId and inboxId
+     *
+     * @param inboxId, the inbox's Id
+     * @param userId,  ther user's Id
+     **/
     public InboxParticipants getInboxParticipant(int inboxId, int userId) {
         InboxParticipants ibp = null;
         try {
@@ -99,7 +123,7 @@ public class InboxParticipantsDao extends Dao {
 
             if (rs.next()) {
                 LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
-                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"),localDateTime);
+                ibp = new InboxParticipants(rs.getInt("userId"), rs.getInt("inboxId"), rs.getInt("deletedState"), rs.getInt("unseenMessages"), rs.getInt("isOpen"), localDateTime);
             }
 
         } catch (SQLException e) {
@@ -110,6 +134,13 @@ public class InboxParticipantsDao extends Dao {
         return ibp;
     }
 
+    /**
+     * Opens and closes an inboxParticipant
+     *
+     * @param inboxId,   the inboxId to be closed or opened
+     * @param openState, set to 1 when opening ad set to 0 when closing
+     * @return true if the inbox was closed and false for otherwise
+     **/
     public boolean openInbox(int inboxId, int userId, int openState) {
         int rowsAffected = 0;
         boolean state = false;
@@ -135,6 +166,14 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
+    /**
+     * increases the unseen messages by 1 for a particular inboxParticipant and user when the inbox is closed
+     *
+     * @param inboxId, inbox's Id to be updated
+     * @param userId,  the userId
+     * @return true if the unseenMessages where updated and false for otherwise
+     **/
+
     public boolean updateUnSeenMessages(int inboxId, int userId) {
         int rowsAffected = 0;
         boolean state = false;
@@ -159,6 +198,13 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
+    /**
+     * Resets the unseenMessages for a particular inboxParticipant and user
+     *
+     * @param inboxId, inbox's Id to be updated
+     * @param userId,  the userId
+     * @return true if the unseenMessages where reseted and false for otherwise
+     **/
     public boolean resetUnSeenMessages(int inboxId, int userId) {
         int rowsAffected = 0;
         boolean state = false;
@@ -183,6 +229,13 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
+    /**
+     * Inserts an InboxParticipant
+     *
+     * @param inboxId , the inoxId
+     * @param userId, the userId
+     * @return true if insert was successful and false for otherwise
+     **/
     public boolean insertInboxParticipant(int inboxId, int userId) {
         int rowsAffected = 0;
         boolean state = false;
@@ -210,6 +263,13 @@ public class InboxParticipantsDao extends Dao {
         return state;
     }
 
+    /**
+     * deletes an InboxParticipant
+     *
+     * @param inboxId, for the inbox
+     * @param userId,  the user's Id
+     * @return true if delete was successful and false for otherwise
+     **/
     public boolean deleteInboxParticipant(int inboxId, int userId) {
         int rowsAffected = 0;
         boolean state = false;
