@@ -171,9 +171,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      */
     @Override
     public List<Users> getAllUsers() {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Users> users = new ArrayList<Users>();
 
         try
@@ -206,25 +203,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         }
         finally
         {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection("");
-                }
-            }
-            catch (SQLException e)
-            {
-                System.out.println("An error occurred when shutting down the getAllUsers() method: " + e.getMessage());
-            }
+            freeConnection("An error occurred when shutting down the getAllUsers() method: ");
         }
         return users;
     }
@@ -469,9 +448,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      */
     @Override
     public int updateUser(Users u) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         int rowsAffected = 0;
         try {
             con = getConnection();
@@ -496,19 +472,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         } catch (SQLException e) {
             System.out.println("An error occurred in the updateUser() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("An error occurred when shutting down the updateUser() method: " + e.getMessage());
-            }
+            freeConnectionUpdate("An error occurred when shutting down the updateUser() method: ");
         }
         return rowsAffected;
     }

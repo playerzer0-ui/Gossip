@@ -340,7 +340,7 @@
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name ="action" value="editProfile" />
+                    <input type="hidden" name ="action" value="do_editProfile" />
                 </form>
             </div>
         </div>
