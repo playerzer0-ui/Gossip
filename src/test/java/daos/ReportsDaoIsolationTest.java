@@ -188,9 +188,9 @@ class ReportsDaoIsolationTest {
         ReportsDao reportsDao = new ReportsDao(dbConn);
         int actual = reportsDao.updateReport(1, 3);
         int expected = 0;
+        assertEquals(expected, actual);
         verify(ps).setInt(1, 1);
         verify(ps).setInt(2, 3);
-        assertEquals(expected, actual);
 
 //        LocalDateTime reportDate = LocalDateTime.of(2024,1,10,19,8,36);
 //        Reports r = new Reports(1,4, 1, "I don't know him", reportDate, 1);

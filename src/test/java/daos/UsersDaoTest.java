@@ -191,7 +191,7 @@ class UsersDaoTest {
         int userId = 1;
         String userName = "joseph";
         String email = "joe@gmail.com";
-        String password = "rippleMMW1$";
+        String password = "123";
         String profilePicture = "default.png";
         LocalDate dOfBirth = LocalDate.of(2000,8,2);
         int userType =1;

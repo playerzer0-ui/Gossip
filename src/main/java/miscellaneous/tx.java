@@ -6,6 +6,7 @@ import business.Users;
 import daos.InboxParticipantsDao;
 import daos.ReportsDao;
 import daos.UsersDao;
+import org.mindrot.jbcrypt.BCrypt;
 
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -40,7 +41,13 @@ public class tx {
             System.out.println(s);
         }
         System.out.println(d.getUserById(1));*/
-        System.out.println(Miscellaneous.checkEmail("sg@student.dkit.ie"));
-        System.out.println(Miscellaneous.checkPassword("br fdb /*K95"));
+//        System.out.println(Miscellaneous.checkEmail("sg@student.dkit.ie"));
+//        System.out.println(Miscellaneous.checkPassword("br fdb /*K95"));
+        if(BCrypt.checkpw("123", "$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa")){
+            System.out.println("dsadsasad");
+        }
+        else{
+            System.out.println("WRONG");
+        }
     }
 }
