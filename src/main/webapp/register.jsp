@@ -4,6 +4,9 @@
     if(msg == null){
         msg = "";
     }
+    else{
+        msg = "<p>" + msg + "</p>";
+    }
 %>
 <!DOCTYPE html>
 
@@ -25,7 +28,7 @@
 <!--navigation-->
 <%@include file="navbar.jsp"%>
 <div class="warning-msg">
-    <p><%=msg%></p>
+    <%=msg%>
 </div>
 
 <main>
