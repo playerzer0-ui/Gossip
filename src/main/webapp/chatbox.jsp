@@ -516,6 +516,7 @@
                             }
                         }
                     }
+                    chatBox.scrollTop(chatBox[0].scrollHeight);
                     ///chatBox.innerHTML = data;
                     /* var messages = "";
                      var allMessages =
