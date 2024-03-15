@@ -38,7 +38,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             rs = ps.executeQuery();
 
             if (rs.next()) {
-
                 String password = rs.getString("password");
                 if(BCrypt.checkpw(pword, password)){
                     int userId = rs.getInt("userId");
@@ -53,7 +52,14 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
                     user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
                 }
-
+                //wrong password
+                else{
+                    user = new Users(-10);
+                }
+            }
+            //wrong email
+            else{
+                user = new Users(-5);
             }
 
         } catch (SQLException e) {
@@ -86,37 +92,44 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            String query ="Insert into users(email,userName,profilePicture,password,dateOfBirth,userType,suspended,bio,online)values(?,?,?,?,?,?,?,?,?)";
+            // Check if email already exists
+            String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
+            PreparedStatement checkPs = con.prepareStatement(checkQuery);
+            checkPs.setString(1, email);
+            ResultSet checkRs = checkPs.executeQuery();
+            if (checkRs.next()) {
+                int count = checkRs.getInt(1);
+                if (count > 0) {
+                    // Email already exists, return -1 indicating failure
+                    return -2;
+                }
+            }
 
-            ps = con.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-
+            // If email is unique, proceed with the insert
+            String insertQuery ="INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            ps = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
             ps.setString(1, email);
             ps.setString(2, uname);
-            ps.setString(3,pPicture);
+            ps.setString(3, pPicture);
             ps.setString(4, hashPassword);
             ps.setDate(5, Date.valueOf(dOBirth));
-            ps.setInt(6,userType);
-            ps.setInt(7,suspended);
-            ps.setString(8,bio);
-            ps.setInt(9,online);
+            ps.setInt(6, userType);
+            ps.setInt(7, suspended);
+            ps.setString(8, bio);
+            ps.setInt(9, online);
 
             ps.executeUpdate();
 
             rs = ps.getGeneratedKeys();
 
-            if(rs.next())
-            {
+            if (rs.next()) {
                 newId = rs.getInt(1);
             }
-        }
-        catch (SQLException e)
-        {
+        } catch (SQLException e) {
             System.err.println("\tA problem occurred during the register method:");
-            System.err.println("\t"+e.getMessage());
+            System.err.println("\t" + e.getMessage());
             newId = -1;
-        }
-        finally
-        {
+        } finally {
             freeConnection("A problem occurred when closing down the register method: ");
         }
         return newId;

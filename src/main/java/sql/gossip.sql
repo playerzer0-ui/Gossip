@@ -209,7 +209,7 @@ INSERT INTO `storyviewers` (`storyId`, `viewerId`, `viewTime`) VALUES
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
                          `userId` int(11) NOT NULL,
-                         `email` varchar(255) NOT NULL,
+                         `email` varchar(255) UNIQUE NOT NULL,
                          `userName` varchar(24) NOT NULL,
                          `profilePicture` varchar(80) NOT NULL DEFAULT 'default.png',
                          `password` varchar(80) NOT NULL,

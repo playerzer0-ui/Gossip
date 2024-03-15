@@ -194,6 +194,17 @@ public class Controller extends HttpServlet {
         Users user = usersDao.Login(email, password);
 
         if (user != null) {
+            if(user.getUserId() == -5){
+                String msg = "Wrong email";
+                session.setAttribute("msg", msg);
+                return "login.jsp";
+            }
+            if(user.getUserId() == -10){
+                String msg = "Wrong password";
+                session.setAttribute("msg", msg);
+                return "login.jsp";
+            }
+
             user.setPassword(password);
             session.setAttribute("user", user);
             session.setAttribute("previousInboxId",0);
@@ -231,13 +242,19 @@ public class Controller extends HttpServlet {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
+            if (id == -2){
+                String msg = "the email is already taken!";
+                session.setAttribute("msg", msg);
+                return "register.jsp";
+            }
             if (id != -1) {
                 String msg = "You have been registered successfully!";
                 Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            } else {
+            }
+            else {
                 String msg = "Registration was not successful, please try again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -674,13 +691,14 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-           // FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName);
+             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+        ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-               //targetStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
