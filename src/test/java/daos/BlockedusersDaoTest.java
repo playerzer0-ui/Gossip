@@ -11,25 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 class BlockedusersDaoTest {
 
     /**
-     * Test of addBlockUser_Success() method, of class BlockedusersDao.
-     */
-    @Test
-    void addBlockUser_Success() {
-        BlockedusersDao blockedusersDao = new BlockedusersDao("gossiptest");
-        System.out.println("addBlockUser_Success");
-        int userId = 4;
-        int blockedId = 1;
-
-        int result = blockedusersDao.addBlockUser(userId,blockedId);
-        blockedusersDao.deleteBlockUser(1);
-        assertTrue((result > 0));
-    }
-
-    /**
      * Test of addBlockUser_SuccessWithDelete() method, of class BlockedusersDao.
      */
     @Test
-    void addBlockUser_SuccessWithDelete() {
+    void addBlockUser() {
         BlockedusersDao blockedusersDao = new BlockedusersDao("gossiptest");
         System.out.println("addBlockUser_SuccessWithDelete");
         int userId = 4;

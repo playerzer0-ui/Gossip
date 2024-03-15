@@ -1,5 +1,6 @@
 package daos;
 
+import business.InboxParticipants;
 import business.Reports;
 import business.Stories;
 import business.Users;
@@ -117,11 +118,7 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
      */
     @Override
     public List<Reports> getAllReports() {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        List<Reports> reports = new ArrayList<Reports>();
-
+        List<Reports> reports = new ArrayList();
         try
         {
             con = this.getConnection();
@@ -148,25 +145,7 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
         }
         finally
         {
-            try
-            {
-                if (rs != null)
-                {
-                    rs.close();
-                }
-                if (ps != null)
-                {
-                    ps.close();
-                }
-                if (con != null)
-                {
-                    freeConnection("");
-                }
-            }
-            catch (SQLException e)
-            {
-                System.out.println("An error occurred when shutting down the getAllReports() method: " + e.getMessage());
-            }
+            freeConnection("An error occurred when shutting down the getAllReports() method:");
         }
         return reports;
     }
@@ -181,8 +160,7 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
      */
     @Override
     public int updateReport(int reportId, int reportStatus) {
-        Connection con = null;
-        PreparedStatement ps = null;
+
         int rpStatus = 1;
         try {
             con = this.getConnection();
@@ -198,17 +176,7 @@ public class ReportsDao extends Dao implements ReportsDaoInterface {
             System.out.println("An error occurred in the updateReport() method: " + e.getMessage());
         }
         finally{
-            try{
-                if (ps != null){
-                    ps.close();
-                }
-                if (con != null){
-                    freeConnection(con);
-                }
-            }
-            catch (SQLException e){
-                System.out.println("An error occurred when shutting down the updateReport() method: " + e.getMessage());
-            }
+            freeConnectionUpdate("An error occurred when shutting down the updateReport() method:");
         }
         return rpStatus;
     }

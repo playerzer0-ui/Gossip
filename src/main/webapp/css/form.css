@@ -5,11 +5,27 @@
     font-family: 'Poppins', sans-serif;
 }
 
+.warning-msg {
+    position: relative;
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+}
+
+.warning-msg p {
+    background: red;
+    border-radius: 20px;
+    color: white;
+}
+
 body {
     width: 100vw;
     height: 100vh;
     background: rgb(195,7,83);
-    background: linear-gradient(127deg, rgba(195,7,83,1) 0%, rgba(255,238,170,1) 100%); 
+    background: linear-gradient(127deg, rgba(195,7,83,1) 0%, rgba(255,238,170,1) 100%);
+    overflow: hidden;
 }
 
 main {
@@ -24,6 +40,7 @@ main {
     align-items: center;
     background-color: white;
     border-radius: 30px;
+    z-index: 1;
 }
 
 h1 {

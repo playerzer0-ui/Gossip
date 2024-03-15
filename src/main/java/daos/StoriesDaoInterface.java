@@ -1,9 +1,11 @@
 package daos;
 
+import business.Reports;
 import business.Stories;
 import business.Users;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public interface StoriesDaoInterface {
 
@@ -38,4 +40,10 @@ public interface StoriesDaoInterface {
      * @return that story of id's detail
      */
     public Stories getStoryById (int id);
+
+    /**
+     * getAllStories method able to list out all stories.
+     * @return a list of stories
+     */
+    public List<Stories> getAllStories();
 }

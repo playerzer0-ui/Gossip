@@ -194,6 +194,17 @@ public class Controller extends HttpServlet {
         Users user = usersDao.Login(email, password);
 
         if (user != null) {
+            if(user.getUserId() == -5){
+                String msg = "Wrong email";
+                session.setAttribute("msg", msg);
+                return "login.jsp";
+            }
+            if(user.getUserId() == -10){
+                String msg = "Wrong password";
+                session.setAttribute("msg", msg);
+                return "login.jsp";
+            }
+
             user.setPassword(password);
             session.setAttribute("user", user);
             session.setAttribute("previousInboxId",0);
@@ -231,13 +242,19 @@ public class Controller extends HttpServlet {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
+            if (id == -2){
+                String msg = "the email is already taken!";
+                session.setAttribute("msg", msg);
+                return "register.jsp";
+            }
             if (id != -1) {
                 String msg = "You have been registered successfully!";
                 Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            } else {
+            }
+            else {
                 String msg = "Registration was not successful, please try again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -674,8 +691,9 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)) {
-            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName);
+             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
+            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+        ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
@@ -771,7 +789,6 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
 
-        String profilePicture = request.getParameter("profilePiture");
         String username = request.getParameter("username");
         String password = request.getParameter("password");
         String email = request.getParameter("email");
@@ -780,14 +797,14 @@ public class Controller extends HttpServlet {
 
         if (username != null && password != null && email != null && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
             Users tempUser = (Users)session.getAttribute("user");
+            String profilePicture = tempUser.getProfilePicture();
 
-            Users user = new Users(tempUser.getUserId(), username, profilePicture,password, email, dateOfBirth, 1,0,bio,0);
+            Users user = new Users(tempUser.getUserId(), email, username, profilePicture, password, dateOfBirth, 1, 0, bio, 0);
             int rowsAffected = usersDao.updateUser(user);
 
             if(rowsAffected != -1){
                 String msg = "profile updated successfully!";
-                Users updateuser = new Users(tempUser.getUserId(), username, profilePicture,password, email, dateOfBirth, 1,0,bio,0);
-                session.setAttribute("user", updateuser);
+                session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
             }

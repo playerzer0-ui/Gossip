@@ -80,6 +80,10 @@ public class Users {
         this.searchCategory = searchCategory;
     }
 
+    public Users(int userId){
+        this.userId = userId;
+    }
+
     public int getUserId() {
         return userId;
     }

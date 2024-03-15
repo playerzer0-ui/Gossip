@@ -1,3 +1,10 @@
+<%
+    String msg = (String)session.getAttribute("msg");
+    session.removeAttribute("msg");
+    if(msg == null){
+        msg = "";
+    }
+%>
 <!DOCTYPE html>
 
 <html>
@@ -17,6 +24,9 @@
 <body>
 <!--navigation-->
 <%@include file="navbar.jsp"%>
+<div class="warning-msg">
+    <p><%=msg%></p>
+</div>
 
 <main>
     <h1>Login</h1>
