@@ -255,7 +255,7 @@ public class Controller extends HttpServlet {
                 return "chatbox.jsp";
             }
             else {
-                String msg = "Registration was not successful, please try again!";
+                String msg = "Registration failed, try different username or check details again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
             }
