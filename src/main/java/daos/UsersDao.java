@@ -287,9 +287,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
      */
     @Override
     public List<Users> searchUserByUsername(String username) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         List<Users> users = new ArrayList<>();
 
         try{
@@ -320,20 +317,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             System.out.println("An error occurred in the searchUserByUsername() method: " + e.getMessage());
         }
         finally{
-            try{
-                if (rs != null){
-                    rs.close();
-                }
-                if (ps != null){
-                    ps.close();
-                }
-                if (con != null){
-                    freeConnection(con);
-                }
-            }
-            catch (SQLException e){
-                System.out.println("An error occurred when shutting down the searchUserByUsername() method: " + e.getMessage());
-            }
+            freeConnection("An error occurred when shutting down the searchUserByUsername() method: ");
         }
         return users;
     }
@@ -392,9 +376,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
     @Override
     public boolean checkUsername(String uname) {
         boolean isPresent = false;
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         try {
             con = this.getConnection();
             String query = "SELECT * from users where username=? ";
@@ -404,8 +385,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                int count = rs.getInt(1);
-                isPresent = count > 0;
+                isPresent = true;
             }
 
         } catch (SQLException e) {
@@ -438,9 +418,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                int count = rs.getInt(1);
-                isPresent = count > 0;
-
+                isPresent = true;
             }
 
         } catch (SQLException e) {
@@ -486,6 +464,27 @@ public class UsersDao extends Dao implements UsersDaoInterface{
             System.out.println("An error occurred in the updateUser() method: " + e.getMessage());
         } finally {
             freeConnectionUpdate("An error occurred when shutting down the updateUser() method: ");
+        }
+        return rowsAffected;
+    }
+
+    public int updateNameAndBio(int userId, String userName, String bio){
+        int rowsAffected = 0;
+        try {
+            con = getConnection();
+
+            String command = "UPDATE users SET userName=?, bio=? WHERE userID=?";
+            ps = con.prepareStatement(command);
+            ps.setString(1, userName);
+            ps.setString(2, bio);
+            ps.setInt(3, userId);
+
+            rowsAffected = ps.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("An error occurred in the updateNameAndBio() method: " + e.getMessage());
+        } finally {
+            freeConnectionUpdate("An error occurred when shutting down the updateNameAndBio() method: ");
         }
         return rowsAffected;
     }

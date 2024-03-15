@@ -450,10 +450,10 @@ public class Controller extends HttpServlet {
             otherUserId = otherUser.getUserId();
 
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -785,31 +785,34 @@ public class Controller extends HttpServlet {
     }
 
     public String editProfile(HttpServletRequest request, HttpServletResponse response){
-
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
+        Users tempUser = (Users)session.getAttribute("user");
 
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
         String bio = request.getParameter("bio");
 
-        if (username != null && password != null && email != null && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
-            Users tempUser = (Users)session.getAttribute("user");
-            String profilePicture = tempUser.getProfilePicture();
+        if(!tempUser.getUserName().equals(username)){
+            if(usersDao.checkUsername(username)){
+                String msg = "username taken, try another";
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+        }
 
-            Users user = new Users(tempUser.getUserId(), email, username, profilePicture, password, dateOfBirth, 1, 0, bio, 0);
-            int rowsAffected = usersDao.updateUser(user);
+        if (username != null && !username.isEmpty()) {
+            int rowsAffected = usersDao.updateNameAndBio(tempUser.getUserId(), username, bio);
 
-            if(rowsAffected != -1){
+            if(rowsAffected == 1){
                 String msg = "profile updated successfully!";
-                session.setAttribute("user", user);
+                tempUser.setUserName(username);
+                tempUser.setBio(bio);
+                session.setAttribute("user", tempUser);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
             }
             else{
-                String msg = "update was not successful!";
+                String msg = "update failed, something went wrong";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
             }

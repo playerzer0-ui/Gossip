@@ -18,6 +18,25 @@ body {
     background: linear-gradient(137deg, rgba(195,7,83,1) 0%, rgba(114,4,85,1) 100%);
 }
 
+.warning-msg {
+    position: absolute;
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    top: 0;
+}
+
+.warning-msg p {
+    background: white;
+    border-radius: 20px;
+    color: red;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+}
+
 .zoom, .report-page {
     position: absolute;
     display: none;
