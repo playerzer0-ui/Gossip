@@ -40,7 +40,7 @@
         <form action="controller" method="post">
             <div class="mb-3">
                 <label class="form-label">enter reason: </label> <br>
-                <input type="text" name="reportReason"  class="form-control" />
+                <input type="text" name="reportReason" class="form-control"/>
             </div>
             <input type="hidden" name="action" value="send_report"/>
             <button type="submit" class="report-button">Submit</button>
@@ -81,10 +81,10 @@
                 <ion-icon name="search-outline"></ion-icon>
             </div>
             <div id="suggestions">
-<%--                <div id="2" class="suggestion">--%>
-<%--                    <img src="img/default.png" alt="user-image">--%>
-<%--                    <p>default user</p>--%>
-<%--                </div>--%>
+                <%--                <div id="2" class="suggestion">--%>
+                <%--                    <img src="img/default.png" alt="user-image">--%>
+                <%--                    <p>default user</p>--%>
+                <%--                </div>--%>
             </div>
         </div>
         <!-- chat-list -->
@@ -302,8 +302,9 @@
             </p>
             <p><%=user.getBio()%>
             </p>
-            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()" accept="image/png, image/jpeg, image/jpg">
-<%--            <button onclick="changeProfilePic()">upload</button>--%>
+            <input style="visibility: hidden" id="newProfilePic" type="file" onchange="changeProfilePic()"
+                   accept="image/png, image/jpeg, image/jpg">
+            <%--            <button onclick="changeProfilePic()">upload</button>--%>
         </div>
     </div>
 
@@ -317,7 +318,7 @@
 
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
 
-<%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
+                <%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
 
             </div>
             <div class="edit-profile">
@@ -327,7 +328,8 @@
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
                     <label class="form-label">Password</label> <br/>
-                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password" required/> <br/>
+                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password"
+                           required/> <br/>
 
                     <label class="form-label">Email</label> <br/>
                     <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
@@ -336,11 +338,11 @@
                     <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
 
                     <label class="form-label">Bio</label> <br/>
-                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name ="action" value="do_editProfile" />
+                    <input type="hidden" name="action" value="do_editProfile"/>
                 </form>
             </div>
         </div>
@@ -404,8 +406,10 @@
 <script>
     var mainInboxId = 0;
     var otherUserId = 0;
-    var previousInboxId=0;
-    var counter=0;
+    var previousInboxId = 0;
+    var counter = 0;
+    var chatBoxScroll = document.getElementById("chatbox");
+    var chatBoxScrollHeight = 0;
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
@@ -413,8 +417,7 @@
         if (mainInboxId !== 0) {
             // alert("in");
             updateMessages(mainInboxId);
-        }
-        else if ( otherUserId!== 0){
+        } else if (otherUserId !== 0) {
             getLinkingInboxId(otherUserId);
         }
     }
@@ -469,8 +472,8 @@
     }
 
     function getMessages(inboxId) {
-        if(counter>0 && mainInboxId!==0 ){
-          previousInboxId=mainInboxId;
+        if (counter > 0 && mainInboxId !== 0) {
+            previousInboxId = mainInboxId;
             closePreviousInbox();
         }
         mainInboxId = inboxId;
@@ -486,6 +489,7 @@
                     counter++;
                     var allMessages = JSON.parse(data);
                     var chatBox = document.getElementById("chatbox");
+                    chatBoxScroll = document.getElementById("chatbox");
                     chatBox.innerHTML = "";
                     for (var i = 0; i < allMessages.length; i++) {
                         console.log("Message Type:", allMessages[i][4]); // Log message type
@@ -516,7 +520,9 @@
                             }
                         }
                     }
-                    chatBox.scrollTop(chatBox[0].scrollHeight);
+                    //set to the height of the page
+                    chatBox.scrollTop = chatBox.scrollHeight;
+                    chatBoxScrollHeight = chatBox.scrollHeight;
                     ///chatBox.innerHTML = data;
                     /* var messages = "";
                      var allMessages =
@@ -550,6 +556,7 @@
                 success: function (data) {
                     var allMessages = JSON.parse(data);
                     var chatBox = document.getElementById("chatbox");
+                    chatBoxScroll = document.getElementById("chatbox");
                     chatBox.innerHTML = "";
                     for (var i = 0; i < allMessages.length; i++) {
                         console.log("Message Type:", allMessages[i][4]); // Log message type
@@ -580,6 +587,8 @@
                             }
                         }
                     }
+                    //set to the height of the page
+                    chatBox.scrollTop = chatBoxScrollHeight;
                     ///chatBox.innerHTML = data;
                     /* var messages = "";
                      var allMessages =
@@ -639,6 +648,7 @@
     /*async*/
     async function sendMessage() {
         var file = document.getElementById("msgFile");
+        var chatBox = document.getElementById("chatbox");
         if (file.value != "") {
             var formData = new FormData();
             var extension = file.value.split(".").pop();
@@ -664,7 +674,7 @@
                             type: 'post',
                             data: {action: "firstMessage", "userId": otherUserId, "message": msg},
                             success: function (data) {
-                            getLinkingInboxId(otherUserId);
+                                getLinkingInboxId(otherUserId);
                             },
                             error: function () {
                                 alert("Error with ajax");
@@ -678,7 +688,8 @@
                             type: 'post',
                             data: {action: "sendMessage", "inboxId": mainInboxId, "message": msg},
                             success: function (data) {
-
+                                chatBox.scrollTop = chatBox.scrollHeight;
+                                chatBoxScrollHeight = chatBox.scrollHeight;
                             },
                             error: function () {
                                 alert("Error with ajax");
@@ -729,12 +740,12 @@
                             for (var i = 0; i < allSuggestions.length; i++) {
                                 let idx = allSuggestions[i][2] + allSuggestions[i][3];
                                 let imgName = allSuggestions[i][0];
-                                if(imgName === null || imgName === "null"){
+                                if (imgName === null || imgName === "null") {
                                     imgName = "profile.jpg";
                                 }
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
-                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('"+idx+"')" + ">" +
-                                    "<img src='profilePictures/"+imgName+"' alt='user-image'><p>"+allSuggestions[i][1]+"</p></div>";
+                                suggestions.innerHTML += "<div id='" + idx + "' class='suggestion' onclick=" + "handleSearch('" + idx + "')" + ">" +
+                                    "<img src='profilePictures/" + imgName + "' alt='user-image'><p>" + allSuggestions[i][1] + "</p></div>";
 
                             }
                             // var allSuggestion = Array.from(document.querySelectorAll(".suggestion"));
@@ -802,6 +813,8 @@
                                 console.log("Message Type:", allMessages[i][4]); // Log message type
                                 console.log("File Name:", allMessages[i][3]);
                                 if (parseInt(allMessages[i][2]) ===
+
+
             <%=user.getUserId()%>) {
                                     if (parseInt(allMessages[i][4]) === 1) {
                                         chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
@@ -859,7 +872,7 @@
                         getMessages(id);
                     } else {
                         otherUserId = userId;
-                        previousInboxId= mainInboxId;
+                        previousInboxId = mainInboxId;
                         mainInboxId = 0;
                         getMessagesHeaderByUserId(userId);
                         var chatBox = document.getElementById("chatbox");
@@ -876,15 +889,15 @@
         });
     }
 
-    function closePreviousInbox(){
-        if(counter>0 && previousInboxId!==0) {
+    function closePreviousInbox() {
+        if (counter > 0 && previousInboxId !== 0) {
             $(document).ready(function () {
                 $.ajax({
                     url: "controller",
                     type: 'post',
                     data: {action: "closePreviousInbox", "inboxId": previousInboxId},
                     success: function (data) {
-                    //alert(previousInboxId + " prev id");
+                        //alert(previousInboxId + " prev id");
                     },
                     error: function () {
                         alert("Error with ajax");
@@ -893,27 +906,28 @@
             });
         }
     }
+
     /**for smaller devices **/
-    function closeInbox(){
-            $(document).ready(function () {
-                $.ajax({
-                    url: "controller",
-                    type: 'post',
-                    data: {action: "closePreviousInbox", "inboxId": mainInboxId},
-                    success: function (data) {
-                        previousInboxId=mainInboxId;
-                        counter++;
-                        mainInboxId=0;
-                        hideMessage();
-                    },
-                    error: function () {
-                        alert("Error with ajax");
-                    }
-                });
+    function closeInbox() {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "closePreviousInbox", "inboxId": mainInboxId},
+                success: function (data) {
+                    previousInboxId = mainInboxId;
+                    counter++;
+                    mainInboxId = 0;
+                    hideMessage();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
             });
+        });
     }
 
-    function hideMessage(){
+    function hideMessage() {
         $("#chat-hide").css("visibility", "hidden");
         $(".chatbox").css("visibility", "hidden");
         $(".chatbox-input").css("visibility", "hidden");
@@ -955,6 +969,12 @@
             });
         });
     }
+
+    //when the user scrolls
+    chatBoxScroll.addEventListener('scroll', (event) => {
+        //set current scroll height to current scroll height
+        chatBoxScrollHeight = chatBoxScroll.scrollTop;
+    });
 
 
     document.addEventListener('keydown', function (event) {
