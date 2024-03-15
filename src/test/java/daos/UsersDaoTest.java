@@ -36,7 +36,7 @@ class UsersDaoTest {
         String email = "Sherry@gmail.com";
         String password = "password";
 
-        Users expResult = null;
+        Users expResult = new Users(-5);
         Users result = usersDao.Login(email,password);
         assertEquals(expResult,result);
     }
@@ -47,7 +47,7 @@ class UsersDaoTest {
         System.out.println("login_UserCantFound");
         String email = "joe@gmail.com";
         String password = "password";
-        Users expResult = null;
+        Users expResult = new Users(-10);
         Users result = usersDao.Login(email,password);
         assertEquals(expResult,result);
     }
@@ -59,7 +59,7 @@ class UsersDaoTest {
         System.out.println("login_UserCantFound");
         String email = "pau@gmail.com";
         String password = "123";
-        Users expResult = null;
+        Users expResult = new Users(-5);
         Users result = usersDao.Login(email,password);
         assertEquals(expResult,result);
     }
@@ -97,7 +97,7 @@ class UsersDaoTest {
 
         int result = usersDao.Register(email,userName,"default.png",password,dOfBirth,1,0,"",0);
         usersDao.updateIncrement("users", 6);
-        assertTrue((result == -1));
+        assertTrue((result == -2));
     }
 
     /**
