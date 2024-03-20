@@ -150,6 +150,34 @@ public class MessageDao extends Dao {
         }
         return state;
     }
+    public int sendMessage2(int inboxId, int senderId, String message, int messageType,int messageKey,String originalFileName) {
+        int id=0;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "insert into messages (inboxId,senderId,message,messageType,messageKey,originalFileName) values (?,?,?,?,?,?)";
+            ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, senderId);
+            ps.setString(3, message);
+            ps.setInt(4, messageType);
+            ps.setInt(5, messageKey);
+            ps.setString(6, originalFileName);
+            ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
+        }
+        return id;
+    }
 
     /**
      * get all messages that are not deleted, from a certain inbox

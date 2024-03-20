@@ -23,7 +23,7 @@ class InboxParticipantsDaoIsolationTest {
         ResultSet rs = mock(ResultSet.class);
         LocalDateTime timeSent = LocalDateTime.now();
         InboxParticipants ibp = new InboxParticipants(3, 2, 0, 0, 0, timeSent);
-        String query = "Select * from inboxparticipants where userId=?";
+        String query = "Select * from inboxparticipants where userId=? order by timesent";
         when(dbConn.prepareStatement(query)).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(true, false);
@@ -51,7 +51,7 @@ class InboxParticipantsDaoIsolationTest {
         ResultSet rs = mock(ResultSet.class);
         LocalDateTime timeSent = LocalDateTime.now();
         InboxParticipants ibp = new InboxParticipants(3, 2, 0, 0, 0, timeSent);
-        String query = "Select * from inboxparticipants where userId=?";
+        String query = "Select * from inboxparticipants where userId=? order by timesent desc";
         when(dbConn.prepareStatement(query)).thenReturn(ps);
         when(ps.executeQuery()).thenReturn(rs);
         when(rs.next()).thenReturn(false);

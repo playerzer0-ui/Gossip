@@ -43,11 +43,24 @@ public class tx {
         System.out.println(d.getUserById(1));*/
 //        System.out.println(Miscellaneous.checkEmail("sg@student.dkit.ie"));
 //        System.out.println(Miscellaneous.checkPassword("br fdb /*K95"));
-        if(BCrypt.checkpw("123", "$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa")){
+      /*  if(BCrypt.checkpw("123", "$2a$10$rJf3amWgGq0g5AQ90XCPq.1oASojmit/aOI/W7H9hlOvuEnq7TPqa")){
             System.out.println("dsadsasad");
         }
         else{
             System.out.println("WRONG");
+        }*/
+        /*InboxParticipants ibp = new InboxParticipants(1,1,0,0,0,LocalDateTime.now());
+        InboxParticipantsDao inboxParticipantsDao = new InboxParticipantsDao("gossip");
+        inboxParticipantsDao.updateInboxParticipant(ibp);*/
+        /*ArrayList <String> jdj= new ArrayList<>();
+        jdj.add(0,"A");
+        jdj.add(0,"B");
+        System.out.println(jdj);*/
+       InboxParticipantsDao inboxParticipantsDao = new InboxParticipantsDao("gossip");
+       ArrayList <InboxParticipants> ibps= inboxParticipantsDao.getAllInbox(1);
+        //System.out.println(ibps);
+        for(InboxParticipants ibp: ibps){
+            System.out.println(ibp);
         }
     }
 }

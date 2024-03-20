@@ -34,7 +34,7 @@ import javax.imageio.ImageIO;
 )
 public class Controller extends HttpServlet {
 
-    private  static int otherUserId;
+    private static int otherUserId;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -172,9 +172,10 @@ public class Controller extends HttpServlet {
     public void destroy(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
-       int inboxId = (Integer)session.getAttribute("previousInboxId");
+        int inboxId = (Integer) session.getAttribute("previousInboxId");
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
-        ibpsDao.openInbox(inboxId,user.getUserId(),0);
+        System.out.println("logging out prev id is" + inboxId);
+        ibpsDao.openInbox(inboxId, user.getUserId(), 0);
         session.invalidate();
     }
 
@@ -194,12 +195,12 @@ public class Controller extends HttpServlet {
         Users user = usersDao.Login(email, password);
 
         if (user != null) {
-            if(user.getUserId() == -5){
+            if (user.getUserId() == -5) {
                 String msg = "Wrong email";
                 session.setAttribute("msg", msg);
                 return "login.jsp";
             }
-            if(user.getUserId() == -10){
+            if (user.getUserId() == -10) {
                 String msg = "Wrong password";
                 session.setAttribute("msg", msg);
                 return "login.jsp";
@@ -207,14 +208,12 @@ public class Controller extends HttpServlet {
 
             user.setPassword(password);
             session.setAttribute("user", user);
-            session.setAttribute("previousInboxId",0);
-            if(user.getUserType()==1 && user.getSuspended()==0){
+            session.setAttribute("previousInboxId", 0);
+            if (user.getUserType() == 1 && user.getSuspended() == 0) {
                 return "chatbox.jsp";
-            }
-            else if (user.getUserType() == 2) {
+            } else if (user.getUserType() == 2) {
                 return "admin.jsp";
-            }
-            else{
+            } else {
                 return "login.jsp";
             }
         } else {
@@ -238,11 +237,11 @@ public class Controller extends HttpServlet {
         String password = request.getParameter("password");
         LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
 
-        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && Miscellaneous.checkEmail(email) && Miscellaneous.checkPassword(password) ) {
+        if (username != null && email != null && password != null && !username.isEmpty() && !email.isEmpty() && !password.isEmpty() && Miscellaneous.checkEmail(email) && Miscellaneous.checkPassword(password)) {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
-            if (id == -2){
+            if (id == -2) {
                 String msg = "the email is already taken!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -253,8 +252,7 @@ public class Controller extends HttpServlet {
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            }
-            else {
+            } else {
                 String msg = "Registration failed, try different username or check details again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -274,7 +272,7 @@ public class Controller extends HttpServlet {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         session.setAttribute("activeInboxId", inboxId);
-        session.setAttribute("previousInboxId",inboxId);
+        session.setAttribute("previousInboxId", inboxId);
         MessageDao messageDao = new MessageDao("gossip");
         ArrayList<Message> allMessages = messageDao.getMessages(inboxId);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
@@ -359,7 +357,7 @@ public class Controller extends HttpServlet {
             //if a matching inbox was found
             if (matchingInbox != null) {
                 //send message
-                messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1,key);
+                messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1, key);
                 //update unseen messages for the other user
                 ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
                 //set openState to true
@@ -371,11 +369,10 @@ public class Controller extends HttpServlet {
                 ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
                 //insert the other user
                 ibpsDao.insertInboxParticipant(inboxId, otherUserId);
-                messageDao.sendMessage(inboxId, user.getUserId(), message, 1,key);
+                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
                 ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
             }
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("error occurred when sending message" + ex.getMessage());
             response.getWriter().write("Sorry error occurred while sending message");
         }
@@ -398,26 +395,38 @@ public class Controller extends HttpServlet {
         MessageDao messageDao = new MessageDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
+        InboxParticipants myIbp = ibpsDao.getInboxParticipant(inboxId, user.getUserId());
         Aes aes = new Aes();
         int key = aes.generateKey();
+        int messageId = -1;
         try {
             message = aes.encrypt(message, key);
             //if it's a normal chat
             if (inbox.getInboxType() == 1) {
                 //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
+                messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key, "");
                 // get the other person's InboxParticipant
                 InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                 //update unseen messages for the other user
                 ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+                Message m = messageDao.getMessage(messageId);
+                ibp.setTimeSent(m.getTimeSent());
+                myIbp.setTimeSent(m.getTimeSent());
+                ibpsDao.updateInboxParticipant(ibp);
+                ibpsDao.updateInboxParticipant(myIbp);
             } else {
                 //send message
-                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
+                messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key, "");
                 ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
-                //add unseenMessages for all users in the groupChat
+                Message m = messageDao.getMessage(messageId);
+                myIbp.setTimeSent(m.getTimeSent());
+                ibpsDao.updateInboxParticipant(myIbp);
+                //add unseenMessages and time sent for all users in the groupChat
                 for (InboxParticipants Ibps : allIbps) {
                     if (Ibps.getUserId() != user.getUserId()) {
-                        ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                        Ibps.setTimeSent(m.getTimeSent());
+                        ibpsDao.updateInboxParticipant(Ibps);
+                        ibpsDao.updateUnSeenMessages(Ibps.getInboxId(), Ibps.getUserId());
                     }
                 }
             }
@@ -580,6 +589,8 @@ public class Controller extends HttpServlet {
         Inbox inbox = inboxDao.getInbox(inboxId);
         Aes aes = new Aes();
         int key = aes.generateKey();
+        int messageId = -1;
+        InboxParticipants myIbp = ibpsDao.getInboxParticipant(inboxId, user.getUserId());
         //if it's a normal chat
         try {
             if (inbox.getInboxType() == 1) {
@@ -591,14 +602,14 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
                     }
                 } else if (checkVideo(extension)) {
                     uploadState = uploadFile(file, filteredFileName, "videoMessages\\");
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
                     }
                 } else {
                     uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
@@ -606,14 +617,19 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
                 }
                 if (uploadState) {
+                    Message m = messageDao.getMessage(messageId);
                     // get the other person's InboxParticipant
                     InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                     //update unseen messages for the other user
                     ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
+                    ibp.setTimeSent(m.getTimeSent());
+                    ibpsDao.updateInboxParticipant(ibp);
+                    myIbp.setTimeSent(m.getTimeSent());
+                    ibpsDao.updateInboxParticipant(myIbp);
                 }
             } else {
                 boolean uploadState = false;
@@ -624,7 +640,7 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 2, key, originalFileName);
                     }
                 } //if it's a video
                 else if (checkVideo(extension)) {
@@ -632,7 +648,7 @@ public class Controller extends HttpServlet {
                     if (uploadState) {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 3, key, originalFileName);
                     }
                 } else {
                     uploadState = uploadFile(file, filteredFileName, "fileMessages\\");
@@ -640,15 +656,20 @@ public class Controller extends HttpServlet {
                         filteredFileName = aes.encrypt(filteredFileName, key);
                         originalFileName = aes.encrypt(originalFileName, key);
                         //send message
-                        messageDao.sendMessage(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
+                        messageId = messageDao.sendMessage2(inboxId, user.getUserId(), filteredFileName, 4, key, originalFileName);
                     }
                 }
                 if (uploadState) {
+                    Message m = messageDao.getMessage(messageId);
+                    myIbp.setTimeSent(m.getTimeSent());
+                    ibpsDao.updateInboxParticipant(myIbp);
                     ArrayList<InboxParticipants> allIbps = ibpsDao.getAllInboxParticipants(inboxId);
                     //add unseenMessages for all users in the groupChat
                     for (InboxParticipants Ibps : allIbps) {
                         if (Ibps.getUserId() != user.getUserId()) {
-                            ibpsDao.updateUnSeenMessages(inboxId, Ibps.getUserId());
+                            ibpsDao.updateUnSeenMessages(Ibps.getInboxId(), Ibps.getUserId());
+                            Ibps.setTimeSent(m.getTimeSent());
+                            ibpsDao.updateInboxParticipant(Ibps);
                         }
                     }
                 }
@@ -692,7 +713,7 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
-            FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+             FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
         ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
@@ -784,7 +805,7 @@ public class Controller extends HttpServlet {
         usersDao.updateUser(u);
     }
 
-    public String editProfile(HttpServletRequest request, HttpServletResponse response){
+    public String editProfile(HttpServletRequest request, HttpServletResponse response) {
 
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
@@ -796,19 +817,18 @@ public class Controller extends HttpServlet {
         String bio = request.getParameter("bio");
 
         if (username != null && password != null && email != null && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
-            Users tempUser = (Users)session.getAttribute("user");
+            Users tempUser = (Users) session.getAttribute("user");
             String profilePicture = tempUser.getProfilePicture();
 
             Users user = new Users(tempUser.getUserId(), email, username, profilePicture, password, dateOfBirth, 1, 0, bio, 0);
             int rowsAffected = usersDao.updateUser(user);
 
-            if(rowsAffected != -1){
+            if (rowsAffected != -1) {
                 String msg = "profile updated successfully!";
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            }
-            else{
+            } else {
                 String msg = "update was not successful!";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
@@ -958,14 +978,14 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
 //        Miscellaneous miscellaneous = new Miscellaneous();
         String header;
-            Users otherUser = usersDao.getUserById(userId);
+        Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
-            if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+        if (otherUser.getOnline() == 1) {
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
-            } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
-            }
+        } else {
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+        }
 
         response.getWriter().write(header);
     }
@@ -996,22 +1016,22 @@ public class Controller extends HttpServlet {
             }
         }
         if (inbox != null) {
-            response.getWriter().write(inbox.getInboxId()+"");
+            response.getWriter().write(inbox.getInboxId() + "");
             System.out.println("inbox found");
-        }
-        else{
+        } else {
             response.getWriter().write("-1");
             System.out.println("no ib found");
         }
     }
+
     public void closePreviousInbox(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
-        session.setAttribute("previousInboxId",0);
+        session.setAttribute("previousInboxId", 0);
         InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
-        ibpsDao.openInbox(inboxId,user.getUserId(),0);
-        System.out.println("just closed inbox " +  inboxId);
+        ibpsDao.openInbox(inboxId, user.getUserId(), 0);
+        System.out.println("just closed inbox " + inboxId);
     }
 
     public void ignoreReport(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -1021,16 +1041,16 @@ public class Controller extends HttpServlet {
 
         reportsDao.updateReport(reportId, status);
     }
+
     public void suspendUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        UsersDao usersDao= new UsersDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
         int userId = Integer.parseInt(request.getParameter("userId"));
         int suspendState = Integer.parseInt(request.getParameter("suspendState"));
         Users u = usersDao.getUserById(userId);
-        if(suspendState==1) {
+        if (suspendState == 1) {
             u.setSuspended(1);
             usersDao.updateUser(u);
-        }
-        else if (suspendState==0){
+        } else if (suspendState == 0) {
             u.setSuspended(0);
             usersDao.updateUser(u);
         }

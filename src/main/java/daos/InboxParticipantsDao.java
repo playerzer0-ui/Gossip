@@ -1,5 +1,6 @@
 package daos;
 
+import business.Inbox;
 import business.InboxParticipants;
 import business.Message;
 
@@ -25,10 +26,11 @@ public class InboxParticipantsDao extends Dao {
      **/
     public ArrayList<InboxParticipants> getAllInbox(int userId) {
         ArrayList<InboxParticipants> inboxParticipants = new ArrayList();
+        ArrayList<InboxParticipants> orderInboxParticipants = new ArrayList();
         try {
             con = getConnection();
 
-            String query = "Select * from inboxparticipants where userId=?";
+            String query = "Select * from inboxparticipants where userId=? order by timesent desc";
             ps = con.prepareStatement(query);
             ps.setInt(1, userId);
             rs = ps.executeQuery();
@@ -43,6 +45,22 @@ public class InboxParticipantsDao extends Dao {
         } finally {
             freeConnection("Exception occurred in the final section of the getAllInbox() method: ");
         }
+        /*for (InboxParticipants ibps: inboxParticipants){
+            boolean state=true;
+            int i=0;
+            while(i< orderInboxParticipants.size() &&  state==true){
+             if(orderInboxParticipants.get(i).getTimeSent().isAfter(ibps.getTimeSent())){
+             orderInboxParticipants.add(i,ibps);
+             state=false;
+             }
+             i++;
+            }
+            if(state==true){
+                orderInboxParticipants.add(0,ibps);
+            }
+
+        }*/
+
         return inboxParticipants;
     }
 
@@ -290,6 +308,33 @@ public class InboxParticipantsDao extends Dao {
             System.out.println("Exception occurred in the deleteInboxParticipant() method: " + e.getMessage());
         } finally {
             freeConnectionUpdate("Exception occurred in the final section of the deleteInboxParticipant() method: ");
+        }
+        return state;
+    }
+    public Boolean updateInboxParticipant(InboxParticipants ibp) {
+        int rowsAffected = 0;
+        Boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "update inboxparticipants set deletedstate=? ,unseenMessages=?, isOpen=?, timesent=? where inboxId=? and userId=?";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, ibp.getDeletedState());
+            ps.setInt(2, ibp.getUnseenMessages());
+            ps.setInt(3, ibp.getIsOpen());
+            ps.setTimestamp(4,Timestamp.valueOf(ibp.getTimeSent()));
+            ps.setInt(5, ibp.getInboxId());
+            ps.setInt(6, ibp.getUserId());
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the updateInboxParticipant() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the updateInboxParticipant() method: ");
         }
         return state;
     }
