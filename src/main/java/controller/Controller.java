@@ -125,6 +125,10 @@ public class Controller extends HttpServlet {
                     dest = "chatbox.jsp";
                     response.sendRedirect(dest);
                     break;
+                case "changePassword":
+                    dest = changePassword(request, response);
+                    response.sendRedirect(dest);
+                    break;
 
                 case "show_admin":
                     dest = "admin.jsp";
@@ -241,7 +245,7 @@ public class Controller extends HttpServlet {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
-            if (id == -2) {
+            if (id == -2){
                 String msg = "the email is already taken!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -252,7 +256,8 @@ public class Controller extends HttpServlet {
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            } else {
+            }
+            else {
                 String msg = "Registration failed, try different username or check details again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -459,10 +464,10 @@ public class Controller extends HttpServlet {
             otherUserId = otherUser.getUserId();
 
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -805,31 +810,63 @@ public class Controller extends HttpServlet {
         usersDao.updateUser(u);
     }
 
-    public String editProfile(HttpServletRequest request, HttpServletResponse response) {
-
+    public String changePassword(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
+        Users tempUser = (Users)session.getAttribute("user");
 
         String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        LocalDate dateOfBirth = LocalDate.parse(request.getParameter("dateOfBirth"));
-        String bio = request.getParameter("bio");
+        String oldPass = request.getParameter("password");
+        String newPass = request.getParameter("password");
 
-        if (username != null && password != null && email != null && !username.isEmpty() && !password.isEmpty() && !email.isEmpty()) {
-            Users tempUser = (Users) session.getAttribute("user");
-            String profilePicture = tempUser.getProfilePicture();
+        if (username != null && !username.isEmpty()) {
+            int rowsAffected = usersDao.changePassword(tempUser.getUserName(), oldPass,newPass);
 
-            Users user = new Users(tempUser.getUserId(), email, username, profilePicture, password, dateOfBirth, 1, 0, bio, 0);
-            int rowsAffected = usersDao.updateUser(user);
-
-            if (rowsAffected != -1) {
-                String msg = "profile updated successfully!";
-                session.setAttribute("user", user);
+            if(rowsAffected == 1){
+                String msg = "change password successfully!";
+                tempUser.setPassword(newPass);
+                session.setAttribute("user", tempUser);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            } else {
-                String msg = "update was not successful!";
+            }
+            else{
+                String msg = "change password failed, something went wrong";
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+        }
+        return "chatbox.jsp";
+    }
+
+    public String editProfile(HttpServletRequest request, HttpServletResponse response){
+        HttpSession session = request.getSession(true);
+        UsersDao usersDao = new UsersDao("gossip");
+        Users tempUser = (Users)session.getAttribute("user");
+
+        String username = request.getParameter("username");
+        String bio = request.getParameter("bio");
+
+        if(!tempUser.getUserName().equals(username)){
+            if(usersDao.checkUsername(username)){
+                String msg = "username taken, try another";
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+        }
+
+        if (username != null && !username.isEmpty()) {
+            int rowsAffected = usersDao.updateNameAndBio(tempUser.getUserId(), username, bio);
+
+            if(rowsAffected == 1){
+                String msg = "profile updated successfully!";
+                tempUser.setUserName(username);
+                tempUser.setBio(bio);
+                session.setAttribute("user", tempUser);
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+            else{
+                String msg = "update failed, something went wrong";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
             }
@@ -978,14 +1015,14 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
 //        Miscellaneous miscellaneous = new Miscellaneous();
         String header;
-        Users otherUser = usersDao.getUserById(userId);
+            Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
-        if (otherUser.getOnline() == 1) {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            if (otherUser.getOnline() == 1) {
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
-        } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
-        }
+            } else {
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            }
 
         response.getWriter().write(header);
     }
@@ -1041,7 +1078,6 @@ public class Controller extends HttpServlet {
 
         reportsDao.updateReport(reportId, status);
     }
-
     public void suspendUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UsersDao usersDao = new UsersDao("gossip");
         int userId = Integer.parseInt(request.getParameter("userId"));

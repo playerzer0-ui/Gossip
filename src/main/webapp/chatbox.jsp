@@ -10,6 +10,16 @@
 <%@ page import="miscellaneous.Miscellaneous" %>
 <%@ page import="miscellaneous.Aes" %>
 <%Users user = (Users) session.getAttribute("user");%>
+<%
+    String msg = (String)session.getAttribute("msg");
+    session.removeAttribute("msg");
+    if(msg == null){
+        msg = "";
+    }
+    else{
+        msg = "<p>" + msg + "</p>";
+    }
+%>
 
 <!DOCTYPE html>
 
@@ -29,6 +39,9 @@
 </head>
 
 <body>
+<div class="warning-msg">
+    <%=msg%>
+</div>
 <div class="zoom">
     <ion-icon name="close-outline" onclick="closeZoom()"></ion-icon>
     <img src="" alt="">
@@ -314,35 +327,45 @@
             <h4>profile</h4>
         </div>
         <div class="profile-details">
-            <div class="profile-img">
-
-                <img src="profilePictures/<%=user.getProfilePicture()%>" alt="" class="cover">
-
-                <%--                /<%=user.getProfilePicture()%>" class="cover" alt="">--%>
-
-            </div>
             <div class="edit-profile">
                 <form action="controller" method="post">
                     <h3>Update my profile</h3>
                     <label class="form-label">Username</label> <br/>
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
-                    <label class="form-label">Password</label> <br/>
-                    <input class="form-control" name="password" value="<%=user.getPassword()%>" type="password"
-                           required/> <br/>
+<%--                    <label class="form-label">Password</label> <br/>--%>
+<%--                    <input class="form-control" name="password" type="password" required/> <br/>--%>
 
-                    <label class="form-label">Email</label> <br/>
-                    <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>
+<%--                    <label class="form-label">Email</label> <br/>--%>
+<%--                    <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>--%>
 
-                    <label class="form-label">Date of birth</label> <br/>
-                    <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>
+<%--                    <label class="form-label">Date of birth</label> <br/>--%>
+<%--                    <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>--%>
 
                     <label class="form-label">Bio</label> <br/>
-                    <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name="action" value="do_editProfile"/>
+                    <input type="hidden" name ="action" value="do_editProfile" />
+                </form>
+            </div>
+
+            <div class="change-Password">
+                <form action="controller" method="post">
+                    <h3>Change password</h3>
+                    <label class="form-label">Username</label> <br/>
+                    <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
+
+                    <label class="form-label">Old Password</label> <br/>
+                    <input class="form-control" name="oldPassword" type="password" required/> <br/>
+
+                    <label class="form-label">New Password</label> <br/>
+                    <input class="form-control" name="newPassword" type="password" required/> <br/>
+
+                    <input type="submit" value="Change password" class="btn btn-success"/>
+                    <!-- Include a hidden field to identify what the user wants to do -->
+                    <input type="hidden" name ="action" value="changePassword" />
                 </form>
             </div>
         </div>
