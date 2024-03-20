@@ -350,6 +350,24 @@
                     <input type="hidden" name ="action" value="do_editProfile" />
                 </form>
             </div>
+
+            <div class="change-Password">
+                <form action="controller" method="post">
+                    <h3>Change password</h3>
+                    <label class="form-label">Username</label> <br/>
+                    <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
+
+                    <label class="form-label">Old Password</label> <br/>
+                    <input class="form-control" name="oldPassword" type="password" required/> <br/>
+
+                    <label class="form-label">New Password</label> <br/>
+                    <input class="form-control" name="newPassword" type="password" required/> <br/>
+
+                    <input type="submit" value="Change password" class="btn btn-success"/>
+                    <!-- Include a hidden field to identify what the user wants to do -->
+                    <input type="hidden" name ="action" value="changePassword" />
+                </form>
+            </div>
         </div>
     </div>
 

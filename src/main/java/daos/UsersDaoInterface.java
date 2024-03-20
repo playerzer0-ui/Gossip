@@ -55,16 +55,16 @@ public interface UsersDaoInterface {
      */
     public int Register(Users newUser);
 
-//    /**
-//     * changePassword method allow user to change new password.
-//     *
-//     * @param username is the user's name
-//     * @param oldPass is the user's old password
-//     * @param newPass is new password that user's set
-//     *
-//     * @return int of user id if added else added fail will return -1
-//     */
-//    int changePassword(String username, String oldPass, String newPass);
+    /**
+     * changePassword method allow user to change new password.
+     *
+     * @param username is the user's name
+     * @param oldPass is the user's old password
+     * @param newPass is new password that user's set
+     *
+     * @return int of user id if added else added fail will return -1
+     */
+    int changePassword(String username, String oldPass, String newPass);
 
     /**
      * searchUserByUsername method let user able to search other user by username .

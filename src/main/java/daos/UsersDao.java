@@ -234,49 +234,38 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         return Register(newUser.getEmail(), newUser.getUserName(), newUser.getProfilePicture(), newUser.getPassword(), newUser.getDateOfBirth(), newUser.getUserType(), newUser.getSuspended(), newUser.getBio(), newUser.getOnline());
     }
 
-//    /**
-//     * changePassword method allow user to change new password.
-//     *
-//     * @param username is the user's name
-//     * @param oldPass is the user's old password
-//     * @param newPass is new password that user's set
-//     *
-//     * @return int of user id if added else added fail will return -1
-//     */
-//    @Override
-//    public int changePassword(String username, String oldPass, String newPass) {
-//        Connection con = null;
-//        PreparedStatement ps = null;
-//        int rowsAffected = -1;
-//        try {
-//            con = this.getConnection();
-//
-//            String query = "UPDATE USERS SET password = ? WHERE userName = ? AND password = ?";
-//            ps = con.prepareStatement(query);
-//            ps.setString(1, newPass);
-//            ps.setString(2, username);
-//            ps.setString(3, oldPass);
-//
-//            rowsAffected = ps.executeUpdate();
-//        }
-//        catch (SQLException e){
-//            System.out.println("An error occurred in the changePassword() method: " + e.getMessage());
-//        }
-//        finally{
-//            try{
-//                if (ps != null){
-//                    ps.close();
-//                }
-//                if (con != null){
-//                    freeConnection(con);
-//                }
-//            }
-//            catch (SQLException e){
-//                System.out.println("An error occurred when shutting down the changePassword() method: " + e.getMessage());
-//            }
-//        }
-//        return rowsAffected;
-//    }
+    /**
+     * changePassword method allow user to change new password.
+     *
+     * @param username is the user's name
+     * @param oldPass is the user's old password
+     * @param newPass is new password that user's set
+     *
+     * @return int of user id if added else added fail will return -1
+     */
+    @Override
+    public int changePassword(String username, String oldPass, String newPass) {
+
+        int rowsAffected = -1;
+        try {
+            con = this.getConnection();
+
+            String query = "UPDATE USERS SET password = ? WHERE userName = ? AND password = ?";
+            ps = con.prepareStatement(query);
+            ps.setString(1, newPass);
+            ps.setString(2, username);
+            ps.setString(3, oldPass);
+
+            rowsAffected = ps.executeUpdate();
+        }
+        catch (SQLException e){
+            System.out.println("An error occurred in the changePassword() method: " + e.getMessage());
+        }
+        finally{
+            freeConnectionUpdate("An error occurred when shutting down the changePassword() method:");
+        }
+        return rowsAffected;
+    }
 
     /**
      * searchUserByUsername method let user able to search other user by username .

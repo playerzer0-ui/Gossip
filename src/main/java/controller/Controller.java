@@ -125,6 +125,10 @@ public class Controller extends HttpServlet {
                     dest = "chatbox.jsp";
                     response.sendRedirect(dest);
                     break;
+                case "changePassword":
+                    dest = changePassword(request, response);
+                    response.sendRedirect(dest);
+                    break;
 
                 case "show_admin":
                     dest = "admin.jsp";
@@ -782,6 +786,34 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         u.setProfilePicture(imageName);
         usersDao.updateUser(u);
+    }
+
+    public String changePassword(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(true);
+        UsersDao usersDao = new UsersDao("gossip");
+        Users tempUser = (Users)session.getAttribute("user");
+
+        String username = request.getParameter("username");
+        String oldPass = request.getParameter("password");
+        String newPass = request.getParameter("password");
+
+        if (username != null && !username.isEmpty()) {
+            int rowsAffected = usersDao.changePassword(tempUser.getUserName(), oldPass,newPass);
+
+            if(rowsAffected == 1){
+                String msg = "change password successfully!";
+                tempUser.setPassword(newPass);
+                session.setAttribute("user", tempUser);
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+            else{
+                String msg = "change password failed, something went wrong";
+                session.setAttribute("msg", msg);
+                return "chatbox.jsp";
+            }
+        }
+        return "chatbox.jsp";
     }
 
     public String editProfile(HttpServletRequest request, HttpServletResponse response){
