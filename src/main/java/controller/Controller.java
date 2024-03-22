@@ -343,6 +343,7 @@ public class Controller extends HttpServlet {
         ArrayList<InboxParticipants> otherIbps = ibpsDao.getAllInbox(otherUserId);
         Inbox matchingInbox = null;
         Aes aes = new Aes();
+        int messageId = -1;
         try {
             int key = aes.generateKey();
             message = aes.encrypt(message, key);
@@ -362,7 +363,14 @@ public class Controller extends HttpServlet {
             //if a matching inbox was found
             if (matchingInbox != null) {
                 //send message
-                messageDao.sendMessage(matchingInbox.getInboxId(), user.getUserId(), message, 1, key);
+                messageId = messageDao.sendMessage2(matchingInbox.getInboxId(), user.getUserId(), message, 1, key,"");
+                InboxParticipants myIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), user.getUserId());
+                InboxParticipants otherIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), otherUserId);
+                Message m =messageDao.getMessage(messageId);
+                myIbp.setTimeSent(m.getTimeSent());
+                otherIbp.setTimeSent(m.getTimeSent());
+                ibpsDao.updateInboxParticipant(myIbp);
+                ibpsDao.updateInboxParticipant(otherIbp);
                 //update unseen messages for the other user
                 ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
                 //set openState to true
@@ -374,7 +382,14 @@ public class Controller extends HttpServlet {
                 ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
                 //insert the other user
                 ibpsDao.insertInboxParticipant(inboxId, otherUserId);
-                messageDao.sendMessage(inboxId, user.getUserId(), message, 1, key);
+                messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key,"");
+                Message m =messageDao.getMessage(messageId);
+                InboxParticipants myIbp = ibpsDao.getInboxParticipant(inboxId, user.getUserId());
+                InboxParticipants otherIbp = ibpsDao.getInboxParticipant(inboxId, otherUserId);
+                myIbp.setTimeSent(m.getTimeSent());
+                otherIbp.setTimeSent(m.getTimeSent());
+                ibpsDao.updateInboxParticipant(myIbp);
+                ibpsDao.updateInboxParticipant(otherIbp);
                 ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
             }
         } catch (Exception ex) {
@@ -1090,8 +1105,19 @@ public class Controller extends HttpServlet {
             u.setSuspended(0);
             usersDao.updateUser(u);
         }
+    }
+    public void getAllGroups(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        InboxParticipantsDao ibpDao= new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+       ArrayList <InboxParticipants> ibps= ibpDao.getAllInbox(user.getUserId());
+       for(InboxParticipants Ibps: ibps){
+           Inbox inbox = inboxDao.getInbox(Ibps.getInboxId());
+           if(inbox.getInboxType()==2){
 
-
+           }
+       }
     }
 }
 
