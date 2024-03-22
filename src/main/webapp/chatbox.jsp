@@ -60,6 +60,56 @@
         </form>
     </div>
 </div>
+<div class="group-page">
+    <ion-icon name="close-outline" onclick="closeGroupPage()"></ion-icon>
+    <div class="form-page">
+        <h1>Add member</h1>
+        <div class="search-chat">
+            <div>
+                <input type="text" placeholder="search a member by username">
+                <ion-icon name="search-outline"></ion-icon>
+            </div>
+        </div>
+        <hr>
+        <p><b>invite people</b></p>
+        <div class="list-invite">
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-add-outline"></ion-icon>
+            </div>
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-add-outline"></ion-icon>
+            </div>
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-add-outline"></ion-icon>
+            </div>
+        </div>
+        <hr>
+        <p><b>group members</b></p>
+        <div class="list-invite">
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-remove-outline"></ion-icon>
+            </div>
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-remove-outline"></ion-icon>
+            </div>
+            <div class="member">
+                <img src="img/default.png" alt="user-image">
+                <p>default user</p>
+                <ion-icon name="person-remove-outline"></ion-icon>
+            </div>
+        </div>
+    </div>
+</div>
 <div class="container">
     <div class="left">
         <!-- header -->
@@ -80,6 +130,7 @@
             </ul>
             <div class="drop-menu">
                 <ul>
+                    <li>create group</li>
                     <li onclick="seeProfileUpdate()">update profile</li>
                     <a href="controller?action=logout">
                         <li>logout</li>
