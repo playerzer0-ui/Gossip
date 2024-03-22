@@ -250,13 +250,24 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            String query = "UPDATE USERS SET password = ? WHERE userName = ? AND password = ?";
-            ps = con.prepareStatement(query);
-            ps.setString(1, newPass);
-            ps.setString(2, username);
-            ps.setString(3, oldPass);
 
-            rowsAffected = ps.executeUpdate();
+           String query = "Select * from users where userName=?";
+            ps = con.prepareStatement(query);
+            ps.setString(1,username);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String password = rs.getString("password");
+                if(BCrypt.checkpw(oldPass, password)) {
+                    String query2 = "UPDATE USERS SET password = ? WHERE userName = ?";
+
+                    ps = con.prepareStatement(query2);
+                    ps.setString(1, BCrypt.hashpw(newPass, BCrypt.gensalt()));
+                    ps.setString(2, username);
+
+                    rowsAffected = ps.executeUpdate();
+                }
+            }
         }
         catch (SQLException e){
             System.out.println("An error occurred in the changePassword() method: " + e.getMessage());

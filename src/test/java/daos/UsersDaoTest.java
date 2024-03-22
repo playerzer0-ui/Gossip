@@ -291,6 +291,11 @@ class UsersDaoTest {
         String newPass = "passWord123!";
 
         int changePw = usersDao.changePassword(username,oldPass,newPass);
+
+        oldPass = "passWord123!";
+        newPass = "123";
+
+        usersDao.changePassword(username,oldPass,newPass);
         int expResult = 1;
         assertEquals(expResult, changePw);
 
