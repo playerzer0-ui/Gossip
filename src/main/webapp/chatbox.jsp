@@ -60,6 +60,13 @@
         </form>
     </div>
 </div>
+<div class="create-group-page">
+    <ion-icon name="close-outline" onclick="closeCreateGroupPage()"></ion-icon>
+    <div class="form-page">
+
+        <button class="report-button">create group</button>
+    </div>
+</div>
 <div class="group-page">
     <ion-icon name="close-outline" onclick="closeGroupPage()"></ion-icon>
     <div class="form-page">
@@ -130,7 +137,7 @@
             </ul>
             <div class="drop-menu">
                 <ul>
-                    <li>create group</li>
+                    <li onclick="openCreateGroupPage()">create group</li>
                     <li onclick="seeProfileUpdate()">update profile</li>
                     <a href="controller?action=logout">
                         <li>logout</li>

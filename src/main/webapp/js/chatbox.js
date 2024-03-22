@@ -81,6 +81,7 @@ function seeChatMenu() {
         else{
             dropdown.html("<ul>" +
                 "<li onclick='openGroupPage()'>invite member</li>" +
+                "<li>edit group</li>" +
                 "<li>leave group</li>" +
                 "</ul>");
         }
@@ -138,6 +139,10 @@ function openGroupPage(){
     document.querySelector('.group-page').style.display = 'flex';
 }
 
+function openCreateGroupPage(){
+    document.querySelector('.create-group-page').style.display = 'flex';
+}
+
 function closeReport() {
     document.querySelector('.report-page').style.display = 'none';
 }
@@ -148,4 +153,8 @@ function closeZoom() {
 
 function closeGroupPage() {
     document.querySelector('.group-page').style.display = 'none';
+}
+
+function closeCreateGroupPage(){
+    document.querySelector('.create-group-page').style.display = 'none';
 }

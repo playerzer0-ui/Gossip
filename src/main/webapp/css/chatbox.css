@@ -37,7 +37,7 @@ body {
     padding: 20px;
 }
 
-.zoom, .report-page, .group-page {
+.zoom, .report-page, .group-page, .create-group-page {
     position: absolute;
     display: none;
     justify-content: center;
@@ -57,7 +57,7 @@ body {
     height: auto;
 }
 
-.zoom ion-icon, .report-page ion-icon, .group-page ion-icon {
+.zoom ion-icon, .report-page ion-icon, .group-page ion-icon, .create-group-page ion-icon {
     position: absolute;
     top: 0;
     right: 0;
@@ -66,7 +66,7 @@ body {
     font-size: 3.5em;
 }
 
-.report-page .form-page, .group-page .form-page {
+.report-page .form-page, .group-page .form-page, .create-group-page .form-page {
     display: flex;
     flex-direction: column;
     padding: 20px;
