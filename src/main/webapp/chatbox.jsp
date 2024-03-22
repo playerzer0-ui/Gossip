@@ -64,7 +64,7 @@
     <div class="left">
         <!-- header -->
         <div class="header">
-            <div class="userimg" onclick="seeProfile()">
+            <div class="userimg" onclick="seeProfile();closeInbox()">
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
@@ -109,11 +109,12 @@
                 MessageDao messageDao = new MessageDao("gossip");
                 UsersDao usersDao = new UsersDao("gossip");
                 Aes aes = new Aes();
+                Inbox myInbox = null;
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
                 //loop through inboxparticipants
                 for (InboxParticipants ibps : Ibps) {
-                    Inbox myInbox = inboxDao.getInbox(ibps.getInboxId());
+                    myInbox = inboxDao.getInbox(ibps.getInboxId());
                     //if it's a normal chat
                     if (myInbox.getInboxType() == 1) {
                         //get the other person's inboxPartcipant
@@ -135,7 +136,7 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -158,7 +159,7 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -181,7 +182,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -220,7 +221,7 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -243,7 +244,7 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -265,7 +266,7 @@
             else {
 
             %>
-            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage();">
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -333,15 +334,6 @@
                     <label class="form-label">Username</label> <br/>
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
-<%--                    <label class="form-label">Password</label> <br/>--%>
-<%--                    <input class="form-control" name="password" type="password" required/> <br/>--%>
-
-<%--                    <label class="form-label">Email</label> <br/>--%>
-<%--                    <input class="form-control" name="email" value="<%=user.getEmail()%>" required/> <br/>--%>
-
-<%--                    <label class="form-label">Date of birth</label> <br/>--%>
-<%--                    <input class="form-control" name="dateOfBirth" value="<%=user.getDateOfBirth()%>" required/> <br/>--%>
-
                     <label class="form-label">Bio</label> <br/>
                     <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
 
@@ -384,35 +376,13 @@
                     <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon>
                 </li>
             </ul>
+        </div>
+        <div class='drop-menu-chat' id='drop-menu-chat'>
 
         </div>
 
         <!-- chatbox -->
         <div class="chatbox" id="chatbox">
-            <div class="chat-bubble frnd-message-file">
-                <div class="file-details">
-                    <div>
-                        <p>this_is_a_file.docx</p>
-                        <span>12 MB</span>
-                    </div>
-                    <div class="iconbx">
-                        <ion-icon name="arrow-down-circle-outline"></ion-icon>
-                    </div>
-                </div>
-                <span>12:45 AM</span>
-            </div>
-            <div class="chat-bubble my-message-file">
-                <div class="file-details">
-                    <div>
-                        <p>this_is_a_file.docx</p>
-                        <span>12 MB</span>
-                    </div>
-                    <div class="iconbx">
-                        <ion-icon name="arrow-down-circle-outline"></ion-icon>
-                    </div>
-                </div>
-                <span>12:45 AM</span>
-            </div>
 
         </div>
         <!-- chat input -->
@@ -466,26 +436,16 @@
                 data: {action: "getMessagesHeader", "inboxId": inboxId},
                 success: function (data) {
                     var header = document.getElementById("chat-hide");
-                    var str = data.split("%%%");
-                    if (str.length > 1) {
-                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
-                            '</div> ' +
-                            '<ul class="nav-icons"> ' +
-                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
-                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
-                            ' </ul>' + str[1];
-                    } else {
-                        header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
-                            '</div> ' +
-                            '<ul class="nav-icons"> ' +
-                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
-                            '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
-                            ' </ul>';
-                    }
+                    header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
+                        '</div> ' +
+                        '<ul class="nav-icons"> ' +
+                        '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                        '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
+                        ' </ul>';
 
                     var imgtext = document.getElementById("imgtext");
 
-                    imgtext.innerHTML = str[0];
+                    imgtext.innerHTML = data;
                 },
                 error: function () {
                     alert("Error with ajax");
@@ -569,7 +529,7 @@
     function updateMessages(inboxId) {
         mainInboxId = inboxId;
         otherUserId = 0;
-        // getMessagesHeader(inboxId);
+        getMessagesHeader(inboxId);
         // alert("inside");
         $(document).ready(function () {
             $.ajax({

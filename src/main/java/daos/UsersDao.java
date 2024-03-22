@@ -52,14 +52,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
                     user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
                 }
-                //wrong password
-                else{
-                    user = new Users(-10);
-                }
-            }
-            //wrong email
-            else{
-                user = new Users(-5);
             }
 
         } catch (SQLException e) {
@@ -92,19 +84,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            // Check if email already exists
-            String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
-            PreparedStatement checkPs = con.prepareStatement(checkQuery);
-            checkPs.setString(1, email);
-            ResultSet checkRs = checkPs.executeQuery();
-            if (checkRs.next()) {
-                int count = checkRs.getInt(1);
-                if (count > 0) {
-                    // Email already exists, return -1 indicating failure
-                    return -2;
-                }
-            }
-
             // If email is unique, proceed with the insert
             String insertQuery ="INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
@@ -128,7 +107,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         } catch (SQLException e) {
             System.err.println("\tA problem occurred during the register method:");
             System.err.println("\t" + e.getMessage());
-            newId = -1;
         } finally {
             freeConnection("A problem occurred when closing down the register method: ");
         }
@@ -250,13 +228,24 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            String query = "UPDATE USERS SET password = ? WHERE userName = ? AND password = ?";
-            ps = con.prepareStatement(query);
-            ps.setString(1, newPass);
-            ps.setString(2, username);
-            ps.setString(3, oldPass);
 
-            rowsAffected = ps.executeUpdate();
+           String query = "Select * from users where userName=?";
+            ps = con.prepareStatement(query);
+            ps.setString(1,username);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                String password = rs.getString("password");
+                if(BCrypt.checkpw(oldPass, password)) {
+                    String query2 = "UPDATE USERS SET password = ? WHERE userName = ?";
+
+                    ps = con.prepareStatement(query2);
+                    ps.setString(1, BCrypt.hashpw(newPass, BCrypt.gensalt()));
+                    ps.setString(2, username);
+
+                    rowsAffected = ps.executeUpdate();
+                }
+            }
         }
         catch (SQLException e){
             System.out.println("An error occurred in the changePassword() method: " + e.getMessage());

@@ -199,17 +199,6 @@ public class Controller extends HttpServlet {
         Users user = usersDao.Login(email, password);
 
         if (user != null) {
-            if (user.getUserId() == -5) {
-                String msg = "Wrong email";
-                session.setAttribute("msg", msg);
-                return "login.jsp";
-            }
-            if (user.getUserId() == -10) {
-                String msg = "Wrong password";
-                session.setAttribute("msg", msg);
-                return "login.jsp";
-            }
-
             user.setPassword(password);
             session.setAttribute("user", user);
             session.setAttribute("previousInboxId", 0);
@@ -245,11 +234,6 @@ public class Controller extends HttpServlet {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
-            if (id == -2){
-                String msg = "the email is already taken!";
-                session.setAttribute("msg", msg);
-                return "register.jsp";
-            }
             if (id != -1) {
                 String msg = "You have been registered successfully!";
                 Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
@@ -428,12 +412,12 @@ public class Controller extends HttpServlet {
                 // get the other person's InboxParticipant
                 InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                 //update unseen messages for the other user
-                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
                 Message m = messageDao.getMessage(messageId);
                 ibp.setTimeSent(m.getTimeSent());
                 myIbp.setTimeSent(m.getTimeSent());
                 ibpsDao.updateInboxParticipant(ibp);
                 ibpsDao.updateInboxParticipant(myIbp);
+                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
             } else {
                 //send message
                 messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key, "");
@@ -479,10 +463,10 @@ public class Controller extends HttpServlet {
             otherUserId = otherUser.getUserId();
 
             if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4>";
 
             } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
             }
         } else {
             header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
@@ -538,14 +522,14 @@ public class Controller extends HttpServlet {
                     }
                     //if there are unseenMessages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
 
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> </div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }
@@ -565,13 +549,13 @@ public class Controller extends HttpServlet {
                     }
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage();'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
                 }
