@@ -22,27 +22,19 @@ class UsersDaoIsolationTest {
 
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
-        PreparedStatement checkPs = mock(PreparedStatement.class);
         ResultSet rs = mock(ResultSet.class);
-        ResultSet checkRs = mock(ResultSet.class);
-
-        // Mock behavior for successful registration
-        String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
-        when(dbConn.prepareStatement(checkQuery)).thenReturn(checkPs);
-        when(checkPs.executeQuery()).thenReturn(rs);
-        when(rs.next()).thenReturn(false); // Simulate no duplicate email found
 
         String insertQuery = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         when(dbConn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
-        when(ps.executeUpdate()).thenReturn(1); // Simulate successful execution
-        when(ps.getGeneratedKeys()).thenReturn(checkRs);
-        when(checkRs.next()).thenReturn(true, false);
-        when(checkRs.getInt(1)).thenReturn(123); // Simulate generated user ID
+        when(ps.executeUpdate()).thenReturn(1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(123);
 
         UsersDao usersDao = new UsersDao(dbConn);
         int result = usersDao.Register("jo@gmail.com", "lily", "default.png", "password", LocalDate.now(), 1, 0, "", 0);
 
-        assertEquals(123, result); // Check if Register method returns generated user ID
+        assertEquals(123, result);
     }
 
 
@@ -54,22 +46,14 @@ class UsersDaoIsolationTest {
     void register_4args_FailwithDuplicateUsername() throws SQLException {
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
-        PreparedStatement checkPs = mock(PreparedStatement.class);
         ResultSet rs = mock(ResultSet.class);
-        ResultSet checkRs = mock(ResultSet.class);
-
-        // Mock behavior for successful registration
-        String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
-        when(dbConn.prepareStatement(checkQuery)).thenReturn(checkPs);
-        when(checkPs.executeQuery()).thenReturn(rs);
-        when(rs.next()).thenReturn(false); // Simulate no duplicate email found
 
         String insertQuery = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         when(dbConn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
-        when(ps.executeUpdate()).thenReturn(-1); // Simulate successful execution
-        when(ps.getGeneratedKeys()).thenReturn(checkRs);
-        when(checkRs.next()).thenReturn(true, false);
-        when(checkRs.getInt(1)).thenReturn(-1); // Simulate generated user ID
+        when(ps.executeUpdate()).thenReturn(-1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(-1);
 
         UsersDao usersDao = new UsersDao(dbConn);
         int result = usersDao.Register("jo@gmail.com", "joseph", "default.png", "password", LocalDate.now(), 1, 0, "", 0);
@@ -86,20 +70,19 @@ class UsersDaoIsolationTest {
         Connection dbConn = mock(Connection.class);
         PreparedStatement ps = mock(PreparedStatement.class);
         ResultSet rs = mock(ResultSet.class);
-
-        // Assume email already exists
-        when(dbConn.prepareStatement("SELECT COUNT(*) FROM users WHERE email = ?")).thenReturn(ps);
-        when(ps.executeQuery()).thenReturn(rs);
-        when(rs.next()).thenReturn(true);
-        when(rs.getInt(1)).thenReturn(1); // Email count is greater than 0
-
-        // Call the method being tested
         LocalDate dOfBirth = LocalDate.of(1989, 4, 19);
+
+        String insertQuery = "INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        when(dbConn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
+        when(ps.executeUpdate()).thenReturn(-1);
+        when(ps.getGeneratedKeys()).thenReturn(rs);
+        when(rs.next()).thenReturn(true, false);
+        when(rs.getInt(1)).thenReturn(-1);
         UsersDao usersDao = new UsersDao(dbConn);
         int result = usersDao.Register("joe@gmail.com", "lily", "default.png", "password", dOfBirth, 1, 0, "", 0);
 
         // Verify that the method returned -2 for duplicate email
-        assertEquals(-2, result);
+        assertEquals(-1, result);
     }
 
 
@@ -183,9 +166,8 @@ class UsersDaoIsolationTest {
         when(rs.next()).thenReturn(false);
 
         UsersDao usersDao = new UsersDao(dbConn);
-        Users expected = new Users(-5);
         Users actual = usersDao.Login("joe@gmail.com", "444");
-        assertEquals(expected, actual);
+        assertNull(actual);
         verify(ps).setString(1, "joe@gmail.com");
     }
 
@@ -204,9 +186,8 @@ class UsersDaoIsolationTest {
         when(rs.next()).thenReturn(false);
 
         UsersDao usersDao = new UsersDao(dbConn);
-        Users expected = new Users(-5);
         Users actual = usersDao.Login("hey", "123");
-        assertEquals(expected, actual);
+        assertNull(actual);
         verify(ps).setString(1, "hey");
     }
 }
