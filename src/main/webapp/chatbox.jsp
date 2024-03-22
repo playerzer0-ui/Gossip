@@ -64,7 +64,7 @@
     <div class="left">
         <!-- header -->
         <div class="header">
-            <div class="userimg" onclick="seeProfile()">
+            <div class="userimg" onclick="seeProfile();closeInbox()">
                 <img src="profilePictures/<%=user.getProfilePicture()%>" alt="profile" class="cover">
             </div>
             <ul class="nav-icons">
@@ -384,7 +384,13 @@
                     <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon>
                 </li>
             </ul>
-
+        </div>
+        <div class='drop-menu-chat' id='drop-menu-chat'>
+            <ul>
+                <a href='controller?action=block_user'><li>block user</li></a>
+                <li onclick='openForm()'>report user</li>
+                <a href='controller?action=leave_chat'><li>leave chat</li></a>
+            </ul>
         </div>
 
         <!-- chatbox -->
@@ -569,7 +575,7 @@
     function updateMessages(inboxId) {
         mainInboxId = inboxId;
         otherUserId = 0;
-        // getMessagesHeader(inboxId);
+        getMessagesHeader(inboxId);
         // alert("inside");
         $(document).ready(function () {
             $.ajax({
