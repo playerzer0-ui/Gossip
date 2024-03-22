@@ -52,14 +52,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
                     user = new Users(userId, email, username, profilePicture, password, dateOfBirth, userType, suspended, bio,online);
                 }
-                //wrong password
-                else{
-                    user = new Users(-10);
-                }
-            }
-            //wrong email
-            else{
-                user = new Users(-5);
             }
 
         } catch (SQLException e) {
@@ -92,19 +84,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         try {
             con = this.getConnection();
 
-            // Check if email already exists
-            String checkQuery = "SELECT COUNT(*) FROM users WHERE email = ?";
-            PreparedStatement checkPs = con.prepareStatement(checkQuery);
-            checkPs.setString(1, email);
-            ResultSet checkRs = checkPs.executeQuery();
-            if (checkRs.next()) {
-                int count = checkRs.getInt(1);
-                if (count > 0) {
-                    // Email already exists, return -1 indicating failure
-                    return -2;
-                }
-            }
-
             // If email is unique, proceed with the insert
             String insertQuery ="INSERT INTO users(email, userName, profilePicture, password, dateOfBirth, userType, suspended, bio, online) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             ps = con.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
@@ -128,7 +107,6 @@ public class UsersDao extends Dao implements UsersDaoInterface{
         } catch (SQLException e) {
             System.err.println("\tA problem occurred during the register method:");
             System.err.println("\t" + e.getMessage());
-            newId = -1;
         } finally {
             freeConnection("A problem occurred when closing down the register method: ");
         }

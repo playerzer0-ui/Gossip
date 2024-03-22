@@ -199,17 +199,6 @@ public class Controller extends HttpServlet {
         Users user = usersDao.Login(email, password);
 
         if (user != null) {
-            if (user.getUserId() == -5) {
-                String msg = "Wrong email";
-                session.setAttribute("msg", msg);
-                return "login.jsp";
-            }
-            if (user.getUserId() == -10) {
-                String msg = "Wrong password";
-                session.setAttribute("msg", msg);
-                return "login.jsp";
-            }
-
             user.setPassword(password);
             session.setAttribute("user", user);
             session.setAttribute("previousInboxId", 0);
@@ -245,11 +234,6 @@ public class Controller extends HttpServlet {
             UsersDao userDao = new UsersDao("gossip");
             int id = userDao.Register(email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
 
-            if (id == -2){
-                String msg = "the email is already taken!";
-                session.setAttribute("msg", msg);
-                return "register.jsp";
-            }
             if (id != -1) {
                 String msg = "You have been registered successfully!";
                 Users user = new Users(id, email, username, "default.png", password, dateOfBirth, 0, 0, "", 0);
