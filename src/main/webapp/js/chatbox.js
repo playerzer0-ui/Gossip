@@ -1,3 +1,5 @@
+var inboxType = 0;
+
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
     $( ".leftUpdate" ).css( "z-index", "1" );
@@ -69,6 +71,20 @@ function seeChatMenu() {
         var dropdown = $(".drop-menu-chat");
         var icon = $(".chat-menu");
 
+        if(inboxType === 1){
+            dropdown.html("<ul>" +
+                "<a href='controller?action=block_user'><li>block user</li></a>" +
+                "<li onclick='openForm()'>report user</li>" +
+                "<a href='controller?action=leave_chat'><li>leave chat</li></a>" +
+                "</ul>");
+        }
+        else{
+            dropdown.html("<ul>" +
+                "<li>invite member</li>" +
+                "<li>leave group</li>" +
+                "</ul>");
+        }
+
         // Check if the clicked element is not part of the dropdown or the header-menu icon
         if (!dropdown.is(event.target) && dropdown.has(event.target).length === 0 && !icon.is(event.target)) {
             // Close the dropdown
@@ -87,10 +103,12 @@ $(".drop-menu-chat li").on("click", function () {
     $(".drop-menu-chat").css("visibility", "hidden");
 });
 
-function seeMessage(){
+function seeMessage(type){
     $( ".left" ).css( "z-index", "2" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "3" );
+
+    inboxType = type;
 
     visibleMessage();
 }
