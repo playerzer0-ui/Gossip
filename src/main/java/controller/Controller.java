@@ -397,12 +397,12 @@ public class Controller extends HttpServlet {
                 // get the other person's InboxParticipant
                 InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                 //update unseen messages for the other user
-                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
                 Message m = messageDao.getMessage(messageId);
                 ibp.setTimeSent(m.getTimeSent());
                 myIbp.setTimeSent(m.getTimeSent());
                 ibpsDao.updateInboxParticipant(ibp);
                 ibpsDao.updateInboxParticipant(myIbp);
+                ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
             } else {
                 //send message
                 messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key, "");
