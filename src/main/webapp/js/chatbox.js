@@ -1,4 +1,6 @@
 var inboxType = 0;
+var imgInp = document.getElementById("imgInp");
+var groupProfilePic = document.getElementById("groupProfilePic");
 
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
@@ -103,6 +105,13 @@ $(".drop-menu-chat").on("click", function (event) {
 $(".drop-menu-chat li").on("click", function () {
     $(".drop-menu-chat").css("visibility", "hidden");
 });
+
+imgInp.onchange = () => {
+    const [file] = imgInp.files
+    if (file) {
+        groupProfilePic.src = URL.createObjectURL(file)
+    }
+}
 
 function seeMessage(type){
     $( ".left" ).css( "z-index", "2" );

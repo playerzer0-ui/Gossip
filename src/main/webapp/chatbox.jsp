@@ -63,7 +63,10 @@
 <div class="create-group-page">
     <ion-icon name="close-outline" onclick="closeCreateGroupPage()"></ion-icon>
     <div class="form-page">
-
+        <h1>create group</h1>
+        <img id="groupProfilePic" src="profilePictures/default.png" alt="group picture">
+        <input accept="image/*" type="file" id="imgInp" required>
+        <input type="text" placeholder="enter group name" required>
         <button class="report-button">create group</button>
     </div>
 </div>
