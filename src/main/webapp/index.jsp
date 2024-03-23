@@ -41,12 +41,12 @@
     <div class="container text-center">
         <div class="row">
             <div class="col-md-6 column-box">
-                <img src="img/picture1.jpg" class="img-thumbnail">
-                <p>End-to-end-encryption, just like real gossip, it would take lots of effort to understand them</p>
+                <img src="img/picture1.jpg" class="thumbnail">
+                <p>No ads, trackers or anything, just gossip</p>
             </div>
             <div class="col-md-6 column-box">
-                <img src="img/picture2.jpg" class="img-thumbnail">
-                <p>No ads, trackers or anything, just gossip</p>
+                <img src="img/picture2.jpg" class="thumbnail">
+                <p>End-to-end-encryption, just like real gossip, it would take lots of effort to understand them</p>
             </div>
         </div>
     </div>
@@ -76,9 +76,6 @@
         <blockquote class="blockquote">
             <h2><b>What are you waiting for? get <u>gossiping!</u></b></h2>
         </blockquote>
-        <a href="controller?action=show_register">
-            <button class="btn btn-primary">Sign in</button>
-        </a>
     </figure>
 </footer>
 
