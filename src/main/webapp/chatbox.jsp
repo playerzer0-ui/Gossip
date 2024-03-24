@@ -11,12 +11,11 @@
 <%@ page import="miscellaneous.Aes" %>
 <%Users user = (Users) session.getAttribute("user");%>
 <%
-    String msg = (String)session.getAttribute("msg");
+    String msg = (String) session.getAttribute("msg");
     session.removeAttribute("msg");
-    if(msg == null){
+    if (msg == null) {
         msg = "";
-    }
-    else{
+    } else {
         msg = "<p>" + msg + "</p>";
     }
 %>
@@ -73,47 +72,19 @@
         <h1>Add member</h1>
         <div class="search-chat">
             <div>
-                <input type="text" placeholder="search a member by username">
+                <input type="text" id="searchGroup" placeholder="search a member by username">
                 <ion-icon name="search-outline"></ion-icon>
             </div>
         </div>
         <hr>
         <p><b>invite people</b></p>
-        <div class="list-invite">
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-add-outline"></ion-icon>
-            </div>
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-add-outline"></ion-icon>
-            </div>
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-add-outline"></ion-icon>
-            </div>
+        <div class="list-invite" id="list-invite">
+
         </div>
         <hr>
         <p><b>group members</b></p>
-        <div class="list-invite">
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-remove-outline"></ion-icon>
-            </div>
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-remove-outline"></ion-icon>
-            </div>
-            <div class="member">
-                <img src="img/default.png" alt="user-image">
-                <p>default user</p>
-                <ion-icon name="person-remove-outline"></ion-icon>
-            </div>
+        <div class="list-invite" id="groupMembers">
+
         </div>
     </div>
 </div>
@@ -194,7 +165,8 @@
                             //if there are unseenMessages
                             if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+            <div class="block unread"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -217,7 +189,8 @@
             } //if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+            <div class="block active"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
                 </div>
@@ -279,7 +252,8 @@
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
             %>
-            <div class="block unread" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+            <div class="block unread"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -302,7 +276,8 @@
             }//if the inboxParticipant is active or open
             else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
             %>
-            <div class="block active" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+            <div class="block active"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
                 <div class="imgbox">
                     <img src="profilePictures/profile.jpg" alt="" class="cover">
                 </div>
@@ -393,11 +368,11 @@
                     <input class="form-control" name="username" value="<%=user.getUserName()%>" required/> <br/>
 
                     <label class="form-label">Bio</label> <br/>
-                    <input class="form-control" name="bio" value="<%=user.getBio()%>" /> <br/><br/>
+                    <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
 
                     <input type="submit" value="Update" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name ="action" value="do_editProfile" />
+                    <input type="hidden" name="action" value="do_editProfile"/>
                 </form>
             </div>
 
@@ -415,7 +390,7 @@
 
                     <input type="submit" value="Change password" class="btn btn-success"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
-                    <input type="hidden" name ="action" value="changePassword" />
+                    <input type="hidden" name="action" value="changePassword"/>
                 </form>
             </div>
         </div>
@@ -461,6 +436,7 @@
     var counter = 0;
     var chatBoxScroll = document.getElementById("chatbox");
     var chatBoxScrollHeight = 0;
+    var groupSuggestions = [];
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
@@ -856,6 +832,8 @@
                                 if (parseInt(allMessages[i][2]) ===
 
 
+
+
             <%=user.getUserId()%>) {
                                     if (parseInt(allMessages[i][4]) === 1) {
                                         chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
@@ -1016,6 +994,95 @@
         //set current scroll height to current scroll height
         chatBoxScrollHeight = chatBoxScroll.scrollTop;
     });
+
+    const groupEntry = document.getElementById("searchGroup");
+    var timeOutId2 = null;
+    groupEntry.addEventListener('input', function search() {
+            const searchInput = groupEntry.value.trim();
+            if (searchInput != null && searchInput !== "") {
+                clearTimeout(timeOutId2);
+                timeOutId2 = setTimeout(function () {
+                    //alert("hey");
+                    $.ajax({
+                        url: "controller",
+                        type: 'post',
+                        data: {action: "inviteGroupMember", "search": searchInput, "inboxId": mainInboxId},
+                        success: function (data) {
+                            groupSuggestions = JSON.parse(data);
+                            getGroupSuggestions();
+                        },
+                        error: function () {
+                            alert("Error with ajax");
+                        }
+                    });
+                }, 500);
+            }
+        }
+    );
+
+    function getGroupSuggestions() {
+        var list = document.getElementById("list-invite");
+        list.innerHTML = "";
+        for (var i = 0; i < groupSuggestions.length; i++) {
+            let imgName = groupSuggestions[i][2];
+            if (imgName === null || imgName === "null") {
+                imgName = "profile.jpg";
+            }
+            list.innerHTML += "<div className='member'> <img src='profilePictures/" + groupSuggestions[i][2] + "'alt='user-image'><p>" + groupSuggestions[i][1] + "</p><ion-icon name='person-add-outline' onclick='addUser(" + groupSuggestions[i][0] + " )' ></ion-icon> </div>";
+        }
+    }
+
+    function addUser(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "addGroupMember", "userId": userId, "inboxId": mainInboxId},
+                success: function (data) {
+                    var tempSuggestion = [];
+                    var tracker = 0;
+                    for (var i = 0; i < groupSuggestions.length; i++) {
+                        if (groupSuggestions[i][0] != userId) {
+                            tempSuggestion [tracker] = groupSuggestions[i];
+                            tracker++;
+                        }
+                    }
+                    groupSuggestions = tempSuggestion;
+                    getGroupSuggestions();
+                    getGroupMembers();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
+    function getGroupMembers() {
+        var list = document.getElementById("groupMembers");
+        list.innerHTML = "";
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "getGroupMembers", "inboxId": mainInboxId},
+                success: function (data) {
+                    var groupMembers = JSON.parse(data);
+                    for (var i = 0; i < groupMembers.length; i++) {
+                        let imgName = groupMembers[i][2];
+                        if (imgName === null || imgName === "null") {
+                            imgName = "profile.jpg";
+                        }
+                        list.innerHTML += "<div className='member'> <img src='profilePictures/" + groupMembers[i][2] + "'alt='user-image'><p>" + groupMembers[i][1] + "</p><ion-icon name='person-remove-outline' onclick='removeUser(" + groupMembers[i][0] + " )' ></ion-icon> </div>";
+                    }
+
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
 
 
     document.addEventListener('keydown', function (event) {

@@ -167,6 +167,15 @@ public class Controller extends HttpServlet {
                     suspendUser(request, response);
                     response.sendRedirect("reportPage.jsp");
                     break;
+                case "inviteGroupMember":
+                    inviteGroupMember(request, response);
+                    break;
+                case "addGroupMember":
+                    addGroupMember(request, response);
+                    break;
+                case "getGroupMembers":
+                    getGroupMembers(request, response);
+                    break;
             }
         }
 
@@ -1090,18 +1099,82 @@ public class Controller extends HttpServlet {
             usersDao.updateUser(u);
         }
     }
-    public void getAllGroups(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void inviteGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
-        InboxParticipantsDao ibpDao= new InboxParticipantsDao("gossip");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        String search = request.getParameter("search");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
-       ArrayList <InboxParticipants> ibps= ibpDao.getAllInbox(user.getUserId());
-       for(InboxParticipants Ibps: ibps){
-           Inbox inbox = inboxDao.getInbox(Ibps.getInboxId());
-           if(inbox.getInboxType()==2){
+        UsersDao usersDao = new UsersDao("gossip");
+        List<Users> users = usersDao.searchUserByUsername(search);
+        ArrayList <Users> filteredUsers= new ArrayList<>();
+        ArrayList<InboxParticipants> ibps = ibpDao.getAllInboxParticipants(inboxId);
+        ArrayList <String [] >  suggestions= new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for (Users u:users) {
+            boolean found=false;
+            Label:
+            for (InboxParticipants Ibps : ibps) {
+                //if the user is in the group
+             if(Ibps.getUserId()==u.getUserId()){
+                 found=true;
+                 break Label;
+             }
+            }
+            if(found==false){
+                filteredUsers.add(u);
+            }
+            if(filteredUsers.size()>=10){
+               break;
+            }
 
-           }
-       }
+        }
+        for(Users u:filteredUsers){
+            String [] User= new String[4];
+            User [0] = u.getUserId()+ "";
+            User [1] = u.getUserName();
+            User [2] = u.getProfilePicture();
+            User [3] = u.getEmail();
+            suggestions.add(User);
+        }
+        String jsonString = objectMapper.writeValueAsString(suggestions);
+        response.getWriter().write(jsonString);
+    }
+    public void getGroupMembers(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
+        ArrayList <Users> users= new ArrayList<>();
+        ArrayList<InboxParticipants> ibps = ibpDao.getAllInboxParticipants(inboxId);
+        ArrayList <String [] >  allUsers= new ArrayList<>();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for(InboxParticipants Ibps: ibps){
+           Users u= usersDao.getUserById(Ibps.getUserId());
+            String [] User= new String[4];
+            User [0] = u.getUserId()+ "";
+            User [1] = u.getUserName();
+            User [2] = u.getProfilePicture();
+            User [3] = u.getEmail();
+            allUsers.add(User);
+        }
+        String jsonString = objectMapper.writeValueAsString(allUsers);
+        response.getWriter().write(jsonString);
+    }
+    public void addGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        InboxDao inboxDao= new InboxDao("gossip");
+        InboxParticipantsDao ibpDao= new InboxParticipantsDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if(inbox!=null && inbox.getInboxType()==2 && user.getUserId()==inbox.getAdminId() ){
+            ibpDao.insertInboxParticipant(inboxId,userId);
+            System.out.println("added group member");
+        }
     }
 }
 

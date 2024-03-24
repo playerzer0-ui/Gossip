@@ -271,7 +271,7 @@ public class UsersDao extends Dao implements UsersDaoInterface{
 
             con = this.getConnection();
 
-            String query = "SELECT * FROM USERS WHERE userName LIKE ? LIMIT 10";
+            String query = "SELECT * FROM USERS WHERE userName LIKE ? and suspended=0";
             ps = con.prepareStatement(query);
             ps.setString(1, username+"%");
 

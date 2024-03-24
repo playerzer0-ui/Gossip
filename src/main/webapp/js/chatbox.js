@@ -137,6 +137,8 @@ function openForm(){
 
 function openGroupPage(){
     document.querySelector('.group-page').style.display = 'flex';
+    getGroupMembers();
+    console.log("has opened members")
 }
 
 function openCreateGroupPage(){
