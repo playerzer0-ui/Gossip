@@ -1032,7 +1032,7 @@
             if (imgName === null || imgName === "null") {
                 imgName = "profile.jpg";
             }
-            list.innerHTML += "<div className='member'> <img src='profilePictures/" + groupSuggestions[i][2] + "'alt='user-image'><p>" + groupSuggestions[i][1] + "</p><ion-icon name='person-add-outline' onclick='addUser(" + groupSuggestions[i][0] + " )' ></ion-icon> </div>";
+            list.innerHTML += "<div class='member'> <img src='profilePictures/" + groupSuggestions[i][2] + "'alt='user-image'><p>" + groupSuggestions[i][1] + "</p><ion-icon name='person-add-outline' onclick='addUser(" + groupSuggestions[i][0] + " )' ></ion-icon> </div>";
         }
     }
 
