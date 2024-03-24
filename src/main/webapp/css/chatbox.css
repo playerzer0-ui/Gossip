@@ -87,6 +87,12 @@ body {
     margin: 2px 0;
 }
 
+.form-page img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+}
+
 .list-invite {
     width: 80%;
     height: 80%;

@@ -32,6 +32,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/chatbox.css">
     <link rel="stylesheet" href="css/mobile-chatbox.css">
+    <link rel="icon" href="img/favicon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
@@ -62,7 +63,10 @@
 <div class="create-group-page">
     <ion-icon name="close-outline" onclick="closeCreateGroupPage()"></ion-icon>
     <div class="form-page">
-
+        <h1>create group</h1>
+        <img id="groupProfilePic" src="profilePictures/default.png" alt="group picture">
+        <input accept="image/*" type="file" id="imgInp" required>
+        <input type="text" placeholder="enter group name" required>
         <button class="report-button">create group</button>
     </div>
 </div>
