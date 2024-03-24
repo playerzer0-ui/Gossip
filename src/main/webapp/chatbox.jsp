@@ -1062,6 +1062,12 @@
         });
     }
 
+    function openGroupPage(){
+        document.querySelector('.group-page').style.display = 'flex';
+        getGroupMembers();
+        console.log("has opened members")
+    }
+
     function getGroupMembers() {
         var list = document.getElementById("groupMembers");
         list.innerHTML = "";
@@ -1077,7 +1083,7 @@
                         if (imgName === null || imgName === "null") {
                             imgName = "profile.jpg";
                         }
-                        list.innerHTML += "<div className='member'> <img src='profilePictures/" + groupMembers[i][2] + "'alt='user-image'><p>" + groupMembers[i][1] + "</p><ion-icon name='person-remove-outline' onclick='removeUser(" + groupMembers[i][0] + " )' ></ion-icon> </div>";
+                        list.innerHTML += "<div class='member'> <img src='profilePictures/" + groupMembers[i][2] + "' alt='user-image'><p>" + groupMembers[i][1] + "</p><ion-icon name='person-remove-outline' onclick='removeUser(" + groupMembers[i][0] + ")' ></ion-icon> </div>";
                     }
 
                 },

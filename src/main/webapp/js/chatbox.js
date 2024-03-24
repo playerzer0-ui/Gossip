@@ -144,12 +144,6 @@ function openForm(){
     document.querySelector('.report-page').style.display = 'flex';
 }
 
-function openGroupPage(){
-    document.querySelector('.group-page').style.display = 'flex';
-    getGroupMembers();
-    console.log("has opened members")
-}
-
 function openCreateGroupPage(){
     document.querySelector('.create-group-page').style.display = 'flex';
 }
