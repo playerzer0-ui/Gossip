@@ -64,10 +64,10 @@
     <ion-icon name="close-outline" onclick="closeCreateGroupPage()"></ion-icon>
     <div class="form-page">
         <h1>create group</h1>
-        <img id="groupProfilePic" src="profilePictures/default.png" alt="group picture">
+        <img id="groupProfilePic" src="profilePictures/profile.jpg" alt="group picture">
         <input accept="image/*" type="file" id="imgInp" required>
-        <input type="text" placeholder="enter group name" required>
-        <button class="report-button">create group</button>
+        <input type="text" id="groupName" placeholder="enter group name" required>
+        <button class="report-button" onclick="createGroupChat()">create group</button>
     </div>
 </div>
 <div class="group-page">
@@ -236,7 +236,61 @@
                 </div>
             </div>
             <%
+                }
+            }
+            //if there are no messages
+            else {
+
+                //if there are unseenMessages
+                //if the inboxParticipant is active or open
+                if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
+            %>
+            <div class="block active"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+                <div class="imgbox">
+                    <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4><%=otherUser.getUserName()%>
+                        </h4>
+                        <p class="time">
+                        </p>
+                    </div>
+                    <div class="message-p">
+                        <p>
+                        </p>
+                        <b></b>
+                    </div>
+                </div>
+            </div>
+            <%
+            } //else just display the inboxParticipant
+            else {
+
+            %>
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+                <div class="imgbox">
+                    <img src="profilePictures/<%=otherUser.getProfilePicture()%>" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4><%=otherUser.getUserName()%>
+                        </h4>
+                        <p class="time">
+                        </p>
+                    </div>
+                    <div class="message-p">
+                        <p>
+                        </p>
+
+                    </div>
+                </div>
+            </div>
+            <%
                     }
+
+
                 }
             } //if it's a groupChat
             else if (myInbox.getInboxType() == 2) {
@@ -316,6 +370,54 @@
                     </div>
                     <div class="message-p">
                         <p><%=m.getMessage()%>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <%
+                }
+
+            } else {
+
+               //if the inboxParticipant is active or open
+             if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
+            %>
+            <div class="block active"
+                 onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+                <div class="imgbox">
+                    <img src="profilePictures/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4><%=groupInbox.getGroupName()%>
+                        </h4>
+                        <p class="time">
+                        </p>
+                    </div>
+                    <div class="message-p">
+                        <p>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <%
+            } //else just display the inboxParticipant
+            else {
+
+            %>
+            <div class="block" onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
+                <div class="imgbox">
+                    <img src="profilePictures/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4><%=groupInbox.getGroupName()%>
+                        </h4>
+                        <p class="time">
+                        </p>
+                    </div>
+                    <div class="message-p">
+                        <p>
                         </p>
                     </div>
                 </div>
@@ -761,7 +863,7 @@
                             for (var i = 0; i < allSuggestions.length; i++) {
                                 let idx = allSuggestions[i][2] + allSuggestions[i][3];
                                 let imgName = allSuggestions[i][0];
-                                if (imgName === null || imgName === "null") {
+                                if (imgName === null || imgName === "null" || imgName === "") {
                                     imgName = "profile.jpg";
                                 }
                                 // profile picture is == allSuggestions[i][0] generate based on category u or c ;
@@ -834,6 +936,8 @@
                                 console.log("Message Type:", allMessages[i][4]); // Log message type
                                 console.log("File Name:", allMessages[i][3]);
                                 if (parseInt(allMessages[i][2]) ===
+
+
 
 
 
@@ -1032,7 +1136,7 @@
             if (imgName === null || imgName === "null") {
                 imgName = "profile.jpg";
             }
-            list.innerHTML += "<div className='member'> <img src='profilePictures/" + groupSuggestions[i][2] + "'alt='user-image'><p>" + groupSuggestions[i][1] + "</p><ion-icon name='person-add-outline' onclick='addUser(" + groupSuggestions[i][0] + " )' ></ion-icon> </div>";
+            list.innerHTML += "<div class='member'> <img src='profilePictures/" + groupSuggestions[i][2] + "'alt='user-image'><p>" + groupSuggestions[i][1] + "</p><ion-icon name='person-add-outline' onclick='addUser(" + groupSuggestions[i][0] + " )' ></ion-icon> </div>";
         }
     }
 
@@ -1062,7 +1166,7 @@
         });
     }
 
-    function openGroupPage(){
+    function openGroupPage() {
         document.querySelector('.group-page').style.display = 'flex';
         getGroupMembers();
         console.log("has opened members")
@@ -1083,7 +1187,7 @@
                         if (imgName === null || imgName === "null") {
                             imgName = "profile.jpg";
                         }
-                        list.innerHTML += "<div class='member'> <img src='profilePictures/" + groupMembers[i][2] + "' alt='user-image'><p>" + groupMembers[i][1] + "</p><ion-icon name='person-remove-outline' onclick='removeUser(" + groupMembers[i][0] + ")' ></ion-icon> </div>";
+                        list.innerHTML += "<div class='member'> <img src='profilePictures/" + groupMembers[i][2] + "' alt='user-image'><p>" + groupMembers[i][1] + "</p><ion-icon name='person-remove-outline' onclick='removeGroupMember(" + groupMembers[i][0] + ")' ></ion-icon> </div>";
                     }
 
                 },
@@ -1092,6 +1196,60 @@
                 }
             });
         });
+    }
+
+    function removeGroupMember(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "removeGroupMember", "userId": userId, "inboxId": mainInboxId},
+                success: function (data) {
+                    getGroupMembers();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
+    function closeCreateGroupPage() {
+        document.querySelector('.create-group-page').style.display = 'none';
+    }
+
+    async function createGroupChat() {
+        var file = document.getElementById("imgInp");
+        var groupProfilepic = document.getElementById("groupProfilePic");
+        var groupName = document.getElementById("groupName").value.trim();
+        var formData = new FormData();
+        formData.append("action", "createGroupChat");
+        if (file.value !== "" && groupName != "") {
+            var extension = file.value.split(".").pop();
+            formData.append("file", file.files[0]);
+            formData.append("extension", extension);
+            formData.append("groupName", groupName);
+            await fetch('controller', {
+                method: "POST",
+                body: formData
+            });
+            file.value = "";
+            groupProfilepic.src = "profilePictures/profile.jpg";
+            document.getElementById("groupName").value = "";
+            closeCreateGroupPage();
+        } else if (groupName != "") {
+            /* formData.append("file", "none");
+             formData.append("extension", "none");*/
+            formData.append("groupName", groupName);
+            await fetch('controller', {
+                method: "POST",
+                body: formData
+            });
+            file.value = "";
+            groupProfilepic.src = "profilePictures/profile.jpg";
+            document.getElementById("groupName").value = "";
+            closeCreateGroupPage();
+        }
     }
 
 

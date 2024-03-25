@@ -21,17 +21,18 @@ public class InboxDao extends Dao {
      * @param groupName, the groups name
      * @return the groups id
      **/
-    public int createGroupChat(int adminId, String groupName) {
+    public int createGroupChat(int adminId, String groupName, String profilePicture) {
         int rowsAffected = 0;
         int id = 0;
         try {
 
             con = getConnection();
-            String command = "insert into inbox (inboxType,adminId,groupName) values (?,?,?)";
+            String command = "insert into inbox (inboxType,adminId,groupName,groupProfilePicture) values (?,?,?,?)";
             ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
             ps.setInt(1, 2);
             ps.setInt(2, adminId);
             ps.setString(3, groupName);
+            ps.setString(4, profilePicture);
             ps.executeUpdate();
             rs = ps.getGeneratedKeys();
             if (rs.next()) {

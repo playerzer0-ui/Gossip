@@ -13,12 +13,12 @@ class InboxDaoTest {
      */
     @Test
     void createGroupChat() {
-        int id = inboxDao.createGroupChat(1, "Barcelona");
+        int id = inboxDao.createGroupChat(1, "Barcelona","");
         boolean actual = false;
         if (id > 0) {
             actual = true;
             Inbox inbox1 = inboxDao.getInbox(id);
-            Inbox inbox2 = new Inbox(id, 2, 1, "Barcelona", null);
+            Inbox inbox2 = new Inbox(id, 2, 1, "Barcelona", "");
             assertEquals(inbox1, inbox2);
             assertEquals(inbox1.getInboxType(), inbox2.getInboxType());
             assertEquals(inbox1.getGroupName(), inbox2.getGroupName());
@@ -35,9 +35,9 @@ class InboxDaoTest {
      **/
     @Test
     void updateInbox() {
-        int id = inboxDao.createGroupChat(2, "fun group");
+        int id = inboxDao.createGroupChat(2, "fun group","");
         Inbox inbox1 = inboxDao.getInbox(id);
-        Inbox inbox2 = new Inbox(id, 2, 2, "justFootball", null);
+        Inbox inbox2 = new Inbox(id, 2, 2, "justFootball", "");
         inbox1.updateInbox(inbox2);
         boolean actual = inboxDao.updateInbox(inbox1);
         boolean expected = true;

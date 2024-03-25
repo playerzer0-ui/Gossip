@@ -18,7 +18,7 @@ class InboxDaoIsolationTest {
   PreparedStatement ps = mock(PreparedStatement.class);
   ResultSet rs = mock(ResultSet.class);
 
-  String query ="insert into inbox (inboxType,adminId,groupName) values (?,?,?)";
+  String query ="insert into inbox (inboxType,adminId,groupName,groupProfilePicture) values (?,?,?,?)";
   when(dbConn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)).thenReturn(ps);
   when(ps.executeUpdate()).thenReturn(1);
   when(ps.getGeneratedKeys()).thenReturn(rs);
@@ -26,10 +26,11 @@ class InboxDaoIsolationTest {
   when(rs.getInt(1)).thenReturn(1);
 
   InboxDao inboxDao= new InboxDao(dbConn);
-  int result = inboxDao.createGroupChat(4,"studyGroup");
+  int result = inboxDao.createGroupChat(4,"studyGroup","");
 
   verify(ps).setInt(2, 4);
   verify(ps).setString(3, "studyGroup");
+  verify(ps).setString(4, "");
 
   assertTrue(result>0);
  }

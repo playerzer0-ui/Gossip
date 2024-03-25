@@ -159,7 +159,3 @@ function closeZoom() {
 function closeGroupPage() {
     document.querySelector('.group-page').style.display = 'none';
 }
-
-function closeCreateGroupPage(){
-    document.querySelector('.create-group-page').style.display = 'none';
-}

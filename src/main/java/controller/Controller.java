@@ -120,10 +120,8 @@ public class Controller extends HttpServlet {
                     try {
                         changeProfilePicture(request, response);
                     } catch (ServletException ex) {
-                        response.sendRedirect("register.jsp");
+                        response.sendRedirect("chatbox.jsp");
                     }
-                    dest = "chatbox.jsp";
-                    response.sendRedirect(dest);
                     break;
                 case "changePassword":
                     dest = changePassword(request, response);
@@ -175,6 +173,16 @@ public class Controller extends HttpServlet {
                     break;
                 case "getGroupMembers":
                     getGroupMembers(request, response);
+                    break;
+                case "removeGroupMember":
+                    removeGroupMember(request, response);
+                    break;
+                case "createGroupChat":
+                    try {
+                        createGroupChat(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("chatbox.jsp");
+                    }
                     break;
             }
         }
@@ -249,8 +257,7 @@ public class Controller extends HttpServlet {
                 session.setAttribute("user", user);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            }
-            else {
+            } else {
                 String msg = "Registration failed, try different username or check details again!";
                 session.setAttribute("msg", msg);
                 return "register.jsp";
@@ -356,10 +363,10 @@ public class Controller extends HttpServlet {
             //if a matching inbox was found
             if (matchingInbox != null) {
                 //send message
-                messageId = messageDao.sendMessage2(matchingInbox.getInboxId(), user.getUserId(), message, 1, key,"");
+                messageId = messageDao.sendMessage2(matchingInbox.getInboxId(), user.getUserId(), message, 1, key, "");
                 InboxParticipants myIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), user.getUserId());
                 InboxParticipants otherIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), otherUserId);
-                Message m =messageDao.getMessage(messageId);
+                Message m = messageDao.getMessage(messageId);
                 myIbp.setTimeSent(m.getTimeSent());
                 otherIbp.setTimeSent(m.getTimeSent());
                 ibpsDao.updateInboxParticipant(myIbp);
@@ -375,8 +382,8 @@ public class Controller extends HttpServlet {
                 ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
                 //insert the other user
                 ibpsDao.insertInboxParticipant(inboxId, otherUserId);
-                messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key,"");
-                Message m =messageDao.getMessage(messageId);
+                messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, 1, key, "");
+                Message m = messageDao.getMessage(messageId);
                 InboxParticipants myIbp = ibpsDao.getInboxParticipant(inboxId, user.getUserId());
                 InboxParticipants otherIbp = ibpsDao.getInboxParticipant(inboxId, otherUserId);
                 myIbp.setTimeSent(m.getTimeSent());
@@ -478,7 +485,13 @@ public class Controller extends HttpServlet {
                 header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4>";
             }
         } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/profile.jpg' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
+            String profilePic = "";
+            if (inbox.getGroupProfilePicture() == null || inbox.getGroupProfilePicture() == "") {
+                profilePic = "profile.jpg";
+            } else {
+                profilePic = inbox.getGroupProfilePicture();
+            }
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='profilePictures/" + profilePic + "' alt='profile' class='cover'> </div><h4>" + inbox.getGroupName() + "<br><span></span></h4>";
         }
         response.getWriter().write(header);
     }
@@ -531,16 +544,25 @@ public class Controller extends HttpServlet {
                     }
                     //if there are unseenMessages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
 
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> </div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     }
+                } else {
+                    if (activeInboxId == ibps.getInboxId()) {
+                        chatlist = chatlist + "<div class='block active' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'></p></div> <div class='message-p'><p></p> </div></div></div>";
+                    } else {
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/" + otherUser.getProfilePicture() + "' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + otherUser.getUserName() + "</h4>       <p class='time'></p></div> <div class='message-p'><p></p></div></div></div>";
+                    }
+
                 }
             } else if (myInbox.getInboxType() == 2) {
                 //get the group inbox
@@ -558,14 +580,22 @@ public class Controller extends HttpServlet {
                     }
                     //if there are unseen messages
                     if (ibps.getUnseenMessages() > 0) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p> <b>" + ibps.getUnseenMessages() + "</b></div></div></div>";
                     } else if (activeInboxId == ibps.getInboxId()) {
-                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
                     } else {
-                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage("+ myInbox.getInboxType() +");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
                         chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'>" + m.getTimeSent().getHour() + ":" + m.getTimeSent().getMinute() + "</p></div> <div class='message-p'><p>" + m.getMessage() + "</p></div></div></div>";
+                    }
+                } else {
+                    if (activeInboxId == ibps.getInboxId()) {
+                        chatlist = chatlist + "<div class='block unread' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'></p></div> <div class='message-p'><p></p></div></div></div>";
+                    } else {
+                        chatlist = chatlist + "<div class='block' onclick='getMessages(" + ibps.getInboxId() + ");seeMessage(" + myInbox.getInboxType() + ");'><div class='imgbox'><img src='profilePictures/profile.jpg ' alt='' class='cover'>";
+                        chatlist = chatlist + "</div> <div class='details'> <div class='listhead'> <h4>" + groupInbox.getGroupName() + "</h4>       <p class='time'></p></div> <div class='message-p'><p></p></div></div></div>";
                     }
                 }
             }
@@ -638,11 +668,11 @@ public class Controller extends HttpServlet {
                     // get the other person's InboxParticipant
                     InboxParticipants ibp = ibpsDao.getOtherInboxParticipant(inboxId, user.getUserId());
                     //update unseen messages for the other user
-                    ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
                     ibp.setTimeSent(m.getTimeSent());
                     ibpsDao.updateInboxParticipant(ibp);
                     myIbp.setTimeSent(m.getTimeSent());
                     ibpsDao.updateInboxParticipant(myIbp);
+                    ibpsDao.updateUnSeenMessages(inboxId, ibp.getUserId());
                 }
             } else {
                 boolean uploadState = false;
@@ -680,9 +710,9 @@ public class Controller extends HttpServlet {
                     //add unseenMessages for all users in the groupChat
                     for (InboxParticipants Ibps : allIbps) {
                         if (Ibps.getUserId() != user.getUserId()) {
-                            ibpsDao.updateUnSeenMessages(Ibps.getInboxId(), Ibps.getUserId());
                             Ibps.setTimeSent(m.getTimeSent());
                             ibpsDao.updateInboxParticipant(Ibps);
+                            ibpsDao.updateUnSeenMessages(Ibps.getInboxId(), Ibps.getUserId());
                         }
                     }
                 }
@@ -821,23 +851,22 @@ public class Controller extends HttpServlet {
     public String changePassword(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
-        Users tempUser = (Users)session.getAttribute("user");
+        Users tempUser = (Users) session.getAttribute("user");
 
         String username = request.getParameter("username");
         String oldPass = request.getParameter("password");
         String newPass = request.getParameter("password");
 
         if (username != null && !username.isEmpty()) {
-            int rowsAffected = usersDao.changePassword(tempUser.getUserName(), oldPass,newPass);
+            int rowsAffected = usersDao.changePassword(tempUser.getUserName(), oldPass, newPass);
 
-            if(rowsAffected == 1){
+            if (rowsAffected == 1) {
                 String msg = "change password successfully!";
                 tempUser.setPassword(newPass);
                 session.setAttribute("user", tempUser);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            }
-            else{
+            } else {
                 String msg = "change password failed, something went wrong";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
@@ -846,16 +875,16 @@ public class Controller extends HttpServlet {
         return "chatbox.jsp";
     }
 
-    public String editProfile(HttpServletRequest request, HttpServletResponse response){
+    public String editProfile(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(true);
         UsersDao usersDao = new UsersDao("gossip");
-        Users tempUser = (Users)session.getAttribute("user");
+        Users tempUser = (Users) session.getAttribute("user");
 
         String username = request.getParameter("username");
         String bio = request.getParameter("bio");
 
-        if(!tempUser.getUserName().equals(username)){
-            if(usersDao.checkUsername(username)){
+        if (!tempUser.getUserName().equals(username)) {
+            if (usersDao.checkUsername(username)) {
                 String msg = "username taken, try another";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
@@ -865,15 +894,14 @@ public class Controller extends HttpServlet {
         if (username != null && !username.isEmpty()) {
             int rowsAffected = usersDao.updateNameAndBio(tempUser.getUserId(), username, bio);
 
-            if(rowsAffected == 1){
+            if (rowsAffected == 1) {
                 String msg = "profile updated successfully!";
                 tempUser.setUserName(username);
                 tempUser.setBio(bio);
                 session.setAttribute("user", tempUser);
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
-            }
-            else{
+            } else {
                 String msg = "update failed, something went wrong";
                 session.setAttribute("msg", msg);
                 return "chatbox.jsp";
@@ -1023,14 +1051,14 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
 //        Miscellaneous miscellaneous = new Miscellaneous();
         String header;
-            Users otherUser = usersDao.getUserById(userId);
+        Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
-            if (otherUser.getOnline() == 1) {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+        if (otherUser.getOnline() == 1) {
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
-            } else {
-                header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
-            }
+        } else {
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+        }
 
         response.getWriter().write(header);
     }
@@ -1086,6 +1114,7 @@ public class Controller extends HttpServlet {
 
         reportsDao.updateReport(reportId, status);
     }
+
     public void suspendUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
         UsersDao usersDao = new UsersDao("gossip");
         int userId = Integer.parseInt(request.getParameter("userId"));
@@ -1099,6 +1128,7 @@ public class Controller extends HttpServlet {
             usersDao.updateUser(u);
         }
     }
+
     public void inviteGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
@@ -1108,72 +1138,110 @@ public class Controller extends HttpServlet {
         InboxDao inboxDao = new InboxDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
         List<Users> users = usersDao.searchUserByUsername(search);
-        ArrayList <Users> filteredUsers= new ArrayList<>();
+        ArrayList<Users> filteredUsers = new ArrayList<>();
         ArrayList<InboxParticipants> ibps = ibpDao.getAllInboxParticipants(inboxId);
-        ArrayList <String [] >  suggestions= new ArrayList<>();
+        ArrayList<String[]> suggestions = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        for (Users u:users) {
-            boolean found=false;
-            Label:
+        for (Users u : users) {
+            boolean found = false;
             for (InboxParticipants Ibps : ibps) {
                 //if the user is in the group
-             if(Ibps.getUserId()==u.getUserId()){
-                 found=true;
-                 break Label;
-             }
+                if (Ibps.getUserId() == u.getUserId()) {
+                    found = true;
+                    break;
+                }
             }
-            if(found==false){
+            if (!found) {
                 filteredUsers.add(u);
             }
-            if(filteredUsers.size()>=10){
-               break;
+            if (filteredUsers.size() >= 10) {
+                break;
             }
 
         }
-        for(Users u:filteredUsers){
-            String [] User= new String[4];
-            User [0] = u.getUserId()+ "";
-            User [1] = u.getUserName();
-            User [2] = u.getProfilePicture();
-            User [3] = u.getEmail();
+        for (Users u : filteredUsers) {
+            String[] User = new String[4];
+            User[0] = u.getUserId() + "";
+            User[1] = u.getUserName();
+            User[2] = u.getProfilePicture();
+            User[3] = u.getEmail();
             suggestions.add(User);
         }
         String jsonString = objectMapper.writeValueAsString(suggestions);
         response.getWriter().write(jsonString);
     }
+
     public void getGroupMembers(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         UsersDao usersDao = new UsersDao("gossip");
-        ArrayList <Users> users= new ArrayList<>();
+        ArrayList<Users> users = new ArrayList<>();
         ArrayList<InboxParticipants> ibps = ibpDao.getAllInboxParticipants(inboxId);
-        ArrayList <String [] >  allUsers= new ArrayList<>();
+        ArrayList<String[]> allUsers = new ArrayList<>();
         ObjectMapper objectMapper = new ObjectMapper();
-        for(InboxParticipants Ibps: ibps){
-           Users u= usersDao.getUserById(Ibps.getUserId());
-            String [] User= new String[4];
-            User [0] = u.getUserId()+ "";
-            User [1] = u.getUserName();
-            User [2] = u.getProfilePicture();
-            User [3] = u.getEmail();
+        for (InboxParticipants Ibps : ibps) {
+            Users u = usersDao.getUserById(Ibps.getUserId());
+            String[] User = new String[4];
+            User[0] = u.getUserId() + "";
+            User[1] = u.getUserName();
+            User[2] = u.getProfilePicture();
+            User[3] = u.getEmail();
             allUsers.add(User);
         }
         String jsonString = objectMapper.writeValueAsString(allUsers);
         response.getWriter().write(jsonString);
     }
+
     public void addGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(true);
         Users user = (Users) session.getAttribute("user");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
         int userId = Integer.parseInt(request.getParameter("userId"));
-        InboxDao inboxDao= new InboxDao("gossip");
-        InboxParticipantsDao ibpDao= new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
-        if(inbox!=null && inbox.getInboxType()==2 && user.getUserId()==inbox.getAdminId() ){
-            ibpDao.insertInboxParticipant(inboxId,userId);
+        if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() == inbox.getAdminId()) {
+            ibpDao.insertInboxParticipant(inboxId, userId);
             System.out.println("added group member");
+        }
+    }
+
+    public void removeGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() == inbox.getAdminId()) {
+            ibpDao.deleteInboxParticipant(inboxId, userId);
+            System.out.println("removed group member");
+        }
+    }
+
+    public void createGroupChat(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        String groupName = request.getParameter("groupName");
+        Part file = request.getPart("file");
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        if (file == null) {
+            int id = inboxDao.createGroupChat(user.getUserId(), groupName, "profile.jpg");
+            ibpDao.insertInboxParticipant(id, user.getUserId());
+        } else {
+            String extension = request.getParameter("extension");
+            if (checkImage(extension)) {
+                String filteredFileName = generateFileName(user.getUserId(), extension);
+                boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
+                if (uploadState) {
+                    int id = inboxDao.createGroupChat(user.getUserId(), groupName, filteredFileName);
+                    ibpDao.insertInboxParticipant(id, user.getUserId());
+                }
+            }
         }
     }
 }
