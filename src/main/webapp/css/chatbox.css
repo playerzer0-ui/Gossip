@@ -157,7 +157,7 @@ body {
     background: #720455;
     border-right: 1px solid;
     min-width: 312px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .container .leftSide {
@@ -167,6 +167,18 @@ body {
     height: auto;
     flex: 30%;
     background: #720455;
+    border-right: 1px solid;
+    z-index: 1;
+}
+
+.container .leftYourStory {
+    position: absolute;
+    width: 30%;
+    min-width: 312px;
+    height: auto;
+    flex: 30%;
+    background: #720455;
+    color: white;
     border-right: 1px solid;
     z-index: 1;
 }
@@ -306,6 +318,20 @@ body {
     align-items: center;
 }
 
+.yourList {
+    width: 100%;
+    height: calc(100vh - 100px);
+    background-color: #570541;
+}
+
+.yourStoryList {
+    background-color: #720455;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
 .profile-img {
     position: relative;
     width: 160px;
@@ -391,8 +417,10 @@ body {
     height: 50px;
     display: flex;
     justify-content: center;
+    background-color: #720455;
     align-items: center;
     padding: 0 15px;
+    z-index: 2;
 }
 
 .search-chat div {
@@ -448,6 +476,10 @@ body {
 }
 
 .chatlist {
+    z-index: 2;
+}
+
+.chatlist, .storiesList {
     position: relative;
     height: calc(100% - 110px);
     overflow-y: auto;
@@ -455,7 +487,22 @@ body {
     color: white;
 }
 
-.chatlist .block {
+.yourList {
+    position: relative;
+    overflow-y: auto;
+    background-color: #720455;
+    color: white;
+}
+
+.storiesList {
+    position: absolute;
+    z-index: 1;
+    top: 60px;
+    width: 100%;
+    height: calc(100% - 60px);;
+}
+
+.chatlist .block, .storiesList .block, .yourStoryList .block {
     position: relative;
     width: 100%;
     display: flex;
@@ -469,11 +516,11 @@ body {
     background-color: #570541;
 }
 
-.chatlist .block:hover {
+.chatlist .block:hover, .storiesList .block:hover, .yourStoryList .block:hover {
     background-color: #6d0451;
 }
 
-.chatlist .block .imgbox {
+.chatlist .block .imgbox, .storiesList .block .imgbox, .yourStoryList .block .imgbox {
     position: relative;
     min-width: 45px;
     height: 45px;
@@ -482,23 +529,25 @@ body {
     margin-right: 10px;
 }
 
-.chatlist .block .details {
+.chatlist .block .details, .storiesList .block .details, .yourStoryList .block .details {
     position: relative;
     width: 100%;
 }
 
-.chatlist .block .details .listhead {
+.chatlist .block .details .listhead, .storiesList .block .details .listhead, .yourStoryList .block .details .listhead {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
 }
 
-.chatlist .block .details .listhead h4 {
+.chatlist .block .details .listhead h4, .storiesList .block .details .listhead h4,
+.yourStoryList .block .details .listhead h4 {
     font-size: 1.1em;
     font-weight: 600;
 }
 
-.chatlist .block .details .listhead .time {
+.chatlist .block .details .listhead .time, .storiesList .block .details .listhead .time,
+.yourStoryList .block .details .listhead .time {
     font-size: 0.75em;
     color: #ff9ae4;
 }

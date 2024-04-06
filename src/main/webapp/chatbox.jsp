@@ -101,10 +101,10 @@
             </div>
             <ul class="nav-icons">
                 <li>
-                    <ion-icon name="scan-circle-outline"></ion-icon>
+                    <ion-icon name="scan-circle-outline" onclick="seeStories()"></ion-icon>
                 </li>
                 <li>
-                    <ion-icon name="chatbox-ellipses"></ion-icon>
+                    <ion-icon name="chatbox-ellipses" onclick="seeChatList()"></ion-icon>
                 </li>
                 <li>
                     <ion-icon name="ellipsis-vertical" class="header-menu" onclick="seeHeaderMenu()"></ion-icon>
@@ -434,6 +434,62 @@
 
         </div>
 
+        <!-- stories-list -->
+        <div class="storiesList">
+            <div class="block" onclick="seeYourStories()">
+                <div class="imgbox">
+                    <img src="img/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4><u>My stories</u></h4>
+                    </div>
+                </div>
+            </div>
+
+            <div class="block">
+                <div class="imgbox">
+                    <img src="img/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4>Player zero</h4>
+                        <p class="time">12:00 AM</p>
+                    </div>
+                    <div class="message-p">
+                        <p>insert story description here</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block">
+                <div class="imgbox">
+                    <img src="img/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4>Player zero</h4>
+                        <p class="time">12:00 AM</p>
+                    </div>
+                    <div class="message-p">
+                        <p>insert story description here</p>
+                    </div>
+                </div>
+            </div>
+            <div class="block">
+                <div class="imgbox">
+                    <img src="img/profile.jpg" alt="" class="cover">
+                </div>
+                <div class="details">
+                    <div class="listhead">
+                        <h4>Player zero</h4>
+                        <p class="time">12:00 AM</p>
+                    </div>
+                    <div class="message-p">
+                        <p>insert story description here</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="leftSide">
@@ -502,6 +558,27 @@
         </div>
     </div>
 
+    <div class="leftYourStory">
+        <div class="profile-header">
+            <ion-icon name="arrow-back-outline" onclick="seeChatList()"></ion-icon>
+            <h4>my stories</h4>
+        </div>
+        <div class="yourList">
+            <div class="yourStoryList">
+                <div class="block">
+                    <div class="imgbox">
+                        <img src="img/profile.jpg" alt="" class="cover">
+                    </div>
+                    <div class="details">
+                        <div class="listhead">
+                            <h4>2 views</h4>
+                            <p class="time">12:00 AM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <div class="right">
         <div class="header" id="chat-hide">
