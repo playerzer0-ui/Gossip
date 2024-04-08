@@ -37,7 +37,7 @@ body {
     padding: 20px;
 }
 
-.zoom, .report-page, .group-page, .create-group-page {
+.zoom, .report-page, .group-page, .create-group-page, .storyview {
     position: absolute;
     display: none;
     justify-content: center;
@@ -52,18 +52,56 @@ body {
     background-color: rgba(87, 5, 5, 0.6);
 }
 
+.storyview {
+    background-color: grey;
+}
+
+.view-container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+}
+
+.bars {
+    position: absolute;
+    top: 10px;
+    display: flex;
+    flex-direction: row;
+}
+
+.loading-bar, .gray-bar {
+    width: 40px;
+    height: 4px;
+    background-color: white;
+    margin: 4px;
+}
+
+.gray-bar {
+    background-color: rgb(48, 48, 48);
+}
+
+.story-image {
+    width: 40vw;
+    height: auto;
+    display: block;
+}
+
 .zoom img {
     width: 40vw;
     height: auto;
 }
 
-.zoom ion-icon, .report-page ion-icon, .group-page ion-icon, .create-group-page ion-icon {
+.zoom ion-icon, .report-page ion-icon, .group-page ion-icon, .create-group-page ion-icon, .storyview ion-icon {
     position: absolute;
     top: 0;
     right: 0;
     color: #FFEEAA;
     cursor: pointer;
     font-size: 3.5em;
+}
+
+.view-container ion-icon {
+    position: relative;
 }
 
 .report-page .form-page, .group-page .form-page, .create-group-page .form-page {

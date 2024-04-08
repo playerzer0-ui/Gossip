@@ -1,6 +1,8 @@
 var inboxType = 0;
 var imgInp = document.getElementById("imgInp");
 var groupProfilePic = document.getElementById("groupProfilePic");
+var currentIndex = 0;
+var images = ["img/pattern.jpg", "img/phones.png", "img/picture1.jpg", "img/picture2.jpg"];
 
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
@@ -169,10 +171,54 @@ function closeReport() {
     document.querySelector('.report-page').style.display = 'none';
 }
 
+function openStoryView(){
+    const storyImage = document.getElementById('storyImage');
+    storyImage.src = images[0];
+    let bars = document.querySelectorAll(".bars");
+    bars[0].innerHTML += "<div class='gray-bar'></div>";
+    bars[1].innerHTML += "<div class='loading-bar'></div>";
+
+    for(let i = 1; i < images.length; i++){
+        bars[0].innerHTML += "<div class='gray-bar'></div>";
+        bars[1].innerHTML += "<div class='loading-bar' style='visibility: hidden;'></div>";
+    }
+    document.querySelector('.storyview').style.display = 'flex';
+}
+
+function closeStoryView(){
+    currentIndex = 0;
+    document.querySelector('.storyview').style.display = 'none';
+    let bars = document.querySelectorAll(".bars");
+    bars[0].innerHTML = "";
+    bars[1].innerHTML = "";
+}
+
 function closeZoom() {
     document.querySelector('.zoom').style.display = 'none';
 }
 
 function closeGroupPage() {
     document.querySelector('.group-page').style.display = 'none';
+}
+
+function switchImageLeft() {
+    const storyImage = document.getElementById('storyImage');
+    let loadingbars = document.querySelectorAll(".loading-bar");
+
+    if(currentIndex - 1 >= 0){
+        loadingbars[currentIndex].style.visibility = "hidden";
+        currentIndex--;
+        storyImage.src = images[currentIndex];
+    }
+}
+
+function switchImageRight() {
+    const storyImage = document.getElementById('storyImage');
+    let loadingbars = document.querySelectorAll(".loading-bar");
+
+    if(currentIndex + 1 < images.length){
+        currentIndex++;
+        loadingbars[currentIndex].style.visibility = "visible";
+        storyImage.src = images[currentIndex];
+    }
 }

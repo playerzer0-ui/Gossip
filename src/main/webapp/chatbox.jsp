@@ -46,6 +46,21 @@
     <ion-icon name="close-outline" onclick="closeZoom()"></ion-icon>
     <img src="" alt="">
 </div>
+
+<div class="storyview">
+    <ion-icon name="close-outline" onclick="closeStoryView()"></ion-icon>
+    <div class="bars">
+    </div>
+    <div class="bars">
+    </div>
+    <div class="view-container">
+        <ion-icon id="left-arrow" name="chevron-back-outline" onclick="switchImageLeft()"></ion-icon>
+        <img src="" class="story-image" id="storyImage" />
+        <ion-icon id="right-arrow" name="chevron-forward-outline" onclick="switchImageRight()"></ion-icon>
+    </div>
+
+</div>
+
 <div class="report-page">
     <ion-icon name="close-outline" onclick="closeReport()"></ion-icon>
     <div class="form-page">
@@ -447,7 +462,7 @@
                 </div>
             </div>
 
-            <div class="block">
+            <div class="block" onclick="openStoryView()">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
