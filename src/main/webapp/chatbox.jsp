@@ -462,7 +462,7 @@
                 </div>
             </div>
 
-            <div class="block" onclick="openStoryView()">
+            <div class="block" onclick="openStoryView(['img/pattern.jpg', 'img/phones.png', 'img/picture1.jpg', 'img/picture2.jpg'])">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>

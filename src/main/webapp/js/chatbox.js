@@ -171,8 +171,9 @@ function closeReport() {
     document.querySelector('.report-page').style.display = 'none';
 }
 
-function openStoryView(){
+function openStoryView(imagesList){
     const storyImage = document.getElementById('storyImage');
+    images = imagesList;
     storyImage.src = images[0];
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML += "<div class='gray-bar'></div>";
