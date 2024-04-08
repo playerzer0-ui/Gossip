@@ -116,7 +116,7 @@
             </div>
             <ul class="nav-icons">
                 <li>
-                    <ion-icon name="scan-circle-outline" onclick="seeStories()"></ion-icon>
+                    <ion-icon name="scan-circle-outline" onclick="getStoriesList(); seeStories()"></ion-icon>
                 </li>
                 <li>
                     <ion-icon name="chatbox-ellipses" onclick="seeChatList()"></ion-icon>
@@ -448,9 +448,11 @@
 
 
         </div>
-
+        <input type="file" id="statusFile" onchange=""  accept="image/png, image/jpeg, image/jpg, video/mp4, video/x-m4v">
+        <input type="text" id="statusDescription">
+        <button onclick="uploadStatus()">Upload</button>
         <!-- stories-list -->
-        <div class="storiesList">
+        <div class="storiesList" id="storiesList">
             <div class="block" onclick="seeYourStories()">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
@@ -635,6 +637,7 @@
     var chatBoxScroll = document.getElementById("chatbox");
     var chatBoxScrollHeight = 0;
     var groupSuggestions = [];
+    var storyMedia=[];
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
@@ -1344,6 +1347,64 @@
         }
     }
 
+     function getStoriesList(){
+         var list = document.getElementById("storiesList");
+         $(document).ready(function () {
+             $.ajax({
+                 url: "controller",
+                 type: 'post',
+                 data: {action: "getStoriesList"},
+                 success: function (data) {
+                     var storiesList = JSON.parse(data);
+                     for (var i = 0; i < storiesList.length; i++) {
+                      list.innerHTML += "<div class='block' onclick='getStories("+storiesList[i][0] +")'><div class='imgbox'> <img src='profilePictures/ "+storiesList[i][2]+"' alt='' class='cover'> </div> <div class='details'> <div class='listhead'> <h4>"+storiesList[i][1]+"</h4> <p class='time'>"+storiesList[i][4]+"</p> </div> <div class='message-p'> <p>"+storiesList[i][5]+"</p> </div> </div> </div>"
+                     }
+
+                 },
+                 error: function () {
+                     alert("Error with ajax");
+                 }
+             });
+         });
+     }
+
+     /*function getStories(id){
+         $(document).ready(function () {
+             $.ajax({
+                 url: "controller",
+                 type: 'post',
+                 data: {action: "getStories", id:id},
+                 success: function (data) {
+                     var stories = JSON.parse(data);
+                     for (var i = 0; i < stories.length; i++) {
+                         storyMedia[i]="stories/"+stories[i][2];
+                     }
+
+                 },
+                 error: function () {
+                     alert("Error with ajax");
+                 }
+             });
+         });
+     }*/
+    async function uploadStatus(){
+         var file = document.getElementById("statusFile");
+        var statusDescription = document.getElementById("statusDescription").value.trim();
+         if (file.value != "") {
+             var formData = new FormData();
+             var extension = file.value.split(".").pop();
+             formData.append("action", "uploadStatus");
+             formData.append("file", file.files[0]);
+             formData.append("extension", extension);
+             formData.append("statusDescription", statusDescription);
+
+             await fetch('controller', {
+                 method: "POST",
+                 body: formData
+             });
+             file.value = "";
+         }
+     }
 
     document.addEventListener('keydown', function (event) {
         if (event.key === "Enter") {

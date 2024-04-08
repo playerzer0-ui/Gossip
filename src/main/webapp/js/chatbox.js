@@ -2,7 +2,7 @@ var inboxType = 0;
 var imgInp = document.getElementById("imgInp");
 var groupProfilePic = document.getElementById("groupProfilePic");
 var currentIndex = 0;
-var images = ["img/pattern.jpg", "img/phones.png", "img/picture1.jpg", "img/picture2.jpg"];
+var images = [];
 
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
@@ -192,6 +192,7 @@ function closeStoryView(){
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML = "";
     bars[1].innerHTML = "";
+    images=[];
 }
 
 function closeZoom() {
@@ -222,4 +223,26 @@ function switchImageRight() {
         loadingbars[currentIndex].style.visibility = "visible";
         storyImage.src = images[currentIndex];
     }
+}
+
+function getStories(id){
+    alert("hey"  + id);
+    $(document).ready(function () {
+        $.ajax({
+            url: "controller",
+            type: 'post',
+            data: {action: "getStories", userId:id},
+            success: function (data) {
+                images=[]
+                var stories = JSON.parse(data);
+                for (var i = 0; i < stories.length; i++) {
+                    images[i]="stories/"+stories[i][2];
+                }
+             openStoryView(images);
+            },
+            error: function () {
+                alert("Error with ajax");
+            }
+        });
+    });
 }

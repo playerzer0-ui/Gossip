@@ -59,8 +59,13 @@ public class tx {
        InboxParticipantsDao inboxParticipantsDao = new InboxParticipantsDao("gossip");
        ArrayList <InboxParticipants> ibps= inboxParticipantsDao.getAllInbox(1);
         //System.out.println(ibps);
-        for(InboxParticipants ibp: ibps){
+        /*for(InboxParticipants ibp: ibps){
             System.out.println(ibp);
-        }
+        }*/
+        ArrayList <Integer> nums= new ArrayList();
+        nums.add(2);
+        nums.add(0,1);
+      //  nums.add(0,-1);
+        System.out.println(nums);
     }
 }

@@ -39,7 +39,7 @@ public class Miscellaneous {
      * must contain at least one digit.
      * must contain at least one upper case alphabet.
      * must contain at least one lower case alphabet.
-     * must contain at least one special character which includes.
+     * must contain at ledast one special character which includes.
      * @param password, the password to be validated
      *  @return true if email is valid and false for otherwise
      * **/

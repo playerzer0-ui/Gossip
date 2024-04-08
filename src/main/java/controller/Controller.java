@@ -8,6 +8,7 @@ import java.security.spec.InvalidKeySpecException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -183,6 +184,19 @@ public class Controller extends HttpServlet {
                     } catch (ServletException ex) {
                         response.sendRedirect("chatbox.jsp");
                     }
+                    break;
+                case "getStoriesList":
+                    getStoriesList(request, response);
+                    break;
+                case "uploadStatus":
+                    try {
+                        uploadStatus(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("chatbox.jsp");
+                    }
+                    break;
+                case "getStories":
+                    getStories(request, response);
                     break;
             }
         }
@@ -755,14 +769,14 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
-             FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)
+             //FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
         ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                targetStream.write(buffer, 0, bytesRead);
+                // targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
@@ -959,6 +973,7 @@ public class Controller extends HttpServlet {
             }
             replies.add(reply);
         }
+        System.out.println(searchs);
         String jsonString = objectMapper.writeValueAsString(replies);
         response.getWriter().write(jsonString);
     }
@@ -1242,6 +1257,123 @@ public class Controller extends HttpServlet {
                     ibpDao.insertInboxParticipant(id, user.getUserId());
                 }
             }
+        }
+    }
+
+    public void getStoriesList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        UsersDao usersDao = new UsersDao("gossip");
+        StoriesDao storiesDao = new StoriesDao("gossip");
+        ArrayList<InboxParticipants> allIbps = ibpDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> filteredIbps = new ArrayList();
+        ArrayList<Users> users = new ArrayList();
+        ArrayList<Stories> stories = new ArrayList();
+        ObjectMapper objectMapper = new ObjectMapper();
+        //get all inbox
+        for (InboxParticipants ibps : allIbps) {
+            //get all normal chats
+            Inbox inbox = inboxDao.getInbox(ibps.getInboxId());
+            if (inbox.getInboxType() == 1) {
+                filteredIbps.add(ibps);
+            }
+        }
+        for (InboxParticipants ibps : filteredIbps) {
+            InboxParticipants ibp = ibpDao.getOtherInboxParticipant(ibps.getInboxId(), user.getUserId());
+            List<Stories> allStories = storiesDao.getAllStoriesByUserId(ibp.getUserId());
+            //sort in descending order of time posted
+            if (!allStories.isEmpty()) {
+                boolean put = false;
+                int tracker = 0;
+                for (Stories story : stories) {
+                    if (allStories.get(0).getDateTime().isAfter(story.getDateTime()) || allStories.get(0).getDateTime().isEqual(story.getDateTime())) {
+                        stories.add(tracker, allStories.get(0));
+                        users.add(tracker, usersDao.getUserById(ibps.getUserId()));
+                        put = true;
+                        break;
+                    }
+                    tracker++;
+                }
+                if (!put) {
+                    if (stories.size() > 0 || users.size() > 0) {
+                        stories.add(stories.size() - 1, allStories.get(0));
+                        users.add(users.size() - 1, usersDao.getUserById(ibp.getUserId()));
+                    } else {
+                        stories.add(0, allStories.get(0));
+                        users.add(0, usersDao.getUserById(ibp.getUserId()));
+                    }
+                }
+
+            }
+        }
+        System.out.println(stories);
+
+        ArrayList<String[]> allUsers = new ArrayList<>();
+        int trackUser = 0;
+        //transform to json
+        for (Users u : users) {
+            String[] User = new String[6];
+            User[0] = u.getUserId() + "";
+            User[1] = u.getUserName();
+            User[2] = u.getProfilePicture();
+            User[3] = u.getEmail();
+            User[4] = stories.get(trackUser).getDateTime().toString();
+            User[5] = stories.get(trackUser).getStoryDescription();
+            allUsers.add(User);
+            trackUser++;
+        }
+
+
+        String jsonString = objectMapper.writeValueAsString(allUsers);
+        response.getWriter().write(jsonString);
+    }
+
+    public void getStories(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        StoriesDao storiesDao = new StoriesDao("gossip");
+        List<Stories> stories = storiesDao.getAllStoriesByUserId(userId);
+        ArrayList<String[]> allStories = new ArrayList();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for (Stories story : stories) {
+            String[] s = new String[5];
+            s[0] = story.getStoryId() + "";
+            s[1] = story.getStoryType() + "";
+            s[2] = story.getStory();
+            s[3] = story.getStoryDescription();
+            s[4] = story.getDateTime().toString();
+            allStories.add(s);
+        }
+        String jsonString = objectMapper.writeValueAsString(allStories);
+        response.getWriter().write(jsonString);
+    }
+
+    public void uploadStatus(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        String extension = request.getParameter("extension");
+        String statusDescription = request.getParameter("statusDescription");
+        StoriesDao storiesDao = new StoriesDao("gossip");
+        Part file = request.getPart("file");
+        int storyType = -1;
+        if (checkImage(extension)) {
+            storyType = 1;
+        } else if (checkVideo(extension)) {
+            storyType = 2;
+        }
+        if (storyType == 2 || storyType == 1) {
+            String fileName = generateFileName(user.getUserId(), extension);
+            boolean uploadStatus = uploadFile(file, fileName, "stories\\");
+            if (uploadStatus) {
+                storiesDao.addStory(user.getUserId(), fileName, storyType, statusDescription);
+
+            } else {
+                System.out.println("failed to upload status");
+            }
+        } else {
+            System.out.println("couldn't upload invalid extension");
         }
     }
 }
