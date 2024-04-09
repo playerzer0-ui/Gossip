@@ -116,7 +116,7 @@
             </div>
             <ul class="nav-icons">
                 <li>
-                    <ion-icon name="scan-circle-outline" onclick="getStoriesList(); seeStories()"></ion-icon>
+                    <ion-icon name="scan-circle-outline" onclick="seeStories()"></ion-icon>
                 </li>
                 <li>
                     <ion-icon name="chatbox-ellipses" onclick="seeChatList()"></ion-icon>
