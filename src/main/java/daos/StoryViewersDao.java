@@ -53,7 +53,7 @@ public class StoryViewersDao extends Dao{
     }
 
     /**
-     * get a storyviewer by viewerId
+     * get a storyViewer by viewerId
      * @param viewerId the viewerId
      * @return storyviewer based on the id
      */
@@ -73,6 +73,40 @@ public class StoryViewersDao extends Dao{
                         rs.getInt("viewerId"),
                         rs.getTimestamp("viewTime").toLocalDateTime()
                 ));
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Exception occurred in  the getViewersByStoryID() method: " + e.getMessage());
+        }
+        finally {
+            freeConnection("Exception occurred in  the getViewersByStoryID() final method:");
+        }
+        return storyViewers;
+    }
+
+    /**
+     * get a storyViewer by viewerId
+     * @param viewerId the viewerId
+     *  @param storyId the storyId
+     * @return storyviewer based on the id
+     */
+    public StoryViewers getViewersByStatusViewer(int storyId,int viewerId){
+        StoryViewers storyViewers = null;
+        try{
+            con = getConnection();
+
+            String query = "select * from storyviewers where storyId=? and viewerId=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, storyId);
+            ps.setInt(2, viewerId);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                storyViewers = new StoryViewers(
+                        rs.getInt("storyId"),
+                        rs.getInt("viewerId"),
+                        rs.getTimestamp("viewTime").toLocalDateTime()
+                );
             }
         }
         catch (SQLException e){
@@ -112,6 +146,90 @@ public class StoryViewersDao extends Dao{
             freeConnection("Exception occurred in  the insertStoryViewer() final method:");
         }
         return rowsAffected;
+    }
+
+    /**
+     * insert a storyViewer to the database
+     * @param storyId the storyId
+     * @param viewerId the viewerId
+     * @return number of storyviewers added, 1 is the correct value
+     */
+    public int insertStoryViewer(int storyId, int viewerId){
+        int rowsAffected = 0;
+
+        try{
+            con = getConnection();
+
+            String query = "INSERT INTO storyviewers (storyId, viewerId) VALUES (?, ?)";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, storyId);
+            ps.setInt(2, viewerId);
+
+            rowsAffected = ps.executeUpdate();
+        }
+        catch (SQLException e){
+            System.out.println("Exception occurred in  the insertStoryViewer() method: " + e.getMessage());
+        }
+        finally {
+            freeConnection("Exception occurred in  the insertStoryViewer() final method:");
+        }
+        return rowsAffected;
+    }
+
+    //select count(*) from storyviewers where storyId=4 and TIMESTAMPDIFF(HOUR, viewTime,now())< 24;
+    /**
+     * get a storyviewer by storyId
+     * @param storyId the storyId
+     * @return storyviewer based on the id
+     */
+    public List<StoryViewers> getViewersByStoryId(int storyId){
+        List<StoryViewers> storyViewers = new ArrayList<>();
+        try{
+            con = getConnection();
+
+            String query = "select * from storyviewers where storyId=? and TIMESTAMPDIFF(HOUR, viewTime,now())< 24 order by viewTime desc";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, storyId);
+            rs = ps.executeQuery();
+
+            while(rs.next()){
+                storyViewers.add(new StoryViewers(
+                        rs.getInt("storyId"),
+                        rs.getInt("viewerId"),
+                        rs.getTimestamp("viewTime").toLocalDateTime()
+                ));
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Exception occurred in  the getViewersByStoryID() method: " + e.getMessage());
+        }
+        finally {
+            freeConnection("Exception occurred in  the getViewersByStoryID() final method:");
+        }
+        return storyViewers;
+    }
+
+    public int countViewers(int storyId){
+       int count=-1;
+        try{
+            con = getConnection();
+
+            String query = "select count(*) from storyviewers where storyId=? and TIMESTAMPDIFF(HOUR, viewTime,now())< 24";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, storyId);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                   count=     rs.getInt("count(*)");
+            }
+        }
+        catch (SQLException e){
+            System.out.println("Exception occurred in  the countViewers() method: " + e.getMessage());
+        }
+        finally {
+            freeConnection("Exception occurred in  the countViewers() final method:");
+        }
+        return count;
     }
 
     /**

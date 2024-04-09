@@ -448,12 +448,15 @@
 
 
         </div>
-        <input type="file" id="statusFile" onchange=""  accept="image/png, image/jpeg, image/jpg, video/mp4, video/x-m4v">
-        <input type="text" id="statusDescription">
-        <button onclick="uploadStatus()">Upload</button>
+
         <!-- stories-list -->
-        <div class="storiesList" id="storiesList">
-            <div class="block" onclick="seeYourStories()">
+        <div class="storiesList">
+
+            <input type="file" id="statusFile" onchange=""  accept="image/png, image/jpeg, image/jpg, video/mp4, video/x-m4v">
+            <input type="text" id="statusDescription">
+            <button onclick="uploadStatus()">Upload</button>
+
+            <div class="block" onclick="seeYourStories();myStories()">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
                 </div>
@@ -464,6 +467,8 @@
                 </div>
             </div>
 
+
+            <div id="storiesList">
             <div class="block" onclick="openStoryView(['img/pattern.jpg', 'img/phones.png', 'img/picture1.jpg', 'img/picture2.jpg'])">
                 <div class="imgbox">
                     <img src="img/profile.jpg" alt="" class="cover">
@@ -506,6 +511,7 @@
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </div>
 
@@ -575,13 +581,24 @@
         </div>
     </div>
 
-    <div class="leftYourStory">
+    <div class="leftYourStory" id="leftYourStory">
         <div class="profile-header">
             <ion-icon name="arrow-back-outline" onclick="seeChatList()"></ion-icon>
             <h4>my stories</h4>
         </div>
-        <div class="yourList">
-            <div class="yourStoryList">
+        <div class="yourList" id="yourList">
+            <div class="yourStoryList" id="yourStoryList">
+                <div class="block">
+                    <div class="imgbox">
+                        <img src="img/profile.jpg" alt="" class="cover">
+                    </div>
+                    <div class="details">
+                        <div class="listhead">
+                            <h4>2 views</h4>
+                            <p class="time">12:00 AM</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="block">
                     <div class="imgbox">
                         <img src="img/profile.jpg" alt="" class="cover">
@@ -637,7 +654,6 @@
     var chatBoxScroll = document.getElementById("chatbox");
     var chatBoxScrollHeight = 0;
     var groupSuggestions = [];
-    var storyMedia=[];
     setInterval(refreshMessages, 2000);
     setInterval(getChatList, 2000);
 
@@ -1356,6 +1372,7 @@
                  data: {action: "getStoriesList"},
                  success: function (data) {
                      var storiesList = JSON.parse(data);
+                     list.innerHTML="";
                      for (var i = 0; i < storiesList.length; i++) {
                       list.innerHTML += "<div class='block' onclick='getStories("+storiesList[i][0] +")'><div class='imgbox'> <img src='profilePictures/ "+storiesList[i][2]+"' alt='' class='cover'> </div> <div class='details'> <div class='listhead'> <h4>"+storiesList[i][1]+"</h4> <p class='time'>"+storiesList[i][4]+"</p> </div> <div class='message-p'> <p>"+storiesList[i][5]+"</p> </div> </div> </div>"
                      }
@@ -1403,6 +1420,7 @@
                  body: formData
              });
              file.value = "";
+             document.getElementById("statusDescription").value="";
          }
      }
 

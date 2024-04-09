@@ -198,6 +198,12 @@ public class Controller extends HttpServlet {
                 case "getStories":
                     getStories(request, response);
                     break;
+                case "viewStory":
+                    viewStory(request, response);
+                    break;
+                case "getMyStories":
+                    getMyStories(request, response);
+                    break;
             }
         }
 
@@ -1298,8 +1304,8 @@ public class Controller extends HttpServlet {
                 }
                 if (!put) {
                     if (stories.size() > 0 || users.size() > 0) {
-                        stories.add(stories.size() - 1, allStories.get(0));
-                        users.add(users.size() - 1, usersDao.getUserById(ibp.getUserId()));
+                        stories.add( allStories.get(0));
+                        users.add( usersDao.getUserById(ibp.getUserId()));
                     } else {
                         stories.add(0, allStories.get(0));
                         users.add(0, usersDao.getUserById(ibp.getUserId()));
@@ -1308,9 +1314,8 @@ public class Controller extends HttpServlet {
 
             }
         }
-        System.out.println(stories);
 
-        ArrayList<String[]> allUsers = new ArrayList<>();
+        ArrayList<String[]> allUsers = new ArrayList();
         int trackUser = 0;
         //transform to json
         for (Users u : users) {
@@ -1375,6 +1380,49 @@ public class Controller extends HttpServlet {
         } else {
             System.out.println("couldn't upload invalid extension");
         }
+    }
+    public void viewStory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int storyId = Integer.parseInt(request.getParameter("storyId"));
+        StoryViewersDao storyViewersDao=new StoryViewersDao( "gossip");
+        StoryViewers storyViewers=storyViewersDao.getViewersByStatusViewer(storyId,user.getUserId());
+        if(storyViewers==null) {
+            storyViewersDao.insertStoryViewer(storyId, user.getUserId());
+            System.out.println("viewed story");
+        }
+    }
+    public void getMyStories(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        StoriesDao storiesDao = new StoriesDao("gossip");
+        StoryViewersDao storyViewersDao = new StoryViewersDao("gossip");
+        List<Stories> stories = storiesDao.getAllStoriesByUserId(user.getUserId());
+        UsersDao usersDao= new UsersDao("gossip");
+        ArrayList<String[]> allStories = new ArrayList();
+        ObjectMapper objectMapper = new ObjectMapper();
+        for (Stories story : stories) {
+            String[] s = new String[6];
+            s[0] = story.getStoryId() + "";
+            s[1] = story.getStoryType() + "";
+            s[2] = story.getStory();
+            s[3] = story.getStoryDescription();
+            s[4] = story.getDateTime().toString();
+            /*List <StoryViewers> storyViewers= storyViewersDao.getViewersByStoryId(story.getStoryId());
+            ArrayList<String>  userViewers= new ArrayList();
+            ArrayList<String>  profilePics= new ArrayList();
+            for(StoryViewers viewers: storyViewers){
+                Users u= usersDao.getUserById(viewers.getViewId());
+                userViewers.add(u.getUserName());
+                profilePics.add(u.getProfilePicture());
+            }
+            s[5]=userViewers.toString();
+            s[6]=profilePics.toString();*/
+            s[5]=storyViewersDao.countViewers(story.getStoryId())+ "";
+            allStories.add(s);
+        }
+        String jsonString = objectMapper.writeValueAsString(allStories);
+        response.getWriter().write(jsonString);
     }
 }
 

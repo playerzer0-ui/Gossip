@@ -3,44 +3,45 @@ var imgInp = document.getElementById("imgInp");
 var groupProfilePic = document.getElementById("groupProfilePic");
 var currentIndex = 0;
 var images = [];
+var stories = [];
 
-function seeProfile(){
-    $( ".left" ).css( "z-index", "1" );
-    $( ".leftUpdate" ).css( "z-index", "1" );
-    $( ".leftSide" ).css( "z-index", "3" );
-    $( ".right" ).css( "z-index", "2" );
+function seeProfile() {
+    $(".left").css("z-index", "1");
+    $(".leftUpdate").css("z-index", "1");
+    $(".leftSide").css("z-index", "3");
+    $(".right").css("z-index", "2");
 }
 
-function seeChatList(test){
-    $( ".left" ).css( "z-index", "3" );
-    $( ".chatlist" ).css( "z-index", "2" );
-    $( ".storiesList" ).css( "z-index", "1" );
-    $( ".search-chat" ).css( "z-index", "2" );
-    $( ".leftSide" ).css( "z-index", "1" );
-    $( ".leftYourStory" ).css( "z-index", "1" );
-    $( ".right" ).css( "z-index", "2" );
+function seeChatList(test) {
+    $(".left").css("z-index", "3");
+    $(".chatlist").css("z-index", "2");
+    $(".storiesList").css("z-index", "1");
+    $(".search-chat").css("z-index", "2");
+    $(".leftSide").css("z-index", "1");
+    $(".leftYourStory").css("z-index", "1");
+    $(".right").css("z-index", "2");
     closeInbox();
 }
 
-function seeStories(){
-    $( ".storiesList" ).css( "z-index", "3" );
-    $( ".search-chat" ).css( "z-index", "1" );
-    $( ".chatlist" ).css( "z-index", "1" );
-    $( ".right" ).css( "z-index", "1" );
+function seeStories() {
+    $(".storiesList").css("z-index", "3");
+    $(".search-chat").css("z-index", "1");
+    $(".chatlist").css("z-index", "1");
+    $(".right").css("z-index", "1");
 }
 
-function seeYourStories(){
-    $( ".leftYourStory" ).css( "z-index", "3" );
-    $( ".left" ).css( "z-index", "1" );
-    $( ".leftSide" ).css( "z-index", "1" );
-    $( ".right" ).css( "z-index", "1" );
+function seeYourStories() {
+    $(".leftYourStory").css("z-index", "3");
+    $(".left").css("z-index", "1");
+    $(".leftSide").css("z-index", "1");
+    $(".right").css("z-index", "1");
 }
 
-function seeProfileUpdate(){
-    $( ".left" ).css( "z-index", "1" );
-    $( ".leftUpdate" ).css( "z-index", "3" );
-    $( ".leftSide" ).css( "z-index", "1" );
-    $( ".right" ).css( "z-index", "2" );
+function seeProfileUpdate() {
+    $(".left").css("z-index", "1");
+    $(".leftUpdate").css("z-index", "3");
+    $(".leftSide").css("z-index", "1");
+    $(".right").css("z-index", "2");
 }
 
 function openFileInput() {
@@ -48,7 +49,7 @@ function openFileInput() {
     document.getElementById('msgFile').click();
 }
 
-function openProfileInput(){
+function openProfileInput() {
     document.getElementById('newProfilePic').click();
 }
 
@@ -92,14 +93,13 @@ function seeChatMenu() {
         var dropdown = $(".drop-menu-chat");
         var icon = $(".chat-menu");
 
-        if(inboxType === 1){
+        if (inboxType === 1) {
             dropdown.html("<ul>" +
                 "<a href='controller?action=block_user'><li>block user</li></a>" +
                 "<li onclick='openForm()'>report user</li>" +
                 "<a href='controller?action=leave_chat'><li>leave chat</li></a>" +
                 "</ul>");
-        }
-        else{
+        } else {
             dropdown.html("<ul>" +
                 "<li onclick='openGroupPage()'>invite member</li>" +
                 "<li>edit group</li>" +
@@ -132,17 +132,17 @@ imgInp.onchange = () => {
     }
 }
 
-function seeMessage(type){
-    $( ".left" ).css( "z-index", "2" );
-    $( ".leftSide" ).css( "z-index", "1" );
-    $( ".right" ).css( "z-index", "3" );
+function seeMessage(type) {
+    $(".left").css("z-index", "2");
+    $(".leftSide").css("z-index", "1");
+    $(".right").css("z-index", "3");
 
     inboxType = type;
 
     visibleMessage();
 }
 
-function visibleMessage(){
+function visibleMessage() {
     $("#chat-hide").css("visibility", "visible");
     $(".chatbox").css("visibility", "visible");
     $(".chatbox-input").css("visibility", "visible");
@@ -159,11 +159,11 @@ function checkImage(clickedDiv) {
     document.querySelector('.zoom').style.display = 'flex';
 }
 
-function openForm(){
+function openForm() {
     document.querySelector('.report-page').style.display = 'flex';
 }
 
-function openCreateGroupPage(){
+function openCreateGroupPage() {
     document.querySelector('.create-group-page').style.display = 'flex';
 }
 
@@ -171,28 +171,29 @@ function closeReport() {
     document.querySelector('.report-page').style.display = 'none';
 }
 
-function openStoryView(imagesList){
+function openStoryView(imagesList) {
     const storyImage = document.getElementById('storyImage');
     images = imagesList;
     storyImage.src = images[0];
+    viewStory(0);
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML += "<div class='gray-bar'></div>";
     bars[1].innerHTML += "<div class='loading-bar'></div>";
 
-    for(let i = 1; i < images.length; i++){
+    for (let i = 1; i < images.length; i++) {
         bars[0].innerHTML += "<div class='gray-bar'></div>";
         bars[1].innerHTML += "<div class='loading-bar' style='visibility: hidden;'></div>";
     }
     document.querySelector('.storyview').style.display = 'flex';
 }
 
-function closeStoryView(){
+function closeStoryView() {
     currentIndex = 0;
     document.querySelector('.storyview').style.display = 'none';
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML = "";
     bars[1].innerHTML = "";
-    images=[];
+    images = [];
 }
 
 function closeZoom() {
@@ -207,7 +208,7 @@ function switchImageLeft() {
     const storyImage = document.getElementById('storyImage');
     let loadingbars = document.querySelectorAll(".loading-bar");
 
-    if(currentIndex - 1 >= 0){
+    if (currentIndex - 1 >= 0) {
         loadingbars[currentIndex].style.visibility = "hidden";
         currentIndex--;
         storyImage.src = images[currentIndex];
@@ -218,31 +219,73 @@ function switchImageRight() {
     const storyImage = document.getElementById('storyImage');
     let loadingbars = document.querySelectorAll(".loading-bar");
 
-    if(currentIndex + 1 < images.length){
+    if (currentIndex + 1 < images.length) {
         currentIndex++;
         loadingbars[currentIndex].style.visibility = "visible";
         storyImage.src = images[currentIndex];
+        viewStory(currentIndex);
     }
 }
 
-function getStories(id){
-    alert("hey"  + id);
+function getStories(id) {
     $(document).ready(function () {
         $.ajax({
             url: "controller",
             type: 'post',
-            data: {action: "getStories", userId:id},
+            data: {action: "getStories", userId: id},
             success: function (data) {
-                images=[]
-                var stories = JSON.parse(data);
+                images = []
+                stories = JSON.parse(data);
                 for (var i = 0; i < stories.length; i++) {
-                    images[i]="stories/"+stories[i][2];
+                    images[i] = "stories/" + stories[i][2];
                 }
-             openStoryView(images);
+                openStoryView(images);
             },
             error: function () {
                 alert("Error with ajax");
             }
         });
     });
+}
+
+function viewStory(index) {
+    var storyId = stories[index][0];
+    $(document).ready(function () {
+        $.ajax({
+            url: "controller",
+            type: 'post',
+            data: {action: "viewStory", storyId: storyId},
+            success: function (data) {
+
+            },
+            error: function () {
+                alert("Error with ajax");
+            }
+        });
+    });
+}
+
+function myStories() {
+    alert("in");
+    var yourStoryList = document.getElementById('yourStoryList');
+    $(document).ready(function () {
+        $.ajax({
+            url: "controller",
+            type: 'post',
+            data: {action: "getMyStories"},
+            success: function (data) {
+               // yourStoryList.innerHTML = "";
+                var myStories = JSON.parse(data);
+                for (var i = 0; i < myStories.length; i++) {
+                    if (myStories[i][1] == 1) {
+                        yourStoryList.innerHTML += "<div className='block'> <div className='imgbox'> <img src='stories/"+myStories[i][2]+"' alt='' className='cover'> </div> <div className='details'> <div className='listhead'> <h4>" + myStories[i][5] + "</h4> <p className='time'>" + myStories[i][4] + "</p> </div> </div> </div>";
+                    }
+                }
+            },
+            error: function () {
+                alert("Error with ajax");
+            }
+        });
+    });
+
 }
