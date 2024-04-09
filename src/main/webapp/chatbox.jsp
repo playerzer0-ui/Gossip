@@ -577,17 +577,21 @@
         <div class="profile-header">
             <ion-icon name="arrow-back-outline" onclick="seeChatList()"></ion-icon>
             <h4>my stories</h4>
+            <button>add story</button>
         </div>
         <div class="yourList">
-            <div class="yourStoryList">
+            <div class="yourStoryList" onclick="openStoryView()">
                 <div class="block">
                     <div class="imgbox">
                         <img src="img/profile.jpg" alt="" class="cover">
                     </div>
                     <div class="details">
                         <div class="listhead">
-                            <h4>2 views</h4>
-                            <p class="time">12:00 AM</p>
+                            <div>
+                                <h4>2 views</h4>
+                                <p class="time">12:00 AM</p>
+                            </div>
+                            <ion-icon name="close-outline"></ion-icon>
                         </div>
                     </div>
                 </div>

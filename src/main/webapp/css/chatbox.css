@@ -598,6 +598,14 @@ body {
     color: #FFEEAA;
 }
 
+.listhead div {
+    flex-direction: column;
+}
+
+.listhead ion-icon {
+    font-size: 2.8em;
+}
+
 .message-p {
     display: flex;
     justify-content: space-between;
