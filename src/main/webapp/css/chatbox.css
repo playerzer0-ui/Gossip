@@ -458,7 +458,7 @@ body {
     background-color: #720455;
     align-items: center;
     padding: 0 15px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .search-chat div {
@@ -485,7 +485,7 @@ body {
 }
 
 #suggestions {
-    z-index: 5;
+    /*z-index: 5;*/
     background-color: white;
     position: absolute;
     bottom: -80px;

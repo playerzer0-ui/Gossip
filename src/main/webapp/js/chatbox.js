@@ -15,7 +15,7 @@ function seeChatList(test){
     $( ".left" ).css( "z-index", "3" );
     $( ".chatlist" ).css( "z-index", "2" );
     $( ".storiesList" ).css( "z-index", "1" );
-    $( ".search-chat" ).css( "z-index", "2" );
+    $( ".search-chat" ).css( "z-index", "3" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".leftYourStory" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
