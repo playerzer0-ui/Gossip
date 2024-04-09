@@ -267,7 +267,6 @@ function viewStory(index) {
 }
 
 function myStories() {
-    alert("in");
     var yourStoryList = document.getElementById('yourStoryList');
     $(document).ready(function () {
         $.ajax({
