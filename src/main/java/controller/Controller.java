@@ -1081,10 +1081,10 @@ public class Controller extends HttpServlet {
         Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
         if (otherUser.getOnline() == 1) {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
         } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
         }
 
         response.getWriter().write(header);
@@ -1257,7 +1257,7 @@ public class Controller extends HttpServlet {
         InboxDao inboxDao = new InboxDao("gossip");
         InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
-        if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() != inbox.getAdminId()) {
+        if (inbox.getInboxType() == 2 || inbox.getInboxType() == 1 && user.getUserId() != inbox.getAdminId()) {
             ibpDao.deleteInboxParticipant(inboxId, userId);
             System.out.println("leave group");
         }
