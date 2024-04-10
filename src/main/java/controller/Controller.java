@@ -166,6 +166,9 @@ public class Controller extends HttpServlet {
                     suspendUser(request, response);
                     response.sendRedirect("reportPage.jsp");
                     break;
+                case "blockUser":
+                    blockUser(request, response);
+                    break;
                 case "inviteGroupMember":
                     inviteGroupMember(request, response);
                     break;
@@ -1081,10 +1084,10 @@ public class Controller extends HttpServlet {
         Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
         if (otherUser.getOnline() == 1) {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=blockUser'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
         } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=blockUser'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
         }
 
         response.getWriter().write(header);
@@ -1153,6 +1156,18 @@ public class Controller extends HttpServlet {
         } else if (suspendState == 0) {
             u.setSuspended(0);
             usersDao.updateUser(u);
+        }
+    }
+
+    public void blockUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        int blockId = Integer.parseInt(request.getParameter("blockId"));
+        boolean block = true;
+        if (!block) {
+            blockedusersDao.addBlockUser(userId, blockId);
+        } else {
+            blockedusersDao.deleteBlockUser(blockId);
         }
     }
 
