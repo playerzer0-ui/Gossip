@@ -238,7 +238,7 @@ function getStories(id) {
                 images = []
                 stories = JSON.parse(data);
                 for (var i = 0; i < stories.length; i++) {
-                    images[i] = "stories/" + stories[i][2];
+                    images[i] = "../stories/" + stories[i][2];
                 }
                 openStoryView(images);
             },
@@ -278,7 +278,16 @@ function myStories() {
                 var myStories = JSON.parse(data);
                 for (var i = 0; i < myStories.length; i++) {
                     if (myStories[i][1] == 1) {
-                        yourStoryList.innerHTML += "<div className='block'> <div className='imgbox'> <img src='stories/"+myStories[i][2]+"' alt='' className='cover'> </div> <div className='details'> <div className='listhead'> <h4>" + myStories[i][5] + "</h4> <p className='time'>" + myStories[i][4] + "</p> </div> </div> </div>";
+                        yourStoryList.innerHTML += "<div class='block'> " +
+                            "<div class='imgbox'> " +
+                            "<img src='stories/"+myStories[i][2]+"' alt='' class='cover'> " +
+                            "</div> " +
+                            "<div class='details'> " +
+                            "<div class='listhead'>" +
+                            "<div><h4>" + myStories[i][5] + " views</h4> <p class='time'>" + myStories[i][4] + "</p></div> " +
+                            "<ion-icon name='close-outline'></ion-icon></div> " +
+                            "</div>" +
+                            " </div>";
                     }
                 }
             },
