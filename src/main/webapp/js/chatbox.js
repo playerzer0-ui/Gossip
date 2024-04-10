@@ -187,6 +187,20 @@ function openStoryView(imagesList){
     }
     document.querySelector('.storyview').style.display = 'flex';
 }
+function openMyStoryView(imagesList){
+    const storyImage = document.getElementById('storyImage');
+    images = imagesList;
+    storyImage.src = images[0];
+    let bars = document.querySelectorAll(".bars");
+    bars[0].innerHTML += "<div class='gray-bar'></div>";
+    bars[1].innerHTML += "<div class='loading-bar'></div>";
+
+    for(let i = 1; i < images.length; i++){
+        bars[0].innerHTML += "<div class='gray-bar'></div>";
+        bars[1].innerHTML += "<div class='loading-bar' style='visibility: hidden;'></div>";
+    }
+    document.querySelector('.storyview').style.display = 'flex';
+}
 
 function closeStoryView(){
     currentIndex = 0;
@@ -238,7 +252,7 @@ function getStories(id) {
                 images = []
                 stories = JSON.parse(data);
                 for (var i = 0; i < stories.length; i++) {
-                    images[i] = "../stories/" + stories[i][2];
+                    images[i] = "stories/" + stories[i][2];
                 }
                 openStoryView(images);
             },
@@ -266,6 +280,27 @@ function viewStory(index) {
     });
 }
 
+function viewMyStory(storyId) {
+    alert("in");
+    $(document).ready(function () {
+        $.ajax({
+            url: "controller",
+            type: 'post',
+            data: {action: "viewMyStory", storyId: storyId},
+            success: function (data) {
+                var storyDetails = JSON.parse(data);
+                var story =[];
+                story[0]="stories/" +storyDetails[1];
+                openMyStoryView(story);
+                alert("success");
+            },
+            error: function () {
+                alert("Error with ajax");
+            }
+        });
+    });
+}
+
 function myStories() {
     var yourStoryList = document.getElementById('yourStoryList');
     $(document).ready(function () {
@@ -274,11 +309,11 @@ function myStories() {
             type: 'post',
             data: {action: "getMyStories"},
             success: function (data) {
-               // yourStoryList.innerHTML = "";
+                yourStoryList.innerHTML = "";
                 var myStories = JSON.parse(data);
                 for (var i = 0; i < myStories.length; i++) {
                     if (myStories[i][1] == 1) {
-                        yourStoryList.innerHTML += "<div class='block'> " +
+                        yourStoryList.innerHTML += "<div class='block' onclick='viewMyStory("+myStories[i][0]+")'> " +
                             "<div class='imgbox'> " +
                             "<img src='stories/"+myStories[i][2]+"' alt='' class='cover'> " +
                             "</div> " +

@@ -1374,7 +1374,7 @@
                      var storiesList = JSON.parse(data);
                      list.innerHTML="";
                      for (var i = 0; i < storiesList.length; i++) {
-                      list.innerHTML += "<div class='block' onclick='getStories("+storiesList[i][0] +")'><div class='imgbox'> <img src='profilePictures/ "+storiesList[i][2]+"' alt='' class='cover'> </div> <div class='details'> <div class='listhead'> <h4>"+storiesList[i][1]+"</h4> <p class='time'>"+storiesList[i][4]+"</p> </div> <div class='message-p'> <p>"+storiesList[i][5]+"</p> </div> </div> </div>"
+                      list.innerHTML += "<div class='block' onclick='getStories("+storiesList[i][0] +")'><div class='imgbox'> <img src='profilePictures/"+storiesList[i][2]+"' alt='' class='cover'> </div> <div class='details'> <div class='listhead'> <h4>"+storiesList[i][1]+"</h4> <p class='time'>"+storiesList[i][4]+"</p> </div> <div class='message-p'> <p>"+storiesList[i][5]+"</p> </div> </div> </div>"
                      }
 
                  },
