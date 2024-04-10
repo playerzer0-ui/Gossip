@@ -178,6 +178,9 @@ public class Controller extends HttpServlet {
                 case "removeGroupMember":
                     removeGroupMember(request, response);
                     break;
+                case "leaveGroup":
+                    leaveGroup(request, response);
+                    break;
                 case "createGroupChat":
                     try {
                         createGroupChat(request, response);
@@ -1243,6 +1246,20 @@ public class Controller extends HttpServlet {
         if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() == inbox.getAdminId()) {
             ibpDao.deleteInboxParticipant(inboxId, userId);
             System.out.println("removed group member");
+        }
+    }
+
+    public void leaveGroup(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() != inbox.getAdminId()) {
+            ibpDao.deleteInboxParticipant(inboxId, userId);
+            System.out.println("leave group");
         }
     }
 
