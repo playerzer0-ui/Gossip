@@ -95,7 +95,7 @@ function seeChatMenu() {
 
         if(inboxType === 1){
             dropdown.html("<ul>" +
-                "<a href='controller?action=blockUser'><li>block user</li></a>" +
+                "<li onclick='blockUser()'>block user</li>" +
                 "<li onclick='openForm()'>report user</li>" +
                 "<li onclick='leaveGroup()'>leave chat</li>" +
                 "</ul>");

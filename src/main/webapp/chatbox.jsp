@@ -1341,6 +1341,22 @@
         });
     }
 
+    function blockUser(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "blockUser", "inboxId": mainInboxId},
+                success: function (data) {
+
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
     function closeCreateGroupPage() {
         document.querySelector('.create-group-page').style.display = 'none';
     }

@@ -1160,15 +1160,20 @@ public class Controller extends HttpServlet {
     }
 
     public void blockUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
         BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
-        int userId = Integer.parseInt(request.getParameter("userId"));
-        int blockId = Integer.parseInt(request.getParameter("blockId"));
-        boolean block = true;
-        if (!block) {
-            blockedusersDao.addBlockUser(userId, blockId);
-        } else {
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+       // int blockId = Integer.parseInt(request.getParameter("blockId"));
+
+        InboxParticipants ibParticipant = ibpDao.getOtherInboxParticipant(inboxId, user.getUserId());
+      /*  boolean block = true;
+        if (!block) {*/
+            blockedusersDao.addBlockUser(user.getUserId(), ibParticipant.getUserId());
+       /* } else {
             blockedusersDao.deleteBlockUser(blockId);
-        }
+        }*/
     }
 
     public void inviteGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {
