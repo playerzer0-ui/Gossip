@@ -1,14 +1,8 @@
-<%@ page import="business.Users" %>
-<%@ page import="daos.InboxParticipantsDao" %>
-<%@ page import="business.InboxParticipants" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="daos.InboxDao" %>
-<%@ page import="daos.MessageDao" %>
-<%@ page import="business.Inbox" %>
-<%@ page import="business.Message" %>
-<%@ page import="daos.UsersDao" %>
 <%@ page import="miscellaneous.Miscellaneous" %>
 <%@ page import="miscellaneous.Aes" %>
+<%@ page import="business.*" %>
+<%@ page import="daos.*" %>
 <%Users user = (Users) session.getAttribute("user");%>
 <%
     String msg = (String) session.getAttribute("msg");
@@ -160,6 +154,24 @@
                 Inbox myInbox = null;
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+                BlockedusersDao blockedusersDao= new BlockedusersDao("gossip");
+                //filtering blockedUsers
+                ArrayList <Blockedusers> blockedusers=blockedusersDao.getBlockedUsers(user.getUserId());
+                ArrayList<InboxParticipants> filteredUsers = new ArrayList();
+                for(InboxParticipants ibp: Ibps){
+                    InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
+                    boolean add=true;
+                    for(Blockedusers b: blockedusers){
+                        if(otherIbp.getUserId()==b.getUserId()){
+                            add=false;
+                            break;
+                        }
+                    }
+                    if(add==true){
+                        filteredUsers.add(ibp);
+                    }
+                }
+                Ibps=filteredUsers;
                 //loop through inboxparticipants
                 for (InboxParticipants ibps : Ibps) {
                     myInbox = inboxDao.getInbox(ibps.getInboxId());

@@ -548,6 +548,23 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         //gets all the inboxParticipants for that particular user
         ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+        BlockedusersDao blockedusersDao= new BlockedusersDao("gossip");
+        ArrayList <Blockedusers> blockedusers=blockedusersDao.getBlockedUsers(user.getUserId());
+        ArrayList<InboxParticipants> filteredUsers = new ArrayList();
+        for(InboxParticipants ibp: Ibps){
+            InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
+            boolean add=true;
+            for(Blockedusers b: blockedusers){
+                if(otherIbp.getUserId()==b.getUserId()){
+                    add=false;
+                    break;
+                }
+            }
+            if(add==true){
+                filteredUsers.add(ibp);
+            }
+        }
+        Ibps=filteredUsers;
         Aes aes = new Aes();
         String chatlist = "";
         //loop through inboxparticipants
@@ -1168,12 +1185,13 @@ public class Controller extends HttpServlet {
        // int blockId = Integer.parseInt(request.getParameter("blockId"));
 
         InboxParticipants ibParticipant = ibpDao.getOtherInboxParticipant(inboxId, user.getUserId());
-      /*  boolean block = true;
-        if (!block) {*/
+//        blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId());
+//        boolean block = true;
+        if (blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId()) == null){
             blockedusersDao.addBlockUser(user.getUserId(), ibParticipant.getUserId());
-       /* } else {
-            blockedusersDao.deleteBlockUser(blockId);
-        }*/
+       } else {
+            System.out.println("User already blocked");
+        }
     }
 
     public void inviteGroupMember(HttpServletRequest request, HttpServletResponse response) throws IOException {

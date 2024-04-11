@@ -1,5 +1,6 @@
 package daos;
 
+import business.Blockedusers;
 import business.Reports;
 
 import java.time.LocalDateTime;
@@ -26,5 +27,5 @@ public interface BlockedusersDaoInterface {
      */
     public int deleteBlockUser (int blockedId);
 
-
+    public Blockedusers checkBlock (int userId, int blockedId);
 }
