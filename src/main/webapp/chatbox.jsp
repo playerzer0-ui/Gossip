@@ -1330,7 +1330,7 @@
             $.ajax({
                 url: "controller",
                 type: 'post',
-                data: {action: "leaveGroup", "userId": userId, "inboxId": mainInboxId},
+                data: {action: "leaveGroup", "inboxId": mainInboxId},
                 success: function (data) {
                     getGroupMembers();
                 },

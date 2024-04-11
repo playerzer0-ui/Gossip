@@ -97,14 +97,14 @@ function seeChatMenu() {
             dropdown.html("<ul>" +
                 "<a href='controller?action=blockUser'><li>block user</li></a>" +
                 "<li onclick='openForm()'>report user</li>" +
-                "<li onclick='leaveGroup(userId)'>leave chat</li>" +
+                "<li onclick='leaveGroup()'>leave chat</li>" +
                 "</ul>");
         }
         else{
             dropdown.html("<ul>" +
                 "<li onclick='openGroupPage()'>invite member</li>" +
                 "<li>edit group</li>" +
-                "<a href='controller?action=leaveGroup'><li>leave chat</li></a>" +
+                "<li onclick='leaveGroup()'>leave group</li>" +
                 "</ul>");
         }
 

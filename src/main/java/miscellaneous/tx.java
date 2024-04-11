@@ -2,9 +2,11 @@ package miscellaneous;
 
 import business.InboxParticipants;
 import business.Search;
+import business.StoryViewers;
 import business.Users;
 import daos.InboxParticipantsDao;
 import daos.ReportsDao;
+import daos.StoryViewersDao;
 import daos.UsersDao;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -56,16 +58,20 @@ public class tx {
         jdj.add(0,"A");
         jdj.add(0,"B");
         System.out.println(jdj);*/
-       InboxParticipantsDao inboxParticipantsDao = new InboxParticipantsDao("gossip");
-       ArrayList <InboxParticipants> ibps= inboxParticipantsDao.getAllInbox(1);
-        //System.out.println(ibps);
-        /*for(InboxParticipants ibp: ibps){
-            System.out.println(ibp);
-        }*/
-        ArrayList <Integer> nums= new ArrayList();
-        nums.add(2);
-        nums.add(0,1);
-      //  nums.add(0,-1);
-        System.out.println(nums);
+//       InboxParticipantsDao inboxParticipantsDao = new InboxParticipantsDao("gossip");
+//       ArrayList <InboxParticipants> ibps= inboxParticipantsDao.getAllInbox(1);
+//        //System.out.println(ibps);
+//        /*for(InboxParticipants ibp: ibps){
+//            System.out.println(ibp);
+//        }*/
+//        ArrayList <Integer> nums= new ArrayList();
+//        nums.add(2);
+//        nums.add(0,1);
+//      //  nums.add(0,-1);
+//        System.out.println(nums);
+
+        StoryViewersDao storyViewersDao = new StoryViewersDao("gossip");
+        int x = storyViewersDao.insertStoryViewer(1, 3);
+        System.out.println(x);
     }
 }
