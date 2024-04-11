@@ -1325,6 +1325,22 @@
         });
     }
 
+    function leaveGroup(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "leaveGroup", "userId": userId, "inboxId": mainInboxId},
+                success: function (data) {
+                    getGroupMembers();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
     function closeCreateGroupPage() {
         document.querySelector('.create-group-page').style.display = 'none';
     }

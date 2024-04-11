@@ -1272,7 +1272,7 @@ public class Controller extends HttpServlet {
         InboxDao inboxDao = new InboxDao("gossip");
         InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         Inbox inbox = inboxDao.getInbox(inboxId);
-        if (inbox.getInboxType() == 2 || inbox.getInboxType() == 1 && user.getUserId() != inbox.getAdminId()) {
+        if (inboxId != 0 && inbox.getInboxType() == 2 || inbox.getInboxType() == 1 && user.getUserId() != inbox.getAdminId()) {
             ibpDao.deleteInboxParticipant(inboxId, userId);
             System.out.println("leave group");
         }
