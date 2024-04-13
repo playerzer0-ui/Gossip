@@ -49,7 +49,13 @@
     </div>
     <div class="view-container">
         <ion-icon id="left-arrow" name="chevron-back-outline" onclick="switchImageLeft()"></ion-icon>
-        <img src="" class="story-image" id="storyImage" />
+        <div class="img-or-vid">
+            <img src="" class="story-image" id="storyImage" />
+            <video class="story-video" controls>
+                <source id="storyVideo" src="video/2023-09-30 16-22-05.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
         <ion-icon id="right-arrow" name="chevron-forward-outline" onclick="switchImageRight()"></ion-icon>
     </div>
 

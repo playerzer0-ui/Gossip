@@ -86,6 +86,12 @@ body {
     display: block;
 }
 
+.story-video {
+    width: 15vw;
+    height: auto;
+    display: block;
+}
+
 .zoom img {
     width: 40vw;
     height: auto;
