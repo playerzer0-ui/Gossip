@@ -59,14 +59,14 @@ public class BlockedusersDao extends Dao implements BlockedusersDaoInterface{
         try {
             con = getConnection();
 
-            String query = "Select * from blockedusers where userId=?";
+            String query = "Select * from blockedusers where blockedId=?";
             ps = con.prepareStatement(query);
             ps.setInt(1, userId);
             rs = ps.executeQuery();
 
             while (rs.next()) {
-              Blockedusers blockeduser = new Blockedusers(rs.getInt("userId"),rs.getInt("blockedId"));
-              blockedusers.add(blockeduser);
+                Blockedusers blockeduser = new Blockedusers(rs.getInt("userId"),rs.getInt("blockedId"));
+                blockedusers.add(blockeduser);
             }
 
         } catch (SQLException e) {
@@ -76,7 +76,6 @@ public class BlockedusersDao extends Dao implements BlockedusersDaoInterface{
         }
         return blockedusers;
     }
-
 
     /**
      * deleteBlockUser method able to delete the blocked user' id .
@@ -89,4 +88,29 @@ public class BlockedusersDao extends Dao implements BlockedusersDaoInterface{
     public int deleteBlockUser(int blockedId) {
         return deleteItem(blockedId, "blockedusers", "blockedId");
     }
+
+    @Override
+    public Blockedusers checkBlock(int userId, int blockedId) {
+        Blockedusers bUser = null;
+        try {
+            con = getConnection();
+
+            String query = "Select * from blockedUsers where userId=? and blockedId=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, userId);
+            ps.setInt(2, blockedId);
+            rs = ps.executeQuery();
+
+            if (rs.next()) {
+                bUser = new Blockedusers(rs.getInt("userId"), rs.getInt("blockId"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the checkBlock() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the checkBlock() final method: ");
+        }
+        return bUser;
+    }
+
 }

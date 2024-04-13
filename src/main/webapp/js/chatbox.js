@@ -4,6 +4,7 @@ var groupProfilePic = document.getElementById("groupProfilePic");
 var currentIndex = 0;
 var images = [];
 var stories = [];
+var story;
 
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
@@ -95,16 +96,16 @@ function seeChatMenu() {
 
         if(inboxType === 1){
             dropdown.html("<ul>" +
-                "<a href='controller?action=block_user'><li>block user</li></a>" +
+                "<li onclick='blockUser()'>block user</li>" +
                 "<li onclick='openForm()'>report user</li>" +
-                "<a href='controller?action=leave_chat'><li>leave chat</li></a>" +
+                "<li onclick='leaveGroup()'>leave chat</li>" +
                 "</ul>");
         }
         else{
             dropdown.html("<ul>" +
                 "<li onclick='openGroupPage()'>invite member</li>" +
                 "<li>edit group</li>" +
-                "<li>leave group</li>" +
+                "<li onclick='leaveGroup()'>leave group</li>" +
                 "</ul>");
         }
 
@@ -172,11 +173,43 @@ function closeReport() {
     document.querySelector('.report-page').style.display = 'none';
 }
 
+function checkFileType(fileName) {
+    const fileExtension = fileName.split('.').pop().toLowerCase();
+
+    const imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'bmp'];
+    if (imageExtensions.includes(fileExtension)) {
+        return 'image';
+    }
+
+    const videoExtensions = ['mp4', 'avi', 'mov', 'mkv', 'webm'];
+    if (videoExtensions.includes(fileExtension)) {
+        return 'video';
+    }
+
+    return 'unknown';
+}
+
+function displayImageOrVid(){
+    if(checkFileType(images[currentIndex]) === "image"){
+        document.querySelector(".img-or-vid").innerHTML = '<img src="" class="story-image" id="storyImage" />';
+        story = document.getElementById('storyImage');
+        story.src = images[currentIndex];
+    }
+    else if(checkFileType(images[0]) === "video"){
+        document.querySelector(".img-or-vid").innerHTML = '<video class="story-video" controls>' +
+            '<source id="storyVideo" src="" type="video/mp4">' +
+            'Your browser does not support the video tag.' +
+            '</video>';
+        story = document.getElementById('storyVideo');
+        story.src = images[currentIndex];
+    }
+}
+
 function openStoryView(imagesList){
-    const storyImage = document.getElementById('storyImage');
     images = imagesList;
-    storyImage.src = images[0];
-    viewStory(0);
+    displayImageOrVid();
+
+    viewStory(currentIndex);
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML += "<div class='gray-bar'></div>";
     bars[1].innerHTML += "<div class='loading-bar'></div>";
@@ -188,9 +221,9 @@ function openStoryView(imagesList){
     document.querySelector('.storyview').style.display = 'flex';
 }
 function openMyStoryView(imagesList){
-    const storyImage = document.getElementById('storyImage');
     images = imagesList;
-    storyImage.src = images[0];
+    displayImageOrVid();
+
     let bars = document.querySelectorAll(".bars");
     bars[0].innerHTML += "<div class='gray-bar'></div>";
     bars[1].innerHTML += "<div class='loading-bar'></div>";
@@ -220,24 +253,22 @@ function closeGroupPage() {
 }
 
 function switchImageLeft() {
-    const storyImage = document.getElementById('storyImage');
     let loadingbars = document.querySelectorAll(".loading-bar");
 
     if(currentIndex - 1 >= 0){
         loadingbars[currentIndex].style.visibility = "hidden";
         currentIndex--;
-        storyImage.src = images[currentIndex];
+        displayImageOrVid();
     }
 }
 
 function switchImageRight() {
-    const storyImage = document.getElementById('storyImage');
     let loadingbars = document.querySelectorAll(".loading-bar");
 
     if(currentIndex + 1 < images.length){
         currentIndex++;
         loadingbars[currentIndex].style.visibility = "visible";
-        storyImage.src = images[currentIndex];
+        displayImageOrVid();
         viewStory(currentIndex);
     }
 }
@@ -312,18 +343,16 @@ function myStories() {
                 yourStoryList.innerHTML = "";
                 var myStories = JSON.parse(data);
                 for (var i = 0; i < myStories.length; i++) {
-                    if (myStories[i][1] == 1) {
-                        yourStoryList.innerHTML += "<div class='block' onclick='viewMyStory("+myStories[i][0]+")'> " +
-                            "<div class='imgbox'> " +
-                            "<img src='stories/"+myStories[i][2]+"' alt='' class='cover'> " +
-                            "</div> " +
-                            "<div class='details'> " +
-                            "<div class='listhead'>" +
-                            "<div><h4>" + myStories[i][5] + " views</h4> <p class='time'>" + myStories[i][4] + "</p></div> " +
-                            "<ion-icon name='close-outline'></ion-icon></div> " +
-                            "</div>" +
-                            " </div>";
-                    }
+                    yourStoryList.innerHTML += "<div class='block' onclick='viewMyStory("+myStories[i][0]+")'> " +
+                        "<div class='imgbox'> " +
+                        "<img src='stories/"+myStories[i][2]+"' alt='' class='cover'> " +
+                        "</div> " +
+                        "<div class='details'> " +
+                        "<div class='listhead'>" +
+                        "<div><h4>" + myStories[i][5] + " views</h4> <p class='time'>" + myStories[i][4] + "</p></div> " +
+                        "<ion-icon name='close-outline'></ion-icon></div> " +
+                        "</div>" +
+                        " </div>";
                 }
             },
             error: function () {

@@ -1,14 +1,8 @@
-<%@ page import="business.Users" %>
-<%@ page import="daos.InboxParticipantsDao" %>
-<%@ page import="business.InboxParticipants" %>
 <%@ page import="java.util.ArrayList" %>
-<%@ page import="daos.InboxDao" %>
-<%@ page import="daos.MessageDao" %>
-<%@ page import="business.Inbox" %>
-<%@ page import="business.Message" %>
-<%@ page import="daos.UsersDao" %>
 <%@ page import="miscellaneous.Miscellaneous" %>
 <%@ page import="miscellaneous.Aes" %>
+<%@ page import="business.*" %>
+<%@ page import="daos.*" %>
 <%Users user = (Users) session.getAttribute("user");%>
 <%
     String msg = (String) session.getAttribute("msg");
@@ -55,7 +49,13 @@
     </div>
     <div class="view-container">
         <ion-icon id="left-arrow" name="chevron-back-outline" onclick="switchImageLeft()"></ion-icon>
-        <img src="" class="story-image" id="storyImage" />
+        <div class="img-or-vid">
+            <img src="" class="story-image" id="storyImage" />
+            <video class="story-video" controls>
+                <source id="storyVideo" src="video/2023-09-30 16-22-05.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </div>
         <ion-icon id="right-arrow" name="chevron-forward-outline" onclick="switchImageRight()"></ion-icon>
     </div>
 
@@ -160,6 +160,24 @@
                 Inbox myInbox = null;
                 //gets all the inboxParticipants for that particular user
                 ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+                BlockedusersDao blockedusersDao= new BlockedusersDao("gossip");
+                //filtering blockedUsers
+                ArrayList <Blockedusers> blockedusers=blockedusersDao.getBlockedUsers(user.getUserId());
+                ArrayList<InboxParticipants> filteredUsers = new ArrayList();
+                for(InboxParticipants ibp: Ibps){
+                    InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
+                    boolean add=true;
+                    for(Blockedusers b: blockedusers){
+                        if(otherIbp.getUserId()==b.getUserId()){
+                            add=false;
+                            break;
+                        }
+                    }
+                    if(add==true){
+                        filteredUsers.add(ibp);
+                    }
+                }
+                Ibps=filteredUsers;
                 //loop through inboxparticipants
                 for (InboxParticipants ibps : Ibps) {
                     myInbox = inboxDao.getInbox(ibps.getInboxId());
@@ -1317,6 +1335,38 @@
                 data: {action: "removeGroupMember", "userId": userId, "inboxId": mainInboxId},
                 success: function (data) {
                     getGroupMembers();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
+    function leaveGroup(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "leaveGroup", "inboxId": mainInboxId},
+                success: function (data) {
+                    getGroupMembers();
+                },
+                error: function () {
+                    alert("Error with ajax");
+                }
+            });
+        });
+    }
+
+    function blockUser(userId) {
+        $(document).ready(function () {
+            $.ajax({
+                url: "controller",
+                type: 'post',
+                data: {action: "blockUser", "inboxId": mainInboxId},
+                success: function (data) {
+
                 },
                 error: function () {
                     alert("Error with ajax");

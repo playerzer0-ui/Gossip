@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.3
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 14, 2024 at 09:31 AM
--- Server version: 10.4.24-MariaDB
--- PHP Version: 8.1.4
+-- Generation Time: Apr 11, 2024 at 12:19 PM
+-- Server version: 10.4.28-MariaDB
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -27,7 +27,7 @@ DROP TABLE IF EXISTS `blockedusers`;
 CREATE TABLE `blockedusers` (
                                 `userId` int(11) NOT NULL COMMENT 'the user that did the blocking',
                                 `blockedId` int(11) NOT NULL COMMENT 'the user that was blocked'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `blockedusers`
@@ -51,7 +51,7 @@ CREATE TABLE `inbox` (
                          `groupName` varchar(15) DEFAULT NULL,
                          `groupProfilePicture` varchar(80) DEFAULT NULL,
                          `searchCategory` varchar(1) NOT NULL DEFAULT 'g'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inbox`
@@ -76,7 +76,7 @@ CREATE TABLE `inboxparticipants` (
                                      `unseenMessages` int(3) NOT NULL DEFAULT 0,
                                      `isOpen` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'this signifies if the inbox is currently open',
                                      `timeSent` datetime(6) NOT NULL DEFAULT current_timestamp(6)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `inboxparticipants`
@@ -108,7 +108,7 @@ CREATE TABLE `messages` (
                             `deletedState` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'FALSE(0) for not deleted and TRUE for deleted',
                             `messageKey` int(3) NOT NULL DEFAULT 128,
                             `originalFileName` varchar(80) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `messages`
@@ -147,7 +147,7 @@ CREATE TABLE `reports` (
                            `reportReason` varchar(80) NOT NULL,
                            `reportDate` datetime NOT NULL,
                            `reportStatus` int(11) NOT NULL DEFAULT 1 COMMENT '1 for unsolved(unseen) 2 for solved, 3 for ignored,4 for inreview'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `reports`
@@ -170,7 +170,7 @@ CREATE TABLE `stories` (
                            `storyType` int(1) NOT NULL COMMENT '1 for picture, 2 for video',
                            `dateTime` datetime NOT NULL DEFAULT current_timestamp(),
                            `storyDescription` varchar(80) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `stories`
@@ -189,8 +189,8 @@ DROP TABLE IF EXISTS `storyviewers`;
 CREATE TABLE `storyviewers` (
                                 `storyId` int(11) NOT NULL,
                                 `viewerId` int(11) NOT NULL,
-                                `viewTime` datetime NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                                `viewTime` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `storyviewers`
@@ -219,7 +219,7 @@ CREATE TABLE `users` (
                          `bio` varchar(25) DEFAULT NULL,
                          `online` tinyint(1) NOT NULL DEFAULT 0,
                          `searchCategory` varchar(1) NOT NULL DEFAULT 'u'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`

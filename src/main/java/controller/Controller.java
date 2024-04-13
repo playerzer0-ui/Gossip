@@ -166,6 +166,9 @@ public class Controller extends HttpServlet {
                     suspendUser(request, response);
                     response.sendRedirect("reportPage.jsp");
                     break;
+                case "blockUser":
+                    blockUser(request, response);
+                    break;
                 case "inviteGroupMember":
                     inviteGroupMember(request, response);
                     break;
@@ -177,6 +180,9 @@ public class Controller extends HttpServlet {
                     break;
                 case "removeGroupMember":
                     removeGroupMember(request, response);
+                    break;
+                case "leaveGroup":
+                    leaveGroup(request, response);
                     break;
                 case "createGroupChat":
                     try {
@@ -549,7 +555,7 @@ public class Controller extends HttpServlet {
             InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
             boolean add=true;
             for(Blockedusers b: blockedusers){
-                if(ibp.getUserId()==b.getBlockedId()){
+                if(otherIbp.getUserId()==b.getUserId()){
                     add=false;
                     break;
                 }
@@ -795,14 +801,14 @@ public class Controller extends HttpServlet {
         try (InputStream inputStream = file.getInputStream();
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
-             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName)
-             //FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+             FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
+             FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
         ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                // targetStream.write(buffer, 0, bytesRead);
+                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
@@ -1095,10 +1101,10 @@ public class Controller extends HttpServlet {
         Users otherUser = usersDao.getUserById(userId);
         otherUserId = otherUser.getUserId();
         if (otherUser.getOnline() == 1) {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span>online</span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=blockUser'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
 
         } else {
-            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=block_user'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leave_chat'>  <li>leave chat</li></a></ul>   </div>    </div>";
+            header = "<ion-icon class='return' onclick='seeChatList()' name='arrow-back-outline'></ion-icon> <div class='userimg'><img src='img/" + otherUser.getProfilePicture() + "' alt='profile' class='cover'> </div><h4>" + otherUser.getUserName() + "<br><span></span></h4> %%%  <div class='drop-menu-chat' id='drop-menu-chat'> <ul>  <a href='controller?action=blockUser'> <li>block user</li> </a> <li onclick='openForm()'>report user</li> <a href='controller?action=leaveGroup'>  <li>leave chat</li></a></ul>   </div>    </div>";
         }
 
         response.getWriter().write(header);
@@ -1167,6 +1173,24 @@ public class Controller extends HttpServlet {
         } else if (suspendState == 0) {
             u.setSuspended(0);
             usersDao.updateUser(u);
+        }
+    }
+
+    public void blockUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+       // int blockId = Integer.parseInt(request.getParameter("blockId"));
+
+        InboxParticipants ibParticipant = ibpDao.getOtherInboxParticipant(inboxId, user.getUserId());
+//        blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId());
+//        boolean block = true;
+        if (blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId()) == null){
+            blockedusersDao.addBlockUser(user.getUserId(), ibParticipant.getUserId());
+       } else {
+            System.out.println("User already blocked");
         }
     }
 
@@ -1260,6 +1284,20 @@ public class Controller extends HttpServlet {
         if (inbox != null && inbox.getInboxType() == 2 && user.getUserId() == inbox.getAdminId()) {
             ibpDao.deleteInboxParticipant(inboxId, userId);
             System.out.println("removed group member");
+        }
+    }
+
+    public void leaveGroup(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        int userId = user.getUserId();
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if (inbox.getInboxType() == 2) {
+            ibpDao.deleteInboxParticipant(inboxId, userId);
+            System.out.println("leave group");
         }
     }
 
@@ -1431,8 +1469,16 @@ public class Controller extends HttpServlet {
             s[2] = story.getStory();
             s[3] = story.getStoryDescription();
             s[4] = story.getDateTime().toString();
-
-
+            /*List <StoryViewers> storyViewers= storyViewersDao.getViewersByStoryId(story.getStoryId());
+            ArrayList<String>  userViewers= new ArrayList();
+            ArrayList<String>  profilePics= new ArrayList();
+            for(StoryViewers viewers: storyViewers){
+                Users u= usersDao.getUserById(viewers.getViewId());
+                userViewers.add(u.getUserName());
+                profilePics.add(u.getProfilePicture());
+            }
+            s[5]=userViewers.toString();
+            s[6]=profilePics.toString();*/
             s[5] = storyViewersDao.countViewers(story.getStoryId()) + "";
             allStories.add(s);
         }
