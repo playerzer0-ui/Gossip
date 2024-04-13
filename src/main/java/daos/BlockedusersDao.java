@@ -1,8 +1,12 @@
 package daos;
 
+import business.Blockedusers;
+import business.InboxParticipants;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 public class BlockedusersDao extends Dao implements BlockedusersDaoInterface{
     public BlockedusersDao(String databaseName) {
@@ -43,6 +47,36 @@ public class BlockedusersDao extends Dao implements BlockedusersDaoInterface{
         }
         return rowsAffected;
     }
+
+    /**
+     * gets all BlockedUsers for a particular user
+     *
+     * @param userId, takes in the userId
+     * @return an arrayList of BlockedUsers
+     **/
+    public ArrayList<Blockedusers> getBlockedUsers(int userId) {
+        ArrayList<Blockedusers> blockedusers = new ArrayList();
+        try {
+            con = getConnection();
+
+            String query = "Select * from blockedusers where userId=?";
+            ps = con.prepareStatement(query);
+            ps.setInt(1, userId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+              Blockedusers blockeduser = new Blockedusers(rs.getInt("userId"),rs.getInt("blockedId"));
+              blockedusers.add(blockeduser);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the getBlockedUsers() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the getBlockedUsers() method: ");
+        }
+        return blockedusers;
+    }
+
 
     /**
      * deleteBlockUser method able to delete the blocked user' id .

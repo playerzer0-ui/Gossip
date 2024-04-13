@@ -542,6 +542,23 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         //gets all the inboxParticipants for that particular user
         ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
+        BlockedusersDao blockedusersDao= new BlockedusersDao("gossip");
+        ArrayList <Blockedusers> blockedusers=blockedusersDao.getBlockedUsers(user.getUserId());
+        ArrayList<InboxParticipants> filteredUsers = new ArrayList();
+        for(InboxParticipants ibp: Ibps){
+            InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
+            boolean add=true;
+            for(Blockedusers b: blockedusers){
+                if(ibp.getUserId()==b.getBlockedId()){
+                    add=false;
+                    break;
+                }
+            }
+            if(add==true){
+                filteredUsers.add(ibp);
+            }
+        }
+        Ibps=filteredUsers;
         Aes aes = new Aes();
         String chatlist = "";
         //loop through inboxparticipants
@@ -1414,16 +1431,8 @@ public class Controller extends HttpServlet {
             s[2] = story.getStory();
             s[3] = story.getStoryDescription();
             s[4] = story.getDateTime().toString();
-            /*List <StoryViewers> storyViewers= storyViewersDao.getViewersByStoryId(story.getStoryId());
-            ArrayList<String>  userViewers= new ArrayList();
-            ArrayList<String>  profilePics= new ArrayList();
-            for(StoryViewers viewers: storyViewers){
-                Users u= usersDao.getUserById(viewers.getViewId());
-                userViewers.add(u.getUserName());
-                profilePics.add(u.getProfilePicture());
-            }
-            s[5]=userViewers.toString();
-            s[6]=profilePics.toString();*/
+
+
             s[5] = storyViewersDao.countViewers(story.getStoryId()) + "";
             allStories.add(s);
         }
