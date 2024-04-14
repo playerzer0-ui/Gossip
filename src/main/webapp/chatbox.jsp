@@ -904,10 +904,16 @@
         if (file.value != "") {
             var formData = new FormData();
             var extension = file.value.split(".").pop();
-            formData.append("action", "sendFile");
+            if(mainInboxId === 0 && otherUserId !== 0){
+                formData.append("action", "sendFirstFile");
+                formData.append("userId", otherUserId);
+            }
+            else if(mainInboxId!=0 && otherUserId==0){
+                formData.append("action", "sendFile");
+                formData.append("inboxId", mainInboxId);
+            }
             formData.append("file", file.files[0]);
             formData.append("extension", extension);
-            formData.append("inboxId", mainInboxId);
 
             await fetch('controller', {
                 method: "POST",

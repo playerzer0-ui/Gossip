@@ -331,7 +331,7 @@ function viewMyStory(storyId) {
         });
     });
 }
-
+/**gets your stories list**/
 function myStories() {
     var yourStoryList = document.getElementById('yourStoryList');
     $(document).ready(function () {
