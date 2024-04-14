@@ -100,6 +100,13 @@ public class Controller extends HttpServlet {
                 case "getChatlist":
                     getChatList(request, response);
                     break;
+                case "sendFirstFile":
+                    try {
+                        sendFirstFile(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("register.jsp");
+                    }
+                    break;
                 case "sendFile":
                     try {
                         sendFile(request, response);
@@ -432,6 +439,94 @@ public class Controller extends HttpServlet {
 
     }
 
+
+    public void sendFirstFile(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        Part file = request.getPart("file");
+        String extension = request.getParameter("extension");
+        int otherUserId = Integer.parseInt(request.getParameter("userId"));
+        String originalFileName = file.getSubmittedFileName();
+        String message = generateFileName(user.getUserId(), extension);
+        String tempFile= message;
+        InboxParticipantsDao ibpsDao = new InboxParticipantsDao("gossip");
+        InboxDao inboxDao = new InboxDao("gossip");
+        MessageDao messageDao = new MessageDao("gossip");
+        ArrayList<InboxParticipants> myIbps = ibpsDao.getAllInbox(user.getUserId());
+        ArrayList<InboxParticipants> otherIbps = ibpsDao.getAllInbox(otherUserId);
+        Inbox matchingInbox = null;
+        int messageType = 4;
+        String directory = "fileMessages\\";
+        if (checkVideo(extension) == true) {
+            messageType = 3;
+            directory = "videoMessages\\";
+        }
+        if (checkImage(extension) == true) {
+            messageType = 2;
+            directory = "imageMessages\\";
+        }
+        Aes aes = new Aes();
+        int messageId = -1;
+        try {
+            int key = aes.generateKey();
+            message = aes.encrypt(message, key);
+            originalFileName=aes.encrypt(originalFileName,key);
+            //checking if there is any Inbox that links the 2 users
+            label:
+            for (InboxParticipants Myibps : myIbps) {
+                for (InboxParticipants Otheribps : otherIbps) {
+                    if (Myibps.getInboxId() == Otheribps.getInboxId()) {
+                        Inbox inbox = inboxDao.getInbox(Myibps.getInboxId());
+                        if (inbox.getInboxType() == 1) {
+                            matchingInbox = inbox;
+                            break label;
+                        }
+                    }
+                }
+            }
+            boolean upload = false;
+            upload = uploadFile(file, tempFile, directory);
+            if (upload) {
+                //if a matching inbox was found
+                if (matchingInbox != null) {
+                    //send message
+                    messageId = messageDao.sendMessage2(matchingInbox.getInboxId(), user.getUserId(), message, messageType, key, originalFileName);
+                    InboxParticipants myIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), user.getUserId());
+                    InboxParticipants otherIbp = ibpsDao.getInboxParticipant(matchingInbox.getInboxId(), otherUserId);
+                    Message m = messageDao.getMessage(messageId);
+                    myIbp.setTimeSent(m.getTimeSent());
+                    otherIbp.setTimeSent(m.getTimeSent());
+                    ibpsDao.updateInboxParticipant(myIbp);
+                    ibpsDao.updateInboxParticipant(otherIbp);
+                    //update unseen messages for the other user
+                    ibpsDao.updateUnSeenMessages(matchingInbox.getInboxId(), otherUserId);
+                    //set openState to true
+                    ibpsDao.openInbox(matchingInbox.getInboxId(), user.getUserId(), 1);
+                } else {
+                    // create a new inbox for them
+                    int inboxId = inboxDao.createNormalInbox();
+                    //insert the current user
+                    ibpsDao.insertInboxParticipant(inboxId, user.getUserId());
+                    //insert the other user
+                    ibpsDao.insertInboxParticipant(inboxId, otherUserId);
+                    messageId = messageDao.sendMessage2(inboxId, user.getUserId(), message, messageType, key, originalFileName);
+                    Message m = messageDao.getMessage(messageId);
+                    InboxParticipants myIbp = ibpsDao.getInboxParticipant(inboxId, user.getUserId());
+                    InboxParticipants otherIbp = ibpsDao.getInboxParticipant(inboxId, otherUserId);
+                    myIbp.setTimeSent(m.getTimeSent());
+                    otherIbp.setTimeSent(m.getTimeSent());
+                    ibpsDao.updateInboxParticipant(myIbp);
+                    ibpsDao.updateInboxParticipant(otherIbp);
+                    ibpsDao.updateUnSeenMessages(inboxId, otherUserId);
+                }
+            }
+        } catch (Exception ex) {
+            System.out.println("error occurred when sending message" + ex.getMessage());
+            response.getWriter().write("Sorry error occurred while sending message");
+        }
+
+    }
+
     /**
      * sendMessage command, this allows sending a message to the database
      *
@@ -552,23 +647,23 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         //gets all the inboxParticipants for that particular user
         ArrayList<InboxParticipants> Ibps = ibpDao.getAllInbox(user.getUserId());
-        BlockedusersDao blockedusersDao= new BlockedusersDao("gossip");
-        ArrayList <Blockedusers> blockedusers=blockedusersDao.getBlockedUsers(user.getUserId());
+        BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
+        ArrayList<Blockedusers> blockedusers = blockedusersDao.getBlockedUsers(user.getUserId());
         ArrayList<InboxParticipants> filteredUsers = new ArrayList();
-        for(InboxParticipants ibp: Ibps){
-            InboxParticipants otherIbp=ibpDao.getOtherInboxParticipant(ibp.getInboxId(),user.getUserId());
-            boolean add=true;
-            for(Blockedusers b: blockedusers){
-                if(otherIbp.getUserId()==b.getUserId()){
-                    add=false;
+        for (InboxParticipants ibp : Ibps) {
+            InboxParticipants otherIbp = ibpDao.getOtherInboxParticipant(ibp.getInboxId(), user.getUserId());
+            boolean add = true;
+            for (Blockedusers b : blockedusers) {
+                if (otherIbp.getUserId() == b.getUserId()) {
+                    add = false;
                     break;
                 }
             }
-            if(add==true){
+            if (add == true) {
                 filteredUsers.add(ibp);
             }
         }
-        Ibps=filteredUsers;
+        Ibps = filteredUsers;
         Aes aes = new Aes();
         String chatlist = "";
         //loop through inboxparticipants
@@ -1186,14 +1281,14 @@ public class Controller extends HttpServlet {
         BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
         InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
         int inboxId = Integer.parseInt(request.getParameter("inboxId"));
-       // int blockId = Integer.parseInt(request.getParameter("blockId"));
+        // int blockId = Integer.parseInt(request.getParameter("blockId"));
 
         InboxParticipants ibParticipant = ibpDao.getOtherInboxParticipant(inboxId, user.getUserId());
 //        blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId());
 //        boolean block = true;
-        if (blockedusersDao.checkBlock(user.getUserId(),ibParticipant.getUserId()) == null){
+        if (blockedusersDao.checkBlock(user.getUserId(), ibParticipant.getUserId()) == null) {
             blockedusersDao.addBlockUser(user.getUserId(), ibParticipant.getUserId());
-       } else {
+        } else {
             System.out.println("User already blocked");
         }
     }
