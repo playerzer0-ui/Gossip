@@ -7,12 +7,35 @@ public class Inbox {
     private int inboxType;
     private int adminId;
     private String groupName;
+    private String groupProfilePicture;
+    private String searchCategory;
 
     public Inbox(int inboxId, int inboxType, int adminId, String groupName) {
         this.inboxId = inboxId;
         this.inboxType = inboxType;
         this.adminId = adminId;
         this.groupName = groupName;
+    }
+
+    public Inbox(int inboxId, int inboxType, int adminId, String groupName, String groupProfilePicture, String searchCategory) {
+        this.inboxId = inboxId;
+        this.inboxType = inboxType;
+        this.adminId = adminId;
+        this.groupName = groupName;
+        this.groupProfilePicture = groupProfilePicture;
+        this.searchCategory = searchCategory;
+    }
+
+    public Inbox(int inboxId, int inboxType) {
+        this.inboxId = inboxId;
+        this.inboxType = inboxType;
+    }
+    public Inbox(int inboxId, int inboxType, int adminId, String groupName, String groupProfilePicture) {
+        this.inboxId = inboxId;
+        this.inboxType = inboxType;
+        this.adminId = adminId;
+        this.groupName = groupName;
+        this.groupProfilePicture=groupProfilePicture;
     }
     public Inbox(){
 
@@ -49,6 +72,22 @@ public class Inbox {
         this.groupName = groupName;
     }
 
+    public String getGroupProfilePicture() {
+        return groupProfilePicture;
+    }
+
+    public void setGroupProfilePicture(String groupProfilePicture) {
+        this.groupProfilePicture = groupProfilePicture;
+    }
+
+    public String getSearchCategory() {
+        return searchCategory;
+    }
+
+    public void setSearchCategory(String searchCategory) {
+        this.searchCategory = searchCategory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -69,6 +108,19 @@ public class Inbox {
                 ", inboxType=" + inboxType +
                 ", adminId=" + adminId +
                 ", groupName='" + groupName + '\'' +
+                ", groupProfilePicture='" + groupProfilePicture + '\'' +
+                ", searchCategory='" + searchCategory + '\'' +
                 '}';
+    }
+
+    public boolean updateInbox(Inbox inbox){
+        if(   this.inboxId == inbox.inboxId) {
+            this.inboxType = inbox.getInboxType();
+            this.adminId = inbox.getAdminId();
+            this.groupName = inbox.getGroupName();
+            this.groupProfilePicture = inbox.getGroupProfilePicture();
+            return true;
+        }
+        return false;
     }
 }

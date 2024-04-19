@@ -1,5 +1,6 @@
 package business;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class InboxParticipants {
@@ -8,6 +9,7 @@ public class InboxParticipants {
     private int deletedState;
     private int unseenMessages;
     private int isOpen;
+    private LocalDateTime timeSent;
 
     public InboxParticipants(int userId, int inboxId, int deletedState, int unseenMessages, int isOpen) {
         this.userId = userId;
@@ -15,6 +17,14 @@ public class InboxParticipants {
         this.deletedState = deletedState;
         this.unseenMessages = unseenMessages;
         this.isOpen = isOpen;
+    }
+    public InboxParticipants(int userId, int inboxId, int deletedState, int unseenMessages, int isOpen, LocalDateTime timeSent) {
+        this.userId = userId;
+        this.inboxId = inboxId;
+        this.deletedState = deletedState;
+        this.unseenMessages = unseenMessages;
+        this.isOpen = isOpen;
+        this.timeSent=timeSent;
     }
 
     public int getUserId() {
@@ -57,6 +67,14 @@ public class InboxParticipants {
         this.isOpen = isOpen;
     }
 
+    public LocalDateTime getTimeSent() {
+        return timeSent;
+    }
+
+    public void setTimeSent(LocalDateTime timeSent) {
+        this.timeSent = timeSent;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,6 +96,7 @@ public class InboxParticipants {
                 ", deletedState=" + deletedState +
                 ", unseenMessages=" + unseenMessages +
                 ", isOpen=" + isOpen +
+                ", timeSent=" + timeSent.toString() +
                 '}';
     }
 }

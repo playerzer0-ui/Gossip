@@ -6,7 +6,7 @@ public class Dao {
     protected PreparedStatement ps = null;
     protected ResultSet rs = null;
     private String databaseName;
-    private Connection con;
+    protected Connection con;
 
     public Dao(String databaseName) {
         this.databaseName = databaseName;
@@ -17,16 +17,13 @@ public class Dao {
     }
 
     public Connection getConnection() {
-        // If there is a connection already present in the object, use that
         if (con != null) {
             return con;
         }
-        // Otherwise, create one and return it
         String driver = "com.mysql.cj.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/" + databaseName;
         String username = "root";
         String password = "";
-        Connection con = null;
         try {
             Class.forName(driver);
             con = DriverManager.getConnection(url, username, password);
@@ -38,6 +35,7 @@ public class Dao {
         }
         return con;
     }
+
 
     /**
      * free the connection
@@ -52,6 +50,7 @@ public class Dao {
             }
             if (con != null) {
                 con.close();
+                con = null;
             }
         } catch (SQLException e) {
             System.out.println(error);
@@ -70,6 +69,7 @@ public class Dao {
             }
             if (con != null) {
                 con.close();
+                con = null;
             }
         } catch (SQLException e) {
             System.out.println(error);
@@ -112,5 +112,28 @@ public class Dao {
         }
     }
 
+    /**
+     * delete an item in the table
+     * @param ID the no. ID
+     * @param tableName the name of the table
+     * @param IDname the name of the ID
+     * @return number of items deleted
+     */
+    public int deleteItem(int ID, String tableName, String IDname){
+        int rowsAffected = 0;
+        try {
+            con = this.getConnection();
 
+            String q = String.format("DELETE FROM %s WHERE %s = ?", tableName, IDname);
+            ps = con.prepareStatement(q);
+            ps.setInt(1, ID);
+            rowsAffected = ps.executeUpdate();
+        } catch (SQLException e) {
+            System.err.println("\tA problem occurred during the updateIncrement method:");
+            System.err.println("\t" + e.getMessage());
+        } finally {
+            freeConnectionUpdate("fail to close connection at deleteitem");
+        }
+        return rowsAffected;
+    }
 }

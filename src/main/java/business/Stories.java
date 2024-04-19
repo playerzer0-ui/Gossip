@@ -1,6 +1,6 @@
 package business;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Stories {
@@ -18,13 +18,13 @@ public class Stories {
     private int userId;
     private String story;
     private int storyType;
-    private LocalDate dateTime;
+    private LocalDateTime dateTime;
     private String storyDescription;
 
     public Stories() {
     }
 
-    public Stories(int storyId, int userId, String story, int storyType, LocalDate dateTime, String storyDescription) {
+    public Stories(int storyId, int userId, String story, int storyType, LocalDateTime dateTime, String storyDescription) {
         this.storyId = storyId;
         this.userId = userId;
         this.story = story;
@@ -65,11 +65,11 @@ public class Stories {
         this.storyType = storyType;
     }
 
-    public LocalDate getDateTime() {
+    public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public void setDateTime(LocalDate dateTime) {
+    public void setDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 

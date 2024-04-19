@@ -18,10 +18,12 @@ public class MessageDao extends Dao {
         super(con);
     }
 
+    /**
+     * get the message by ID
+     * @param messageId the messageId
+     * @return Message
+     */
     public Message getMessage(int messageId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
         Message m = null;
         try {
             con = getConnection();
@@ -32,44 +34,34 @@ public class MessageDao extends Dao {
             rs = ps.executeQuery();
 
             if (rs.next()) {
-                String[] dateTimeSent = rs.getString("timeSent").split(" ");
-                String[] dateSent = dateTimeSent[0].split("-");
-                String[] timeSent = dateTimeSent[1].split(":");
-                LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateSent[0]), Integer.parseInt(dateSent[1]), Integer.parseInt(dateSent[2]), Integer.parseInt(timeSent[0]), Integer.parseInt(timeSent[1]), Integer.parseInt(timeSent[2]));
-                m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"));
+                LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
+                 m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"),rs.getInt("messageKey"),rs.getString("originalFileName"));
 
             }
 
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getMessage() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getMessage() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the getMessage() method: ");
         }
         return m;
     }
 
+    /**
+     * sends a message to a person or group, depending on the inboxId
+     * @param inboxId the inboxId
+     * @param senderId the sender based by ID
+     * @param message the message written
+     * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
+     * @return true or false, depends on if the message is sent or not
+     */
     public boolean sendMessage(int inboxId, int senderId, String message, int messageType) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        int rowsAffected = 0;
+        int rowsAffected;
         boolean state = false;
         try {
 
             con = getConnection();
-            String command = "insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?) ";
+            String command = "insert into messages (inboxId,senderId,message,messageType) values (?,?,?,?)";
             ps = con.prepareStatement(command);
             ps.setInt(1, inboxId);
             ps.setInt(2, senderId);
@@ -84,28 +76,116 @@ public class MessageDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the sendMessage() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
         }
         return state;
     }
 
+    /**
+     * sends a message to a person or group, depending on the inboxId
+     * @param inboxId the inboxId
+     * @param senderId the sender based by ID
+     * @param message the message written
+     * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
+     * @return true or false, depends on if the message is sent or not
+     */
+    public boolean sendMessage(int inboxId, int senderId, String message, int messageType,int messageKey) {
+        int rowsAffected;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "insert into messages (inboxId,senderId,message,messageType,messageKey) values (?,?,?,?,?)";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, senderId);
+            ps.setString(3, message);
+            ps.setInt(4, messageType);
+            ps.setInt(5, messageKey);
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
+        }
+        return state;
+    }
+    /**
+     * sends a message to a person or group, depending on the inboxId
+     * @param inboxId the inboxId
+     * @param senderId the sender based by ID
+     * @param message the message written
+     * @param messageType what type is it, 1 = words, 2 = image, 3 = video, 4 = document file
+     * @return true or false, depends on if the message is sent or not
+     */
+    public boolean sendMessage(int inboxId, int senderId, String message, int messageType,int messageKey,String originalFileName) {
+        int rowsAffected;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "insert into messages (inboxId,senderId,message,messageType,messageKey,originalFileName) values (?,?,?,?,?,?)";
+            ps = con.prepareStatement(command);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, senderId);
+            ps.setString(3, message);
+            ps.setInt(4, messageType);
+            ps.setInt(5, messageKey);
+            ps.setString(6, originalFileName);
+            rowsAffected = ps.executeUpdate();
+            if (rowsAffected == 1) {
+                state = true;
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
+        }
+        return state;
+    }
+    public int sendMessage2(int inboxId, int senderId, String message, int messageType,int messageKey,String originalFileName) {
+        int id=0;
+        boolean state = false;
+        try {
+
+            con = getConnection();
+            String command = "insert into messages (inboxId,senderId,message,messageType,messageKey,originalFileName) values (?,?,?,?,?,?)";
+            ps = con.prepareStatement(command, Statement.RETURN_GENERATED_KEYS);
+            ps.setInt(1, inboxId);
+            ps.setInt(2, senderId);
+            ps.setString(3, message);
+            ps.setInt(4, messageType);
+            ps.setInt(5, messageKey);
+            ps.setString(6, originalFileName);
+            ps.executeUpdate();
+            rs = ps.getGeneratedKeys();
+            if (rs.next()) {
+                id = rs.getInt(1);
+            }
+
+
+        } catch (SQLException e) {
+            System.out.println("Exception occurred in the sendMessage() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the sendMessage() method: ");
+        }
+        return id;
+    }
+
+    /**
+     * get all messages that are not deleted, from a certain inbox
+     * @param inboxId the inboxId
+     * @return all messages on the inbox
+     */
     public ArrayList<Message> getMessages(int inboxId) {
-        Connection con = null;
-        PreparedStatement ps = null;
-        ResultSet rs = null;
-        ArrayList<Message> messages = new ArrayList();
+        ArrayList<Message> messages = new ArrayList<>();
         try {
             con = getConnection();
 
@@ -115,11 +195,8 @@ public class MessageDao extends Dao {
             rs = ps.executeQuery();
 
             while (rs.next()) {
-                String[] dateTimeSent = rs.getString("timeSent").split(" ");
-                String[] dateSent = dateTimeSent[0].split("-");
-                String[] timeSent = dateTimeSent[1].split(":");
-                LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateSent[0]), Integer.parseInt(dateSent[1]), Integer.parseInt(dateSent[2]), Integer.parseInt(timeSent[0]), Integer.parseInt(timeSent[1]), Integer.parseInt(timeSent[2]));
-                Message m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"));
+                LocalDateTime localDateTime = rs.getTimestamp("timeSent").toLocalDateTime();
+                Message m = new Message(rs.getInt("messageId"), rs.getInt("inboxId"), rs.getInt("senderId"), rs.getString("message"), rs.getInt("messageType"), localDateTime, rs.getInt("deletedState"),rs.getInt("messageKey"),rs.getString("originalFileName"));
 
                 messages.add(m);
             }
@@ -127,21 +204,69 @@ public class MessageDao extends Dao {
         } catch (SQLException e) {
             System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
         } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-                if (ps != null) {
-                    ps.close();
-                }
-                if (con != null) {
-                    freeConnection(con);
-                }
-            } catch (SQLException e) {
-                System.out.println("Exception occurred in the final section of the getMessages() method: " + e.getMessage());
-            }
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
         }
         return messages;
     }
 
+    /**
+     * deletes a message by Id
+     * @param messageId the messageId
+     * @return number of messages deleted
+     */
+    public int deleteMessages(int messageId){
+        return deleteItem(messageId, "messages", "messageId");
+    }
+
+
+    /**
+     * get the amount of messages on a daily
+     * @return daily messages count
+     */
+    public int getDailyMessageCount(){
+        int count = 0;
+
+        try{
+            con = getConnection();
+            String query = "SELECT count(*) FROM messages where DATE(timeSent) = CURDATE()";
+
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                count = rs.getInt("count(*)");
+            }
+        }catch (SQLException e) {
+            System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
+        }
+        return count;
+    }
+
+
+    /**
+     * get the total amount of messages
+     * @return the total messages of all time
+     */
+    public int getTotalMessageCount(){
+        int count = 0;
+
+        try{
+            con = getConnection();
+            String query = "SELECT count(*) FROM messages";
+
+            ps = con.prepareStatement(query);
+            rs = ps.executeQuery();
+
+            if(rs.next()){
+                count = rs.getInt("count(*)");
+            }
+        }catch (SQLException e) {
+            System.out.println("Exception occurred in the getMessages() method: " + e.getMessage());
+        } finally {
+            freeConnection("Exception occurred in the final section of the getMessages() method: ");
+        }
+        return count;
+    }
 }

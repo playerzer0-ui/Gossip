@@ -1,5 +1,6 @@
 package business;
 
+import java.sql.Date;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public class Users {
     private String bio;
 
     private int online;
-
+    private String searchCategory;
     public Users() {
     }
 
@@ -63,6 +64,24 @@ public class Users {
         this.suspended = suspended;
         this.bio = bio;
         this.online = online;
+    }
+
+    public Users(int userId, String email, String userName, String profilePicture, String password, LocalDate dateOfBirth, int userType, int suspended, String bio, int online, String searchCategory) {
+        this.userId = userId;
+        this.email = email;
+        this.userName = userName;
+        this.profilePicture = profilePicture;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.userType = userType;
+        this.suspended = suspended;
+        this.bio = bio;
+        this.online = online;
+        this.searchCategory = searchCategory;
+    }
+
+    public Users(int userId){
+        this.userId = userId;
     }
 
     public int getUserId() {
@@ -145,6 +164,14 @@ public class Users {
         this.online = online;
     }
 
+    public String getSearchCategory() {
+        return searchCategory;
+    }
+
+    public void setSearchCategory(String searchCategory) {
+        this.searchCategory = searchCategory;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -171,6 +198,19 @@ public class Users {
                 ", suspended=" + suspended +
                 ", bio='" + bio + '\'' +
                 ", online=" + online +
+                ", searchCategory='" + searchCategory + '\'' +
                 '}';
     }
+
+    /*public void updateUsers(String email, String userName, String profilePicture, String password, LocalDate dateOfBirth, int userType, int suspended, String bio, int online) {
+        this.email = email;
+        this.userName = userName;
+        this.profilePicture = profilePicture;
+        this.password = password;
+        this.dateOfBirth = dateOfBirth;
+        this.userType = userType;
+        this.suspended = suspended;
+        this.bio = bio;
+        this.online = online;
+    }*/
 }
