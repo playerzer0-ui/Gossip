@@ -4,6 +4,7 @@ const assets = [
     '/Gossip-1.0-SNAPSHOT/css/styles.css',
     '/Gossip-1.0-SNAPSHOT/css/admin.css',
     '/Gossip-1.0-SNAPSHOT/css/chatbox.css',
+    '/Gossip-1.0-SNAPSHOT/css/error.css',
     '/Gossip-1.0-SNAPSHOT/css/form.css',
     '/Gossip-1.0-SNAPSHOT/css/mobile-admin.css',
     '/Gossip-1.0-SNAPSHOT/css/mobile-chatbox.css',
@@ -15,10 +16,22 @@ const assets = [
     '/Gossip-1.0-SNAPSHOT/js/index.js',
     '/Gossip-1.0-SNAPSHOT/fallback.jsp',
     '/Gossip-1.0-SNAPSHOT/login.jsp',
+    '/Gossip-1.0-SNAPSHOT/index.jsp',
+    '/Gossip-1.0-SNAPSHOT/register.jsp',
     'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js',
     'https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js',
     'https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js'
 ];
+
+const limitCacheSize = (name, size) => {
+    caches.open(name).then(cache => {
+        cache.keys().then(keys => {
+            if(keys.length > size){
+                cache.delete(keys[0]).then(limitCacheSize(name, size));
+            }
+        });
+    });
+};
 
 // install event
 self.addEventListener('install', evt => {
@@ -47,15 +60,21 @@ self.addEventListener('activate', evt => {
 
 // fetch event
 self.addEventListener('fetch', evt => {
-    //console.log('fetch event', evt);
     evt.respondWith(
         caches.match(evt.request).then(cacheRes => {
             return cacheRes || fetch(evt.request).then(fetchRes => {
                 return caches.open(dynamicCacheName).then(cache => {
                     cache.put(evt.request.url, fetchRes.clone());
+                    limitCacheSize(dynamicCacheName, 15);
                     return fetchRes;
-                })
+                });
+            }).catch(() => {
+                // Network request failed, redirect to fallback.jsp
+                return Response.redirect('/Gossip-1.0-SNAPSHOT/fallback.jsp', 302);
             });
-        }).catch(() => caches.match('fallback.jsp'))
+        }).catch(() => {
+            // Cache match failed, redirect to fallback.jsp
+            return Response.redirect('/Gossip-1.0-SNAPSHOT/fallback.jsp', 302);
+        })
     );
 });

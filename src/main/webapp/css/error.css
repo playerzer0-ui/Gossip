@@ -1,0 +1,26 @@
+/* Center the main container */
+body, html {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Style the main container */
+main {
+    text-align: center;
+}
+
+/* Add additional styles as needed */
+.wifi-icon {
+    font-size: 5.8em; /* Example size */
+    color: #720455; /* Example color */
+}
+
+h1 {
+    color: #333; /* Example color */
+}
