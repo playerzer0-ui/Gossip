@@ -312,7 +312,7 @@ function viewStory(index) {
 }
 
 function viewMyStory(storyId) {
-    alert("in");
+    // alert("in");
     $(document).ready(function () {
         $.ajax({
             url: "controller",
@@ -323,7 +323,7 @@ function viewMyStory(storyId) {
                 var story =[];
                 story[0]="stories/" +storyDetails[1];
                 openMyStoryView(story);
-                alert("success");
+                // alert("success");
             },
             error: function () {
                 alert("Error with ajax");
@@ -343,14 +343,18 @@ function myStories() {
                 yourStoryList.innerHTML = "";
                 var myStories = JSON.parse(data);
                 for (var i = 0; i < myStories.length; i++) {
-                    yourStoryList.innerHTML += "<div class='block' onclick='viewMyStory("+myStories[i][0]+")'> " +
+                    yourStoryList.innerHTML += "<div class='block'> " +
                         "<div class='imgbox'> " +
                         "<img src='stories/"+myStories[i][2]+"' alt='' class='cover'> " +
                         "</div> " +
                         "<div class='details'> " +
                         "<div class='listhead'>" +
                         "<div><h4>" + myStories[i][5] + " views</h4> <p class='time'>" + myStories[i][4] + "</p></div> " +
-                        "<ion-icon name='close-outline'></ion-icon></div> " +
+                        "<div>" +
+                        "<ion-icon name='eye' onclick='viewMyStory("+myStories[i][0]+")'></ion-icon>" +
+                        "<ion-icon name='close-outline' onclick='deleteStory(this, "+myStories[i][0]+")'></ion-icon>" +
+                        "</div>" +
+                        "</div> " +
                         "</div>" +
                         " </div>";
                 }
@@ -360,5 +364,29 @@ function myStories() {
             }
         });
     });
+}
 
+function deleteStory(iconElement, storyId){
+    $(document).ready(function(){
+        $.ajax({
+            url: "controller",
+            type: 'post',
+            data: {action: "deleteStory", storyId: storyId},
+            success: function (data){
+                removeBlock(iconElement);
+            },
+            error: function(){
+                alert("error with deleting story");
+            }
+        })
+    });
+}
+
+function removeBlock(iconElement) {
+    // Get the parent block of the close icon
+    const block = iconElement.closest('.block');
+    // Get the parent container of the block
+    const storyList = iconElement.closest('.yourStoryList');
+    // Remove the block from the storyList
+    storyList.removeChild(block);
 }

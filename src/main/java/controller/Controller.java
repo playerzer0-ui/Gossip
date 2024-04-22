@@ -220,6 +220,10 @@ public class Controller extends HttpServlet {
                 case "viewMyStory":
                     viewMyStory(request, response);
                     break;
+
+                case "deleteStory":
+                    deleteStory(request);
+                    break;
             }
         }
 
@@ -1610,6 +1614,15 @@ public class Controller extends HttpServlet {
 
         String jsonString = objectMapper.writeValueAsString(stories);
         response.getWriter().write(jsonString);
+    }
+
+    public void deleteStory(HttpServletRequest request) throws IOException {
+        StoriesDao storiesDao = new StoriesDao("gossip");
+        StoryViewersDao storyViewersDao = new StoryViewersDao("gossip");
+        int storyId = Integer.parseInt(request.getParameter("storyId"));
+
+        storyViewersDao.deleteStoryFromStoryViewers(storyId);
+        storiesDao.deleteStory(storyId);
     }
 
 }

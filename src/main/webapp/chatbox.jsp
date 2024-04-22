@@ -615,6 +615,7 @@
                             <h4>2 views</h4>
                             <p class="time">12:00 AM</p>
                         </div>
+                        <ion-icon name="close-outline"></ion-icon>
                     </div>
                 </div>
                 <div class="block">
@@ -626,6 +627,7 @@
                             <h4>2 views</h4>
                             <p class="time">12:00 AM</p>
                         </div>
+                        <ion-icon name="close-outline"></ion-icon>
                     </div>
                 </div>
             </div>
