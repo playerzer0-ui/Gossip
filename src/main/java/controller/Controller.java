@@ -1085,24 +1085,37 @@ public class Controller extends HttpServlet {
         UsersDao usersDao = new UsersDao("gossip");
         InboxDao inboxDao = new InboxDao("gossip");
         List<Search> searchs = usersDao.generalSearch(search, user);
+        BlockedusersDao blockedusersDao = new BlockedusersDao("gossip");
         ObjectMapper objectMapper = new ObjectMapper();
         ArrayList<String[]> replies = new ArrayList();
         for (Search s : searchs) {
             String[] reply = new String[4];
             if (s.getCategory().equalsIgnoreCase("u")) {
                 Users u = usersDao.getUserById(s.getId());
-                reply[0] = u.getProfilePicture();
-                reply[1] = u.getUserName();
-                reply[2] = u.getUserId() + "";
-                reply[3] = "u";
+                ArrayList<Blockedusers> blockedusers = blockedusersDao.getBlockedUsers(user.getUserId());
+                ArrayList<InboxParticipants> filteredUsers = new ArrayList();
+                    boolean add = true;
+                    for (Blockedusers b : blockedusers) {
+                        if (b.getUserId() == u.getUserId()) {
+                            add = false;
+                            break;
+                        }
+                    }
+                    if(add==true) {
+                        reply[0] = u.getProfilePicture();
+                        reply[1] = u.getUserName();
+                        reply[2] = u.getUserId() + "";
+                        reply[3] = "u";
+                        replies.add(reply);
+                    }
             } else if (s.getCategory().equalsIgnoreCase("g")) {
                 Inbox ib = inboxDao.getInbox(s.getId());
                 reply[0] = ib.getGroupProfilePicture();
                 reply[1] = ib.getGroupName();
                 reply[2] = ib.getInboxId() + "";
                 reply[3] = "g";
+                replies.add(reply);
             }
-            replies.add(reply);
         }
         System.out.println(searchs);
         String jsonString = objectMapper.writeValueAsString(replies);
