@@ -6,6 +6,9 @@ var images = [];
 var stories = [];
 var story;
 
+
+
+
 function seeProfile(){
     $( ".left" ).css( "z-index", "1" );
     $( ".leftUpdate" ).css( "z-index", "1" );

@@ -94,7 +94,7 @@ public class Dao {
      * updates the increment in the table
      *
      * @param tableName the table name
-     * @param num       the number increment to set to
+     * @param num the number increment to set to
      */
     public void updateIncrement(String tableName, int num) {
         try {
