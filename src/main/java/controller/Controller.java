@@ -224,6 +224,13 @@ public class Controller extends HttpServlet {
                 case "deleteStory":
                     deleteStory(request);
                     break;
+                case "editGroupChat":
+                    try {
+                    editGroupChat(request, response);
+                    } catch (ServletException ex) {
+                        response.sendRedirect("chatbox.jsp");
+                    }
+                    break;
             }
         }
 
@@ -901,13 +908,13 @@ public class Controller extends HttpServlet {
              //FileOutputStream outputStream = new FileOutputStream(new File("C:\\Users\\user\\OneDrive - Dundalk Institute of Technology\\d00243400\\Y3\\software project\\Gossip\\src\\main\\webapp\\" + fileName))) imageMessages\{
              //you need to change the location to match that where the webapp folder is stored on your computer, go to its properties and copy its location and paste it down here
              FileOutputStream outputStream = new FileOutputStream(resultPath + "src\\main\\webapp\\" + directory + fileName);
-             FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
+//             FileOutputStream targetStream = new FileOutputStream(fullPath + directory + fileName)
         ) {
             byte[] buffer = new byte[1024];
             int bytesRead;
             while ((bytesRead = inputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
-                targetStream.write(buffer, 0, bytesRead);
+//                targetStream.write(buffer, 0, bytesRead);
             }
             System.out.println("File " + fileName + " has been uploaded successfully.");
         } catch (IOException e) {
@@ -1636,6 +1643,35 @@ public class Controller extends HttpServlet {
 
         storyViewersDao.deleteStoryFromStoryViewers(storyId);
         storiesDao.deleteStory(storyId);
+    }
+
+    public void editGroupChat(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        HttpSession session = request.getSession(true);
+        Users user = (Users) session.getAttribute("user");
+        int inboxId = Integer.parseInt(request.getParameter("inboxId"));
+        String groupName = request.getParameter("groupName");
+        Part file = request.getPart("file");
+        InboxDao inboxDao = new InboxDao("gossip");
+        InboxParticipantsDao ibpDao = new InboxParticipantsDao("gossip");
+        Inbox inbox = inboxDao.getInbox(inboxId);
+        if(inbox.getInboxType()==2) {
+            inbox.setGroupName(groupName);
+            if (file == null) {
+                 inboxDao.updateInbox(inbox);
+            } else {
+                String formalPic=inbox.getGroupProfilePicture();
+                String extension = request.getParameter("extension");
+                if (checkImage(extension)) {
+                    String filteredFileName = generateFileName(user.getUserId(), extension);
+                    boolean uploadState = uploadFile(file, filteredFileName, "profilePictures\\");
+                    if (uploadState) {
+                        inbox.setGroupProfilePicture(filteredFileName);
+                        inboxDao.updateInbox(inbox);
+                        deleteImage("profilePictures\\",formalPic);
+                    }
+                }
+            }
+        }
     }
 
 }

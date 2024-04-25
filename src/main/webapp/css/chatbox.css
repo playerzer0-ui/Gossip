@@ -37,7 +37,7 @@ body {
     padding: 20px;
 }
 
-.zoom, .report-page, .group-page, .create-group-page, .storyview {
+.zoom, .report-page, .group-page, .create-group-page, .storyview , .edit-group-page {
     position: absolute;
     display: none;
     justify-content: center;
@@ -97,7 +97,7 @@ body {
     height: auto;
 }
 
-.zoom ion-icon, .report-page ion-icon, .group-page ion-icon, .create-group-page ion-icon, .storyview ion-icon {
+.zoom ion-icon, .report-page ion-icon, .group-page ion-icon, .create-group-page ion-icon, .storyview ion-icon, .edit-group-page ion-icon {
     position: absolute;
     top: 0;
     right: 0;
@@ -110,7 +110,7 @@ body {
     position: relative;
 }
 
-.report-page .form-page, .group-page .form-page, .create-group-page .form-page {
+.report-page .form-page, .group-page .form-page, .create-group-page .form-page, .edit-group-page .form-page {
     display: flex;
     flex-direction: column;
     padding: 20px;

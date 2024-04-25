@@ -89,6 +89,18 @@
         <button class="report-button" onclick="createGroupChat()">create group</button>
     </div>
 </div>
+
+<div class="edit-group-page">
+    <ion-icon name="close-outline" onclick="closeEditGroupPage()"></ion-icon>
+    <div class="form-page">
+        <h1>edit group</h1>
+        <img id="groupProfilePic2" src="profilePictures/profile.jpg" alt="group picture">
+        <input accept="image/*" type="file" id="imgInp2" required>
+        <input type="text" id="groupName2" placeholder="enter group name" required>
+        <button class="report-button" onclick="editGroupChat()">edit group</button>
+    </div>
+</div>
+
 <div class="group-page">
     <ion-icon name="close-outline" onclick="closeGroupPage()"></ion-icon>
     <div class="form-page">
@@ -369,7 +381,7 @@
             </div>
             <%
             }//if the inboxParticipant is active or open
-            else if ((Integer) session.getAttribute("openedInbox") == ibps.getInboxId()) {
+            else if ((Integer) session.getAttribute("openedInbox")  == ibps.getInboxId()) {
             %>
             <div class="block active"
                  onclick="getMessages(<%=ibps.getInboxId()%>);seeMessage(<%=myInbox.getInboxType()%>);">
@@ -1396,6 +1408,7 @@
         document.querySelector('.create-group-page').style.display = 'none';
     }
 
+
     async function createGroupChat() {
         var file = document.getElementById("imgInp");
         var groupProfilepic = document.getElementById("groupProfilePic");
@@ -1496,6 +1509,49 @@
             sendMessage();
         }
     });
+
+
+
+    function closeEditGroupPage() {
+        document.querySelector('.edit-group-page').style.display = 'none';
+    }
+
+    async function editGroupChat() {
+        var file = document.getElementById("imgInp2");
+        var groupProfilepic = document.getElementById("groupProfilePic2");
+        var groupName = document.getElementById("groupName2").value.trim();
+        var formData = new FormData();
+        formData.append("action", "editGroupChat");
+        formData.append("inboxId", mainInboxId);
+        if (file.value !== "" && groupName != "") {
+            var extension = file.value.split(".").pop();
+            formData.append("file", file.files[0]);
+            formData.append("extension", extension);
+            formData.append("groupName", groupName);
+            await fetch('controller', {
+                method: "POST",
+                body: formData
+            });
+            file.value = "";
+            groupProfilepic.src = "profilePictures/profile.jpg";
+            document.getElementById("groupName").value = "";
+            closeEditGroupPage();
+        } else if (groupName != "") {
+            /* formData.append("file", "none");
+             formData.append("extension", "none");*/
+            formData.append("groupName", groupName);
+            await fetch('controller', {
+                method: "POST",
+                body: formData
+            });
+            file.value = "";
+            groupProfilepic.src = "profilePictures/profile.jpg";
+            document.getElementById("groupName").value = "";
+            closeEditGroupPage();
+        }
+    }
+
+
 
 </script>
 

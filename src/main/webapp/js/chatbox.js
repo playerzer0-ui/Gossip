@@ -1,6 +1,8 @@
 var inboxType = 0;
 var imgInp = document.getElementById("imgInp");
+var imgInp2 = document.getElementById("imgInp2");
 var groupProfilePic = document.getElementById("groupProfilePic");
+var groupProfilePic2 = document.getElementById("groupProfilePic2");
 var currentIndex = 0;
 var images = [];
 var stories = [];
@@ -108,7 +110,7 @@ function seeChatMenu() {
         else{
             dropdown.html("<ul>" +
                 "<li onclick='openGroupPage()'>invite member</li>" +
-                "<li>edit group</li>" +
+                "<li onclick='openEditGroupPage()'>edit group</li>" +
                 "<li onclick='leaveGroup()'>leave group</li>" +
                 "</ul>");
         }
@@ -135,6 +137,13 @@ imgInp.onchange = () => {
     const [file] = imgInp.files
     if (file) {
         groupProfilePic.src = URL.createObjectURL(file)
+    }
+}
+
+imgInp2.onchange = () => {
+    const [file] = imgInp2.files
+    if (file) {
+        groupProfilePic2.src = URL.createObjectURL(file)
     }
 }
 
@@ -171,6 +180,10 @@ function openForm(){
 
 function openCreateGroupPage(){
     document.querySelector('.create-group-page').style.display = 'flex';
+}
+
+function openEditGroupPage(){
+    document.querySelector('.edit-group-page').style.display = 'flex';
 }
 
 function closeReport() {
