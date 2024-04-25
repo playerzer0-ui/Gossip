@@ -1,0 +1,31 @@
+{
+  "name": "Gossip",
+  "short_name": "Gossip",
+  "start_url": "/Gossip-1.0-SNAPSHOT/login.jsp",
+  "display": "standalone",
+  "background_color": "#FFE9D2",
+  "theme_color": "#FFE1C4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "img/icons/android-chrome-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "img/icons/android-chrome-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "img/icons/favicon-16x16.png",
+      "type": "image/png",
+      "sizes": "16x16"
+    },
+    {
+      "src": "img/icons/favicon-32x32.png",
+      "type": "image/png",
+      "sizes": "32x32"
+    }
+  ]
+}

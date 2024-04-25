@@ -30,6 +30,10 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="img/icons/apple-touch-icon.png">
+    <meta name="apple-mobile-web-app-status-bar" content="#FFE1C4">
+    <meta name="theme-color" content="#FFE1C4">
 </head>
 
 <body>
@@ -710,7 +714,7 @@
                     header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
                         '</div> ' +
                         '<ul class="nav-icons"> ' +
-                        '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                        // '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
                         '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
                         ' </ul>';
 
@@ -748,27 +752,30 @@
                     for (var i = 0; i < allMessages.length; i++) {
                         console.log("Message Type:", allMessages[i][4]); // Log message type
                         console.log("File Name:", allMessages[i][3]);
+
+                        let date = new Date(allMessages[i][5]);
+                        let time = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
                         if (parseInt(allMessages[i][2]) ===<%=user.getUserId()%>) {
                             if (parseInt(allMessages[i][4]) === 1) {
-                                chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + time + "</span></p></div>";
                             } else if (parseInt(allMessages[i][4]) === 2) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + time + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + time + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + time + "</span> </div>";
                                 //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
                                 //"<div><embed src='fileMessages/"+allMessages[i][3]+"' type='application/pdf' >"+allMessages[i][7]+"</div>";
                             }
                         } else {
                             if (parseInt(allMessages[i][4]) === 1) {
-                                chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + time + "</span></p></div>";
                             } else if (parseInt(allMessages[i][4]) === 2) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + time + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + time + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + time + "</span> </div>";
                                 //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
 
                             }
@@ -815,27 +822,29 @@
                     for (var i = 0; i < allMessages.length; i++) {
                         console.log("Message Type:", allMessages[i][4]); // Log message type
                         console.log("File Name:", allMessages[i][3]);
+                        let date = new Date(allMessages[i][5]);
+                        let time = date.toLocaleTimeString([], {hour: '2-digit', minute: '2-digit'});
                         if (parseInt(allMessages[i][2]) ===<%=user.getUserId()%>) {
                             if (parseInt(allMessages[i][4]) === 1) {
-                                chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                chatBox.innerHTML += "<div class='message my-message'><p>" + allMessages[i][3] + "<br><span>" + time + "</span></p></div>";
                             } else if (parseInt(allMessages[i][4]) === 2) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + time + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + time + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble my-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + time + "</span> </div>";
                                 //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>"
                                 //"<div><embed src='fileMessages/"+allMessages[i][3]+"' type='application/pdf' >"+allMessages[i][7]+"</div>";
                             }
                         } else {
                             if (parseInt(allMessages[i][4]) === 1) {
-                                chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + allMessages[i][5] + "</span></p></div>";
+                                chatBox.innerHTML += "<div class='message frnd-message'><p>" + allMessages[i][3] + "<br><span>" + time + "</span></p></div>";
                             } else if (parseInt(allMessages[i][4]) === 2) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file' onclick='checkImage(this)'> <img src='imageMessages/" + allMessages[i][3] + "' alt='User Image'> <span>" + time + "</span> </div>";
                             } else if (parseInt(allMessages[i][4]) === 3) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + allMessages[i][5] + "</span> </div>"
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <video controls> <source src='videoMessages/" + allMessages[i][3] + "' type='video/mp4'>Your browser does not support the video tag. </video> <span>" + time + "</span> </div>"
                             } else if (parseInt(allMessages[i][4]) === 4) {
-                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + allMessages[i][5] + "</span> </div>";
+                                chatBox.innerHTML += "<div class='chat-bubble frnd-message-file'> <div class='file-details'><div><p>" + allMessages[i][7] + "</p> <span>12 MB</span> </div> <div class='iconbx'> <ion-icon name='arrow-down-circle-outline'></ion-icon> </div> </div> <span>" + time + "</span> </div>";
                                 //"<div><object data='fileMessages/" + allMessages[i][3] + "' type='application/pdf' width='300' height='200'> </object> <a href='fileMessages/" + allMessages[i][3] + "' download>(PDF)</a>" + allMessages[i][7] + "</div>";
 
                             }
@@ -1211,14 +1220,14 @@
                         header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
                             '</div> ' +
                             '<ul class="nav-icons"> ' +
-                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            // '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
                             '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
                             ' </ul>' + str[1];
                     } else {
                         header.innerHTML = '<div class="imgtext" id="imgtext"> ' +
                             '</div> ' +
                             '<ul class="nav-icons"> ' +
-                            '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
+                            // '<li> <ion-icon name="search-outline"></ion-icon></li> ' +
                             '<li> <ion-icon name="ellipsis-vertical" class="chat-menu" onclick="seeChatMenu()"></ion-icon> </li>' +
                             ' </ul>';
                     }
@@ -1495,6 +1504,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
 <script src="js/chatbox.js"></script>
 <script src="js/index.js"></script>
+<script src="js/app.js"></script>
 </body>
 
 </html>
