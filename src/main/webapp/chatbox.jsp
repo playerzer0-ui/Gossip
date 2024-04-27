@@ -588,12 +588,16 @@
 
                     <label class="form-label">Bio</label> <br/>
                     <input class="form-control" name="bio" value="<%=user.getBio()%>"/> <br/><br/>
-
-                    <input type="submit" value="Update" class="btn btn-success"/>
+                    <br>
+                    <input type="submit" value="Update" class="button-37"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
                     <input type="hidden" name="action" value="do_editProfile"/>
                 </form>
             </div>
+
+            <br>
+            <br>
+            <button class="toggleChange button-32" onclick="openChangePassword(this)">need to change password</button>
 
             <div class="change-Password">
                 <form action="controller" method="post">
@@ -606,8 +610,8 @@
 
                     <label class="form-label">New Password</label> <br/>
                     <input class="form-control" name="newPassword" type="password" required/> <br/>
-
-                    <input type="submit" value="Change password" class="btn btn-success"/>
+                    <br>
+                    <input type="submit" value="Change password" class="button-37"/>
                     <!-- Include a hidden field to identify what the user wants to do -->
                     <input type="hidden" name="action" value="changePassword"/>
                 </form>

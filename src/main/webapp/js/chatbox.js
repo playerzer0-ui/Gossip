@@ -8,7 +8,10 @@ var images = [];
 var stories = [];
 var story;
 
-
+function openChangePassword(element){
+    $(element).css("visibility", "hidden");
+    $(".change-Password").css("visibility", "visible");
+}
 
 
 function seeProfile(){
@@ -27,6 +30,8 @@ function seeChatList(){
     $( ".leftUpdate" ).css( "z-index", "1" );
     $( ".leftYourStory" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
+    $(".toggleChange").css("visibility", "visible");
+    $(".change-Password").css("visibility", "hidden");
     closeInbox();
 }
 
@@ -49,6 +54,8 @@ function seeProfileUpdate(){
     $( ".leftUpdate" ).css( "z-index", "3" );
     $( ".leftSide" ).css( "z-index", "1" );
     $( ".right" ).css( "z-index", "2" );
+    $(".toggleChange").css("visibility", "visible");
+    $(".change-Password").css("visibility", "hidden");
 }
 
 function openFileInput() {

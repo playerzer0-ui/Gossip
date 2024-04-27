@@ -50,6 +50,10 @@
         width: 100%;
     }
 
+    .button-37 {
+        padding: 10px 30px;
+    }
+
     .return {
         visibility: visible;
     }
