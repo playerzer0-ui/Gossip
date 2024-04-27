@@ -60,6 +60,8 @@ body {
     display: flex;
     justify-content: space-between;
     flex-direction: row;
+    height: 100%;
+    align-items: center;
 }
 
 .bars {
@@ -81,7 +83,7 @@ body {
 }
 
 .story-image {
-    width: 40vw;
+    width: 15vw;
     height: auto;
     display: block;
 }

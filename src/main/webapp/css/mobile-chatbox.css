@@ -70,4 +70,14 @@
         height: auto;
     }
 
+    .story-image {
+        width: 230px;
+        height: auto;
+    }
+
+    .story-video {
+        width: 230px;
+        height: auto;
+    }
+
 }
