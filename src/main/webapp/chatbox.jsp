@@ -227,7 +227,7 @@
                     <div class="listhead">
                         <h4><%=otherUser.getUserName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">
@@ -251,7 +251,7 @@
                     <div class="listhead">
                         <h4><%=otherUser.getUserName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">
@@ -274,7 +274,7 @@
                     <div class="listhead">
                         <h4><%=otherUser.getUserName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">
@@ -368,7 +368,7 @@
                     <div class="listhead">
                         <h4><%=groupInbox.getGroupName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">
@@ -392,7 +392,7 @@
                     <div class="listhead">
                         <h4><%=groupInbox.getGroupName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">
@@ -414,7 +414,7 @@
                     <div class="listhead">
                         <h4><%=groupInbox.getGroupName()%>
                         </h4>
-                        <p class="time"><%=m.getTimeSent().getHour()%>:<%=m.getTimeSent().getMinute()%>
+                        <p class="time"><%=m.displayTimeAMPM()%>
                         </p>
                     </div>
                     <div class="message-p">

@@ -1,6 +1,7 @@
 package business;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Message {
@@ -96,6 +97,11 @@ public Message() {
 
     public void setTimeSent(LocalDateTime timeSent) {
         this.timeSent = timeSent;
+    }
+
+    public String displayTimeAMPM(){
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return timeSent.format(formatter);
     }
 
     public int getDeletedState() {
